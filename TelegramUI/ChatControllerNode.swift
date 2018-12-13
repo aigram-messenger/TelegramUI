@@ -167,6 +167,8 @@ class ChatControllerNode: ASDisplayNode, UIScrollViewDelegate {
             }
         }
     }
+
+    public var lastMessages: [Message] { return historyNode.lastMessages }
     
     init(account: Account, chatLocation: ChatLocation, messageId: MessageId?, controllerInteraction: ChatControllerInteraction, chatPresentationInterfaceState: ChatPresentationInterfaceState, automaticMediaDownloadSettings: AutomaticMediaDownloadSettings, navigationBar: NavigationBar?, controller: ChatController?) {
         self.account = account

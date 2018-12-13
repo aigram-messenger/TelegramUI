@@ -1479,6 +1479,15 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
             return $0.updatedMode(mode)
         })
     }
+
+    public func updateWithReceivedMessages(_ messages: [Message]) {
+        let mapped = messages.map { $0.text }
+        self.updateChatPresentationInterfaceState(animated: true, interactive: true, {
+            $0.updatedInputMode { current in
+                return ChatInputMode.suggestions(messages: mapped)
+            }
+        })
+    }
     
     var chatDisplayNode: ChatControllerNode {
         get {

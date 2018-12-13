@@ -88,12 +88,14 @@ private final class AccessoryItemIconButton: HighlightableButton {
                 } else {
                     return (PresentationResourcesChat.chatInputTextFieldTimerImage(theme), nil, 1.0, UIEdgeInsets(top: 0.0, left: 0.0, bottom: 1.0, right: 0.0))
                 }
+            case .suggestions:
+                return (PresentationResourcesChat.chatInputTextFieldSuggestionsImage(theme), nil, 1.0, UIEdgeInsets())
         }
     }
     
     static func calculateWidth(item: ChatTextInputAccessoryItem, image: UIImage?, text: String?, strings: PresentationStrings) -> CGFloat {
         switch item {
-            case .keyboard, .stickers, .inputButtons, .silentPost, .commands:
+            case .keyboard, .stickers, .inputButtons, .silentPost, .commands, .suggestions:
                 return (image?.size.width ?? 0.0) + CGFloat(8.0)
             case let .messageAutoremoveTimeout(timeout):
                 var imageWidth = (image?.size.width ?? 0.0) + CGFloat(8.0)
@@ -219,7 +221,12 @@ class ChatTextInputPanelNode: ChatInputPanelNode, ASEditableTextNodeDelegate {
             return ChatTextInputState()
         }
     }
-    
+
+    var lastMessages: [String] {
+        guard let controllerNode = supernode as? ChatControllerNode else { return [] }
+        return controllerNode.lastMessages.map { $0.text }
+    }
+
     override var account: Account? {
         didSet {
             self.actionButtons.micButton.account = self.account
@@ -1447,6 +1454,10 @@ class ChatTextInputPanelNode: ChatInputPanelNode, ASEditableTextNodeDelegate {
                         self.interfaceInteraction?.toggleSilentPost()
                     case .messageAutoremoveTimeout:
                         self.interfaceInteraction?.setupMessageAutoremoveTimeout()
+                case .suggestions:
+                    self.interfaceInteraction?.updateInputModeAndDismissedButtonKeyboardMessageId({ state in
+                        return (.suggestions(messages: self.lastMessages), nil)
+                    })
                 }
                 break
             }

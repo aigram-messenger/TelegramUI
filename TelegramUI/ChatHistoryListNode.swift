@@ -349,6 +349,33 @@ public final class ChatHistoryListNode: ListView, ChatHistoryNode {
     private var loadStateUpdated: ((ChatHistoryNodeLoadState, Bool) -> Void)?
     
     private var loadedMessagesFromCachedDataDisposable: Disposable?
+
+    public var lastMessages: [Message] {
+        var messages: [Message] = []
+        let subnodes = self.subnodes ?? []
+        var counter = 0
+        for subnode in subnodes where subnode is ChatMessageItemView {
+            let subnode = subnode as? ChatMessageItemView
+            guard let item = subnode?.item else { break }
+            guard item.message.flags.contains(.Incoming) else { break }
+            messages.append(item.message)
+            counter += 1
+            if counter >= 3 { break }
+        }
+        return messages
+    }
+
+    public override func insertSubnode(_ subnode: ASDisplayNode, at idx: Int) {
+        super.insertSubnode(subnode, at: idx)
+
+        let chatController = closestViewController as? ChatController
+        chatController?.updateWithReceivedMessages(lastMessages)
+    }
+
+    public override func replaceSubnode(_ subnode: ASDisplayNode, withSubnode replacementSubnode: ASDisplayNode) {
+        super.replaceSubnode(subnode, withSubnode: replacementSubnode)
+        debugPrint("REPLACE SUBNODE")
+    }
     
     public init(account: Account, chatLocation: ChatLocation, tagMask: MessageTags?, messageId: MessageId?, controllerInteraction: ChatControllerInteraction, selectedMessages: Signal<Set<MessageId>?, NoError>, mode: ChatHistoryListMode = .bubbles) {
         self.account = account
@@ -368,8 +395,8 @@ public final class ChatHistoryListNode: ListView, ChatHistoryNode {
         
         //self.stackFromBottom = true
         
-        //self.debugInfo = true
-        
+//        self.debugInfo = true
+
         self.messageProcessingManager.process = { [weak account] messageIds in
             account?.viewTracker.updateViewCountForMessageIds(messageIds: messageIds)
         }
@@ -514,7 +541,7 @@ public final class ChatHistoryListNode: ListView, ChatHistoryNode {
                                 }
                         }
                     }
-                    
+
                     return preparedChatHistoryViewTransition(from: previous, to: processedView, reason: reason, reverse: reverse, account: account, chatLocation: chatLocation, controllerInteraction: controllerInteraction, scrollPosition: updatedScrollPosition, initialData: initialData?.initialData, keyboardButtonsMessage: view.topTaggedMessages.first, cachedData: initialData?.cachedData, cachedDataMessages: initialData?.cachedDataMessages, readStateData: initialData?.readStateData) |> map({ mappedChatHistoryViewListTransition(account: account, chatLocation: chatLocation, associatedData: associatedData, controllerInteraction: controllerInteraction, mode: mode, transition: $0) }) |> runOn(prepareOnMainQueue ? Queue.mainQueue() : messageViewQueue)
             }
         }
