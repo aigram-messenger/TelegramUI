@@ -49,7 +49,7 @@ func inputNodeForChatPresentationIntefaceState(_ chatPresentationInterfaceState:
                 currentNode.set(messages: messages)
                 return currentNode
             } else {
-                let inputNode = ChatSuggestionsInputNode(account: account, controllerInteraction: controllerInteraction)
+                let inputNode = ChatSuggestionsInputNode(account: account, controllerInteraction: controllerInteraction, theme: chatPresentationInterfaceState.theme)
                 inputNode.interfaceInteraction = interfaceInteraction
                 inputNode.set(messages: messages)
                 return inputNode
