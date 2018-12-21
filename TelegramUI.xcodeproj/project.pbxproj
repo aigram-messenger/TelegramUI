@@ -1059,6 +1059,9 @@
 		D0FE4DE61F0BA58A00E8A0B3 /* OverlayMediaItemNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0FE4DE51F0BA58A00E8A0B3 /* OverlayMediaItemNode.swift */; };
 		D0FFF7F61F55B82500BEBC01 /* InstantPageAudioItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0FFF7F51F55B82500BEBC01 /* InstantPageAudioItem.swift */; };
 		D0FFF7F81F55B83600BEBC01 /* InstantPageAudioNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0FFF7F71F55B83600BEBC01 /* InstantPageAudioNode.swift */; };
+		F7F28FCD21CD0F4A008DC5A4 /* ChatBotsInputNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7F28FCC21CD0F4A008DC5A4 /* ChatBotsInputNode.swift */; };
+		F7F28FCF21CD1DB3008DC5A4 /* ChatBotsInputStorePane.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7F28FCE21CD1DB3008DC5A4 /* ChatBotsInputStorePane.swift */; };
+		F7F28FD121CD1E2D008DC5A4 /* ChatBotsInputSuggestionsPane.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7F28FD021CD1E2D008DC5A4 /* ChatBotsInputSuggestionsPane.swift */; };
 		FB929AD221BFE57C004000E0 /* ChatSuggestionsInputNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB929AD121BFE57C004000E0 /* ChatSuggestionsInputNode.swift */; };
 /* End PBXBuildFile section */
 
@@ -2200,6 +2203,9 @@
 		D0FE4DE51F0BA58A00E8A0B3 /* OverlayMediaItemNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OverlayMediaItemNode.swift; sourceTree = "<group>"; };
 		D0FFF7F51F55B82500BEBC01 /* InstantPageAudioItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstantPageAudioItem.swift; sourceTree = "<group>"; };
 		D0FFF7F71F55B83600BEBC01 /* InstantPageAudioNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstantPageAudioNode.swift; sourceTree = "<group>"; };
+		F7F28FCC21CD0F4A008DC5A4 /* ChatBotsInputNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotsInputNode.swift; sourceTree = "<group>"; };
+		F7F28FCE21CD1DB3008DC5A4 /* ChatBotsInputStorePane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotsInputStorePane.swift; sourceTree = "<group>"; };
+		F7F28FD021CD1E2D008DC5A4 /* ChatBotsInputSuggestionsPane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotsInputSuggestionsPane.swift; sourceTree = "<group>"; };
 		FB929AD121BFE57C004000E0 /* ChatSuggestionsInputNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatSuggestionsInputNode.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -2469,10 +2475,10 @@
 		D021E0CC1DB4132E00C6B04F /* Input Nodes */ = {
 			isa = PBXGroup;
 			children = (
+				F7F28FCB21CD0E98008DC5A4 /* Bots */,
 				D021E0CF1DB413BC00C6B04F /* ChatInputNode.swift */,
 				D021E0E31DB55CDB00C6B04F /* Media */,
 				D0C932341E0988AD0074F044 /* Button Keyboard */,
-				FB929AD121BFE57C004000E0 /* ChatSuggestionsInputNode.swift */,
 			);
 			name = "Input Nodes";
 			sourceTree = "<group>";
@@ -4615,6 +4621,17 @@
 			path = TelegramUITests;
 			sourceTree = "<group>";
 		};
+		F7F28FCB21CD0E98008DC5A4 /* Bots */ = {
+			isa = PBXGroup;
+			children = (
+				F7F28FCC21CD0F4A008DC5A4 /* ChatBotsInputNode.swift */,
+				FB929AD121BFE57C004000E0 /* ChatSuggestionsInputNode.swift */,
+				F7F28FCE21CD1DB3008DC5A4 /* ChatBotsInputStorePane.swift */,
+				F7F28FD021CD1E2D008DC5A4 /* ChatBotsInputSuggestionsPane.swift */,
+			);
+			name = Bots;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -5050,6 +5067,7 @@
 				D0EC6D131EB9F58800EBF1C3 /* MediaTrackDecodableFrame.swift in Sources */,
 				D0EC6D141EB9F58800EBF1C3 /* MediaTrackFrame.swift in Sources */,
 				D0B69C3920EBB397003632C7 /* ChatMessageInteractiveInstantVideoNode.swift in Sources */,
+				F7F28FCF21CD1DB3008DC5A4 /* ChatBotsInputStorePane.swift in Sources */,
 				D0EC6D151EB9F58800EBF1C3 /* MediaTrackFrameBuffer.swift in Sources */,
 				D0EC6D161EB9F58800EBF1C3 /* MediaTrackFrameDecoder.swift in Sources */,
 				D056CD701FF147B000880D28 /* IconButtonNode.swift in Sources */,
@@ -5230,6 +5248,7 @@
 				D0EC6D711EB9F58800EBF1C3 /* AuthorizationSequencePasswordEntryController.swift in Sources */,
 				D0EC6D721EB9F58800EBF1C3 /* AuthorizationSequencePasswordEntryControllerNode.swift in Sources */,
 				D09D886F1F86C11F00BEB4C9 /* AuthorizationTheme.swift in Sources */,
+				F7F28FD121CD1E2D008DC5A4 /* ChatBotsInputSuggestionsPane.swift in Sources */,
 				D0EC6D731EB9F58800EBF1C3 /* AuthorizationSequenceSignUpController.swift in Sources */,
 				0979787C210642CB0077D77F /* WebEmbedPlayerNode.swift in Sources */,
 				D0C12EB01F9A8D1300600BB2 /* ListMessageDateHeader.swift in Sources */,
@@ -5299,6 +5318,7 @@
 				D00ACA58202285090045D427 /* ChatRestrictedNode.swift in Sources */,
 				D0104F2C1F471EEB004E4881 /* InstantPageGalleryFooterContentNode.swift in Sources */,
 				D0754D241EEE0F4100884F6E /* ChatMessageInteractiveMediaLabelNode.swift in Sources */,
+				F7F28FCD21CD0F4A008DC5A4 /* ChatBotsInputNode.swift in Sources */,
 				D04B4D131EEA0A6500711AF6 /* ChatMessageMapBubbleContentNode.swift in Sources */,
 				D0EC6D951EB9F58900EBF1C3 /* ChatMessageInteractiveFileNode.swift in Sources */,
 				D01A21B11F3A050E00DDA104 /* InstantPageNavigationBar.swift in Sources */,
