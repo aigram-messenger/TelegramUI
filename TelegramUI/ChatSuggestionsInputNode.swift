@@ -12,7 +12,6 @@ import AsyncDisplayKit
 import Postbox
 import TelegramCore
 import SwiftSignalKit
-import Strutext
 
 struct Bot {
     var title: String
@@ -58,8 +57,6 @@ final class ChatSuggestionsInputNode: ChatInputNode {
     private var bots: [Bot] = []
 
     private var theme: PresentationTheme?
-    
-    private let strutext: Strutext = .init()
 
     init(account: Account, controllerInteraction: ChatControllerInteraction, theme: PresentationTheme) {
         self.account = account
@@ -137,19 +134,6 @@ final class ChatSuggestionsInputNode: ChatInputNode {
 
     func trashedSuggestions() -> [[String]] {
         var result: [[String]] = []
-        
-        for message in messages {
-            let words = message.split(separator: " ")
-            let temp = strutext.handle(words.map { String($0) })
-//            var lemmas: [String] = []
-            for set in temp {
-                guard let first = set.first else { continue }
-//                lemmas.append(first)
-                result.append([first])
-            }
-//            result.append(lemmas)
-        }
-        
         
         return result
     }
