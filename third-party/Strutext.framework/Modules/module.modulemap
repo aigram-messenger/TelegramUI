@@ -1,0 +1,6 @@
+framework module Strutext {
+  umbrella header "Strutext.h"
+
+  export *
+  module * { export * }
+}

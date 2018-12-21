@@ -3,6 +3,7 @@ import Display
 import Postbox
 import TelegramCore
 import SwiftSignalKit
+import Strutext
 
 public final class TelegramRootController: NavigationController {
     private let account: Account
@@ -19,6 +20,8 @@ public final class TelegramRootController: NavigationController {
     
     public init(account: Account) {
         self.account = account
+        
+        Strutext.configure()
         
         self.presentationData = account.telegramApplicationContext.currentPresentationData.with { $0 }
         
