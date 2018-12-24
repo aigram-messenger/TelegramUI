@@ -1059,6 +1059,7 @@
 		D0FE4DE61F0BA58A00E8A0B3 /* OverlayMediaItemNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0FE4DE51F0BA58A00E8A0B3 /* OverlayMediaItemNode.swift */; };
 		D0FFF7F61F55B82500BEBC01 /* InstantPageAudioItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0FFF7F51F55B82500BEBC01 /* InstantPageAudioItem.swift */; };
 		D0FFF7F81F55B83600BEBC01 /* InstantPageAudioNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0FFF7F71F55B83600BEBC01 /* InstantPageAudioNode.swift */; };
+		F73095DF21D0F06900343BD5 /* ChatBotsStoreItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F73095DE21D0F06900343BD5 /* ChatBotsStoreItem.swift */; };
 		F7F28FCD21CD0F4A008DC5A4 /* ChatBotsInputNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7F28FCC21CD0F4A008DC5A4 /* ChatBotsInputNode.swift */; };
 		F7F28FCF21CD1DB3008DC5A4 /* ChatBotsInputStorePane.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7F28FCE21CD1DB3008DC5A4 /* ChatBotsInputStorePane.swift */; };
 		F7F28FD121CD1E2D008DC5A4 /* ChatBotsInputSuggestionsPane.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7F28FD021CD1E2D008DC5A4 /* ChatBotsInputSuggestionsPane.swift */; };
@@ -2203,6 +2204,7 @@
 		D0FE4DE51F0BA58A00E8A0B3 /* OverlayMediaItemNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OverlayMediaItemNode.swift; sourceTree = "<group>"; };
 		D0FFF7F51F55B82500BEBC01 /* InstantPageAudioItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstantPageAudioItem.swift; sourceTree = "<group>"; };
 		D0FFF7F71F55B83600BEBC01 /* InstantPageAudioNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstantPageAudioNode.swift; sourceTree = "<group>"; };
+		F73095DE21D0F06900343BD5 /* ChatBotsStoreItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotsStoreItem.swift; sourceTree = "<group>"; };
 		F7F28FCC21CD0F4A008DC5A4 /* ChatBotsInputNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotsInputNode.swift; sourceTree = "<group>"; };
 		F7F28FCE21CD1DB3008DC5A4 /* ChatBotsInputStorePane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotsInputStorePane.swift; sourceTree = "<group>"; };
 		F7F28FD021CD1E2D008DC5A4 /* ChatBotsInputSuggestionsPane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotsInputSuggestionsPane.swift; sourceTree = "<group>"; };
@@ -4628,6 +4630,7 @@
 				FB929AD121BFE57C004000E0 /* ChatSuggestionsInputNode.swift */,
 				F7F28FCE21CD1DB3008DC5A4 /* ChatBotsInputStorePane.swift */,
 				F7F28FD021CD1E2D008DC5A4 /* ChatBotsInputSuggestionsPane.swift */,
+				F73095DE21D0F06900343BD5 /* ChatBotsStoreItem.swift */,
 			);
 			name = Bots;
 			sourceTree = "<group>";
@@ -4937,6 +4940,7 @@
 				D0EC6CCD1EB9F58800EBF1C3 /* DeclareEncodables.swift in Sources */,
 				0958FBBD218B03CA00E0CBD8 /* InstantPageDetailsNode.swift in Sources */,
 				D02D60B1206C189900FEFE1E /* SecureIdPlaintextFormController.swift in Sources */,
+				F73095DF21D0F06900343BD5 /* ChatBotsStoreItem.swift in Sources */,
 				D0CFBB951FD8B05000B65C0D /* OverlayInstantVideoDecoration.swift in Sources */,
 				D0EC6CCE1EB9F58800EBF1C3 /* TelegramApplicationContext.swift in Sources */,
 				D09394132007F5BB00997F31 /* LocationBroadcastNavigationAccessoryPanel.swift in Sources */,

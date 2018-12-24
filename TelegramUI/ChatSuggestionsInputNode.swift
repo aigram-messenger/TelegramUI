@@ -64,7 +64,7 @@ final class ChatSuggestionsInputNode: ChatInputNode {
         
         self.botsListPanel = ASDisplayNode()
         self.botsListPanel.clipsToBounds = true
-        self.botsListPanel.backgroundColor = UIColor.green//theme.chat.inputPanel.panelBackgroundColor
+        self.botsListPanel.backgroundColor = theme.chat.inputPanel.panelBackgroundColor
         
         self.topSeparator = ASDisplayNode()
         self.topSeparator.isLayerBacked = true
@@ -72,6 +72,7 @@ final class ChatSuggestionsInputNode: ChatInputNode {
         
         self.botsListView = ListView()
         self.botsListView.transform = CATransform3DMakeRotation(-CGFloat(Double.pi / 2.0), 0.0, 0.0, 1.0)
+        self.botsListView.backgroundColor = UIColor.green
 
         super.init()
 
@@ -83,11 +84,24 @@ final class ChatSuggestionsInputNode: ChatInputNode {
         self.addSubnode(self.nodesContainer)
     }
     
-    deinit {
-    }
+    deinit {}
 
     override func didLoad() {
         super.didLoad()
+        let storeItem = ChatBotsStoreItem(theme: self.theme!) {
+            print("SELECT STORE")
+        }
+        
+        var insertItems: [ListViewInsertItem] = []
+        insertItems.append(ListViewInsertItem(index: 0, previousIndex: nil, item: storeItem, directionHint: nil))
+        for i in 1..<4 {
+            let item = ChatBotsStoreItem(theme: self.theme!) {
+                print("SELECT")
+            }
+            insertItems.append(ListViewInsertItem(index: i, previousIndex: nil, item: item, directionHint: nil))
+        }
+        
+        self.botsListView.transaction(deleteIndices: [], insertIndicesAndItems: insertItems, updateIndicesAndItems: [], options: [.Synchronous, .LowLatency], updateOpaqueState: nil)
     }
 
     func set(messages: [String]) {
@@ -109,6 +123,14 @@ final class ChatSuggestionsInputNode: ChatInputNode {
         transition.updateFrame(node: self.nodesContainer, frame: CGRect(origin: CGPoint(x: 0.0, y: contentVerticalOffset), size: CGSize(width: width, height: max(0.0, 41.0 + UIScreenPixel))))
         transition.updateFrame(node: self.botsListPanel, frame: CGRect(origin: CGPoint(x: 0.0, y: containerOffset), size: CGSize(width: width, height: 41.0)))
         transition.updateFrame(node: self.topSeparator, frame: CGRect(origin: CGPoint(x: 0.0, y: 41.0 + containerOffset), size: CGSize(width: width, height: separatorHeight)))
+        
+        let collectionListPanelOffset = CGFloat(0)
+        self.botsListView.bounds = CGRect(x: 0.0, y: 0.0, width: 41.0, height: width)
+        transition.updatePosition(node: self.botsListView, position: CGPoint(x: width / 2.0, y: (41.0 - collectionListPanelOffset) / 2.0))
+        
+        let updateSizeAndInsets = ListViewUpdateSizeAndInsets(size: CGSize(width: 41.0, height: width), insets: UIEdgeInsets(top: 4.0 + leftInset, left: 0.0, bottom: 4.0 + rightInset, right: 0.0), duration: 0, curve: .Default(duration: 0))
+        
+        self.botsListView.transaction(deleteIndices: [], insertIndicesAndItems: [], updateIndicesAndItems: [], options: [.Synchronous, .LowLatency], scrollToItem: nil, updateSizeAndInsets: updateSizeAndInsets, stationaryItemRange: nil, updateOpaqueState: nil, completion: { _ in })
         
 //        print("\(trashedSuggestions())")
 //        transition.updateFrame(node: self.topSeparator, frame: CGRect(origin: CGPoint(), size: CGSize(width: width, height: UIScreenPixel)))
