@@ -13,10 +13,6 @@ import Postbox
 import TelegramCore
 import SwiftSignalKit
 
-final class ChatBotsInputNodeInteraction {
-    
-}
-
 private final class CollectionListContainerNode: ASDisplayNode {
     override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
         for subview in self.view.subviews {
@@ -79,7 +75,9 @@ class ChatBotsInputNode: ChatInputNode {
         
         super.init()
         
-        self.inputNodeInteraction = ChatBotsInputNodeInteraction()
+        self.inputNodeInteraction = ChatBotsInputNodeInteraction(navigateToCollectionId: { [weak self] id in
+            self?.navigateToCollection(withId: id)
+        })
         
         self.collectionListPanel.addSubnode(self.listView)
         self.collectionListContainer.addSubnode(self.collectionListPanel)
@@ -170,6 +168,44 @@ extension ChatBotsInputNode {
 //                return value
 //            } else {
 //                return mainOffset
+//            }
+//        }
+    }
+    
+    private func navigateToCollection(withId collectionId: ItemCollectionId) {
+        print("SELECT \(collectionId)")
+//        let strongSelf = self
+//        if let currentView = strongSelf.currentView, (collectionId != strongSelf.inputNodeInteraction.highlightedItemCollectionId || true) {
+//            var index: Int32 = 0
+//            if collectionId.namespace == ChatMediaInputPanelAuxiliaryNamespace.recentGifs.rawValue {
+//                strongSelf.setCurrentPane(.gifs, transition: .animated(duration: 0.25, curve: .spring))
+//            } else if collectionId.namespace == ChatMediaInputPanelAuxiliaryNamespace.trending.rawValue {
+//                strongSelf.setCurrentPane(.trending, transition: .animated(duration: 0.25, curve: .spring))
+//            } else if collectionId.namespace == ChatMediaInputPanelAuxiliaryNamespace.savedStickers.rawValue {
+//                strongSelf.setCurrentPane(.stickers, transition: .animated(duration: 0.25, curve: .spring), collectionIdHint: collectionId.namespace)
+//                strongSelf.currentStickerPacksCollectionPosition = .navigate(index: nil, collectionId: collectionId)
+//                strongSelf.itemCollectionsViewPosition.set(.single(.navigate(index: nil, collectionId: collectionId)))
+//            } else if collectionId.namespace == ChatMediaInputPanelAuxiliaryNamespace.recentStickers.rawValue {
+//                strongSelf.setCurrentPane(.stickers, transition: .animated(duration: 0.25, curve: .spring), collectionIdHint: collectionId.namespace)
+//                strongSelf.currentStickerPacksCollectionPosition = .navigate(index: nil, collectionId: collectionId)
+//                strongSelf.itemCollectionsViewPosition.set(.single(.navigate(index: nil, collectionId: collectionId)))
+//            } else if collectionId.namespace == ChatMediaInputPanelAuxiliaryNamespace.peerSpecific.rawValue {
+//                strongSelf.setCurrentPane(.stickers, transition: .animated(duration: 0.25, curve: .spring))
+//                strongSelf.currentStickerPacksCollectionPosition = .navigate(index: nil, collectionId: collectionId)
+//                strongSelf.itemCollectionsViewPosition.set(.single(.navigate(index: nil, collectionId: collectionId)))
+//            } else {
+//                strongSelf.setCurrentPane(.stickers, transition: .animated(duration: 0.25, curve: .spring))
+//                for (id, _, _) in currentView.collectionInfos {
+//                    if id.namespace == collectionId.namespace {
+//                        if id == collectionId {
+//                            let itemIndex = ItemCollectionViewEntryIndex.lowerBound(collectionIndex: index, collectionId: id)
+//                            strongSelf.currentStickerPacksCollectionPosition = .navigate(index: itemIndex, collectionId: nil)
+//                            strongSelf.itemCollectionsViewPosition.set(.single(.navigate(index: itemIndex, collectionId: nil)))
+//                            break
+//                        }
+//                        index += 1
+//                    }
+//                }
 //            }
 //        }
     }

@@ -13,8 +13,9 @@ import Postbox
 import TelegramCore
 import SwiftSignalKit
 
-struct Bot {
-    var title: String
+enum ChatBotsInputPanelAuxiliaryNamespace: Int32 {
+    case store = 8
+    case bots = 9
 }
 
 private final class ChatSuggestionsInputButtonNode: ASButtonNode {
@@ -41,6 +42,8 @@ private final class ChatSuggestionsInputButtonNode: ASButtonNode {
 final class ChatSuggestionsInputNode: ChatInputNode {
     private let account: Account
     private let controllerInteraction: ChatControllerInteraction
+    
+    private var currentView: ItemCollectionsView?
 
     private let botsListPanel: ASDisplayNode
     private let topSeparator: ASDisplayNode
@@ -49,9 +52,11 @@ final class ChatSuggestionsInputNode: ChatInputNode {
 
     private var buttonNodes: [ChatSuggestionsInputButtonNode] = []
     private var messages: [String] = []
-    private var bots: [Bot] = []
+    private var bots: [ChatBot] = []
 
     private var theme: PresentationTheme?
+    
+    private var inputNodeInteraction: ChatBotsInputNodeInteraction!
 
     init(account: Account, controllerInteraction: ChatControllerInteraction, theme: PresentationTheme) {
         self.account = account
@@ -75,6 +80,10 @@ final class ChatSuggestionsInputNode: ChatInputNode {
         self.botsListView.backgroundColor = UIColor.green
 
         super.init()
+        
+        self.inputNodeInteraction = ChatBotsInputNodeInteraction(navigateToCollectionId: { [weak self] id in
+            self?.navigateToCollection(withId: id)
+        })
 
         backgroundColor = UIColor.brown
         
@@ -86,19 +95,32 @@ final class ChatSuggestionsInputNode: ChatInputNode {
     
     deinit {}
 
+    static func setupPanelIconInsets(item: ListViewItem, previousItem: ListViewItem?, nextItem: ListViewItem?) -> UIEdgeInsets {
+        var insets = UIEdgeInsets()
+        if previousItem != nil {
+            insets.top += 3.0
+        }
+        if nextItem != nil {
+            insets.bottom += 3.0
+        }
+        return insets
+    }
+
     override func didLoad() {
         super.didLoad()
-        let storeItem = ChatBotsStoreItem(theme: self.theme!) {
-            print("SELECT STORE")
+        let storeItem = ChatBotsStoreItem(inputNodeInteraction: self.inputNodeInteraction, theme: self.theme!) {
+            let collectionId = ItemCollectionId(namespace: ChatBotsInputPanelAuxiliaryNamespace.store.rawValue, id: 0)
+            self.inputNodeInteraction.navigateToCollectionId(collectionId)
         }
         
         var insertItems: [ListViewInsertItem] = []
         insertItems.append(ListViewInsertItem(index: 0, previousIndex: nil, item: storeItem, directionHint: nil))
-        for i in 1..<4 {
-            let item = ChatBotsStoreItem(theme: self.theme!) {
-                print("SELECT")
+        for bot in ChatBotsManager.shared.bots {
+            let botCollectionId = ItemCollectionId(namespace: ChatBotsInputPanelAuxiliaryNamespace.bots.rawValue, id: 0)
+            let botItem = ChatBotsBotItem(inputNodeInteraction: self.inputNodeInteraction, theme: self.theme!, bot: bot) {
+                self.inputNodeInteraction.navigateToCollectionId(botCollectionId)
             }
-            insertItems.append(ListViewInsertItem(index: i, previousIndex: nil, item: item, directionHint: nil))
+            insertItems.append(ListViewInsertItem(index: 1, previousIndex: nil, item: botItem, directionHint: nil))
         }
         
         self.botsListView.transaction(deleteIndices: [], insertIndicesAndItems: insertItems, updateIndicesAndItems: [], options: [.Synchronous, .LowLatency], updateOpaqueState: nil)
@@ -198,5 +220,42 @@ final class ChatSuggestionsInputNode: ChatInputNode {
     @objc func buttonPressed(_ button: ASButtonNode) {
         guard let button = button as? ChatSuggestionsInputButtonNode, let suggestion = button.suggestion else { return }
         controllerInteraction.sendMessage(suggestion)
+    }
+    
+    private func navigateToCollection(withId collectionId: ItemCollectionId) {
+        print("\(collectionId.namespace)")
+//        if let currentView = self.currentView, (collectionId != self.inputNodeInteraction.highlightedItemCollectionId || true) {
+//            var index: Int32 = 0
+//            if collectionId.namespace == ChatMediaInputPanelAuxiliaryNamespace.recentGifs.rawValue {
+//                self.setCurrentPane(.gifs, transition: .animated(duration: 0.25, curve: .spring))
+//            } else if collectionId.namespace == ChatMediaInputPanelAuxiliaryNamespace.trending.rawValue {
+//                self.setCurrentPane(.trending, transition: .animated(duration: 0.25, curve: .spring))
+//            } else if collectionId.namespace == ChatMediaInputPanelAuxiliaryNamespace.savedStickers.rawValue {
+//                self.setCurrentPane(.stickers, transition: .animated(duration: 0.25, curve: .spring), collectionIdHint: collectionId.namespace)
+//                self.currentStickerPacksCollectionPosition = .navigate(index: nil, collectionId: collectionId)
+//                self.itemCollectionsViewPosition.set(.single(.navigate(index: nil, collectionId: collectionId)))
+//            } else if collectionId.namespace == ChatMediaInputPanelAuxiliaryNamespace.recentStickers.rawValue {
+//                self.setCurrentPane(.stickers, transition: .animated(duration: 0.25, curve: .spring), collectionIdHint: collectionId.namespace)
+//                self.currentStickerPacksCollectionPosition = .navigate(index: nil, collectionId: collectionId)
+//                self.itemCollectionsViewPosition.set(.single(.navigate(index: nil, collectionId: collectionId)))
+//            } else if collectionId.namespace == ChatMediaInputPanelAuxiliaryNamespace.peerSpecific.rawValue {
+//                self.setCurrentPane(.stickers, transition: .animated(duration: 0.25, curve: .spring))
+//                self.currentStickerPacksCollectionPosition = .navigate(index: nil, collectionId: collectionId)
+//                self.itemCollectionsViewPosition.set(.single(.navigate(index: nil, collectionId: collectionId)))
+//            } else {
+//                self.setCurrentPane(.stickers, transition: .animated(duration: 0.25, curve: .spring))
+//                for (id, _, _) in currentView.collectionInfos {
+//                    if id.namespace == collectionId.namespace {
+//                        if id == collectionId {
+//                            let itemIndex = ItemCollectionViewEntryIndex.lowerBound(collectionIndex: index, collectionId: id)
+//                            self.currentStickerPacksCollectionPosition = .navigate(index: itemIndex, collectionId: nil)
+//                            self.itemCollectionsViewPosition.set(.single(.navigate(index: itemIndex, collectionId: nil)))
+//                            break
+//                        }
+//                        index += 1
+//                    }
+//                }
+//            }
+//        }
     }
 }
