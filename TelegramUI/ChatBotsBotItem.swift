@@ -18,16 +18,16 @@ final class ChatBotsBotItem: ListViewItem {
     let selectedItem: () -> Void
     let theme: PresentationTheme
     let bot: ChatBot
+    let collectionId: ItemCollectionId
 
-    var selectable: Bool {
-        return true
-    }
+    var selectable: Bool { return true }
 
-    init(inputNodeInteraction: ChatBotsInputNodeInteraction, theme: PresentationTheme, bot: ChatBot, selected: @escaping () -> Void) {
+    init(inputNodeInteraction: ChatBotsInputNodeInteraction, theme: PresentationTheme, bot: ChatBot, collectionId: ItemCollectionId, selected: @escaping () -> Void) {
         self.inputNodeInteraction = inputNodeInteraction
         self.selectedItem = selected
         self.theme = theme
         self.bot = bot
+        self.collectionId = collectionId
     }
 
     func nodeConfiguredForParams(async: @escaping (@escaping () -> Void) -> Void, params: ListViewItemLayoutParams, previousItem: ListViewItem?, nextItem: ListViewItem?, completion: @escaping (ListViewItemNode, @escaping () -> (Signal<Void, NoError>?, () -> Void)) -> Void) {
@@ -39,7 +39,7 @@ final class ChatBotsBotItem: ListViewItem {
             Queue.mainQueue().async {
                 completion(node, {
                     return (nil, {
-                        node.updateBot(item: self.bot, theme: self.theme)
+                        node.updateBot(item: self.bot, theme: self.theme, collectionId: self.collectionId)
                         node.updateAppearanceTransition(transition: .immediate)
                     })
                 })
@@ -50,7 +50,7 @@ final class ChatBotsBotItem: ListViewItem {
     public func updateNode(async: @escaping (@escaping () -> Void) -> Void, node: @escaping () -> ListViewItemNode, params: ListViewItemLayoutParams, previousItem: ListViewItem?, nextItem: ListViewItem?, animation: ListViewItemUpdateAnimation, completion: @escaping (ListViewItemNodeLayout, @escaping () -> Void) -> Void) {
         Queue.mainQueue().async {
             completion(ListViewItemNodeLayout(contentSize: node().contentSize, insets: ChatSuggestionsInputNode.setupPanelIconInsets(item: self, previousItem: previousItem, nextItem: nextItem)), {
-                (node() as? ChatBotsBotItemNode)?.updateBot(item: self.bot, theme: self.theme)
+                (node() as? ChatBotsBotItemNode)?.updateBot(item: self.bot, theme: self.theme, collectionId: self.collectionId)
             })
         }
     }
@@ -93,7 +93,6 @@ final class ChatBotsBotItemNode: ListViewItemNode {
         self.addSubnode(self.highlightNode)
         self.addSubnode(self.imageNode)
         
-        self.currentCollectionId = ItemCollectionId(namespace: ChatBotsInputPanelAuxiliaryNamespace.bots.rawValue, id: 0)
         let imageSize = CGSize(width: 26.0, height: 26.0)
         self.imageNode.frame = CGRect(origin: CGPoint(x: floor((boundingSize.width - imageSize.width) / 2.0) + verticalOffset, y: floor((boundingSize.height - imageSize.height) / 2.0) + UIScreenPixel), size: imageSize)
     }
@@ -101,7 +100,9 @@ final class ChatBotsBotItemNode: ListViewItemNode {
     deinit {
     }
 
-    func updateBot(item: ChatBot?, theme: PresentationTheme) {
+    func updateBot(item: ChatBot?, theme: PresentationTheme, collectionId: ItemCollectionId) {
+        self.currentCollectionId = collectionId
+        
         if self.theme !== theme {
             self.theme = theme
 

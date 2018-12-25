@@ -16,6 +16,7 @@ public enum ChatBotError: Error {
 }
 
 public struct ChatBot {
+    public var id: Int = 0
     public var title: String = ""
     public var words: [String] = []
     public var responses: [BotResponse] = []
@@ -55,9 +56,12 @@ public final class ChatBotsManager {
     private init() {
         let bundle = Bundle(for: ChatBotsManager.self)
         let urls = bundle.urls(forResourcesWithExtension: "chatbot", subdirectory: nil) ?? []
+        var id = 0
         for url in urls {
-            guard let bot = try? ChatBot(url: url) else { continue }
+            guard var bot = try? ChatBot(url: url) else { continue }
+            bot.id = id
             bots.append(bot)
+            id += 1
         }
     }
 }

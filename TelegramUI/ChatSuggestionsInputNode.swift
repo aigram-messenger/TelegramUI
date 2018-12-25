@@ -116,11 +116,11 @@ final class ChatSuggestionsInputNode: ChatInputNode {
         var insertItems: [ListViewInsertItem] = []
         insertItems.append(ListViewInsertItem(index: 0, previousIndex: nil, item: storeItem, directionHint: nil))
         for bot in ChatBotsManager.shared.bots {
-            let botCollectionId = ItemCollectionId(namespace: ChatBotsInputPanelAuxiliaryNamespace.bots.rawValue, id: 0)
-            let botItem = ChatBotsBotItem(inputNodeInteraction: self.inputNodeInteraction, theme: self.theme!, bot: bot) {
+            let botCollectionId = ItemCollectionId(namespace: ChatBotsInputPanelAuxiliaryNamespace.bots.rawValue, id: ItemCollectionId.Id(bot.id))
+            let botItem = ChatBotsBotItem(inputNodeInteraction: self.inputNodeInteraction, theme: self.theme!, bot: bot, collectionId: botCollectionId) {
                 self.inputNodeInteraction.navigateToCollectionId(botCollectionId)
             }
-            insertItems.append(ListViewInsertItem(index: 1, previousIndex: nil, item: botItem, directionHint: nil))
+            insertItems.append(ListViewInsertItem(index: insertItems.count, previousIndex: nil, item: botItem, directionHint: nil))
         }
         
         self.botsListView.transaction(deleteIndices: [], insertIndicesAndItems: insertItems, updateIndicesAndItems: [], options: [.Synchronous, .LowLatency], updateOpaqueState: nil)
@@ -223,7 +223,7 @@ final class ChatSuggestionsInputNode: ChatInputNode {
     }
     
     private func navigateToCollection(withId collectionId: ItemCollectionId) {
-        print("\(collectionId.namespace)")
+        print("\(collectionId.namespace) \(collectionId.id)")
 //        if let currentView = self.currentView, (collectionId != self.inputNodeInteraction.highlightedItemCollectionId || true) {
 //            var index: Int32 = 0
 //            if collectionId.namespace == ChatMediaInputPanelAuxiliaryNamespace.recentGifs.rawValue {
