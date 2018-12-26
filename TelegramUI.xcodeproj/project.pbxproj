@@ -1064,7 +1064,7 @@
 		F7C4373921D23041008B5C3B /* binbank.chatbot in Resources */ = {isa = PBXBuildFile; fileRef = F7C4373821D23041008B5C3B /* binbank.chatbot */; };
 		F7C4373B21D23F64008B5C3B /* alfa.chatbot in Resources */ = {isa = PBXBuildFile; fileRef = F7C4373A21D23F63008B5C3B /* alfa.chatbot */; };
 		F7E0F2E121D2270100974C76 /* ChatBotsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7E0F2E021D2270100974C76 /* ChatBotsManager.swift */; };
-		F7F28FCF21CD1DB3008DC5A4 /* ChatBotsInputStorePane.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7F28FCE21CD1DB3008DC5A4 /* ChatBotsInputStorePane.swift */; };
+		F7F28FCF21CD1DB3008DC5A4 /* ChatBotsInputStoreGridItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7F28FCE21CD1DB3008DC5A4 /* ChatBotsInputStoreGridItem.swift */; };
 		F7F28FD121CD1E2D008DC5A4 /* ChatBotsInputSuggestionsPane.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7F28FD021CD1E2D008DC5A4 /* ChatBotsInputSuggestionsPane.swift */; };
 		FB32415B21D169C00023532E /* ChatBotsBotItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB32415A21D169C00023532E /* ChatBotsBotItem.swift */; };
 		FB929AD221BFE57C004000E0 /* ChatSuggestionsInputNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB929AD121BFE57C004000E0 /* ChatSuggestionsInputNode.swift */; };
@@ -2214,7 +2214,7 @@
 		F7C4373A21D23F63008B5C3B /* alfa.chatbot */ = {isa = PBXFileReference; lastKnownFileType = folder; path = alfa.chatbot; sourceTree = "<group>"; };
 		F7E0F2E021D2270100974C76 /* ChatBotsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotsManager.swift; sourceTree = "<group>"; };
 		F7F28FCC21CD0F4A008DC5A4 /* ChatBotsInputNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotsInputNode.swift; sourceTree = "<group>"; };
-		F7F28FCE21CD1DB3008DC5A4 /* ChatBotsInputStorePane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotsInputStorePane.swift; sourceTree = "<group>"; };
+		F7F28FCE21CD1DB3008DC5A4 /* ChatBotsInputStoreGridItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotsInputStoreGridItem.swift; sourceTree = "<group>"; };
 		F7F28FD021CD1E2D008DC5A4 /* ChatBotsInputSuggestionsPane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotsInputSuggestionsPane.swift; sourceTree = "<group>"; };
 		FB32415A21D169C00023532E /* ChatBotsBotItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotsBotItem.swift; sourceTree = "<group>"; };
 		FB929AD121BFE57C004000E0 /* ChatSuggestionsInputNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatSuggestionsInputNode.swift; sourceTree = "<group>"; };
@@ -4649,7 +4649,7 @@
 				FB32415921D160000023532E /* Panes List Items */,
 				F7F28FCC21CD0F4A008DC5A4 /* ChatBotsInputNode.swift */,
 				FB929AD121BFE57C004000E0 /* ChatSuggestionsInputNode.swift */,
-				F7F28FCE21CD1DB3008DC5A4 /* ChatBotsInputStorePane.swift */,
+				F7F28FCE21CD1DB3008DC5A4 /* ChatBotsInputStoreGridItem.swift */,
 				F7F28FD021CD1E2D008DC5A4 /* ChatBotsInputSuggestionsPane.swift */,
 				F73095E021D11AE900343BD5 /* ChatBotsInputNodeInteraction.swift */,
 			);
@@ -5104,7 +5104,7 @@
 				D0EC6D131EB9F58800EBF1C3 /* MediaTrackDecodableFrame.swift in Sources */,
 				D0EC6D141EB9F58800EBF1C3 /* MediaTrackFrame.swift in Sources */,
 				D0B69C3920EBB397003632C7 /* ChatMessageInteractiveInstantVideoNode.swift in Sources */,
-				F7F28FCF21CD1DB3008DC5A4 /* ChatBotsInputStorePane.swift in Sources */,
+				F7F28FCF21CD1DB3008DC5A4 /* ChatBotsInputStoreGridItem.swift in Sources */,
 				D0EC6D151EB9F58800EBF1C3 /* MediaTrackFrameBuffer.swift in Sources */,
 				D0EC6D161EB9F58800EBF1C3 /* MediaTrackFrameDecoder.swift in Sources */,
 				D056CD701FF147B000880D28 /* IconButtonNode.swift in Sources */,

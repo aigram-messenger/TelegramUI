@@ -18,6 +18,19 @@ enum ChatBotsInputPanelAuxiliaryNamespace: Int32 {
     case bots = 9
 }
 
+private enum ChatBotsInputPaneType: Equatable {
+    case store
+    case bot(Int)
+    
+    static func == (lhs: ChatBotsInputPaneType, rhs: ChatBotsInputPaneType) -> Bool {
+        switch (lhs, rhs) {
+        case (.store, .store): return true
+        case let (.bot(id1), .bot(id2)): return id1 == id2
+        default: return false
+        }
+    }
+}
+
 private final class ChatSuggestionsInputButtonNode: ASButtonNode {
     var suggestion: String?
 
@@ -39,15 +52,41 @@ private final class ChatSuggestionsInputButtonNode: ASButtonNode {
     }
 }
 
+private final class CollectionListContainerNode: ASDisplayNode {
+    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        for subview in self.view.subviews {
+            if let result = subview.hitTest(point.offsetBy(dx: -subview.frame.minX, dy: -subview.frame.minY), with: event) {
+                return result
+            }
+        }
+        return nil
+    }
+}
+
+private struct ChatBotsInputPaneArrangement {
+    let panes: [ChatBotsInputPaneType]
+    let currentIndex: Int
+    let indexTransition: CGFloat
+    
+    func withIndexTransition(_ indexTransition: CGFloat) -> ChatBotsInputPaneArrangement {
+        return ChatBotsInputPaneArrangement(panes: self.panes, currentIndex: currentIndex, indexTransition: indexTransition)
+    }
+    
+    func withCurrentIndex(_ currentIndex: Int) -> ChatBotsInputPaneArrangement {
+        return ChatBotsInputPaneArrangement(panes: self.panes, currentIndex: currentIndex, indexTransition: self.indexTransition)
+    }
+}
+
 final class ChatSuggestionsInputNode: ChatInputNode {
     private let account: Account
     private let controllerInteraction: ChatControllerInteraction
+    private var validLayout: (CGFloat, CGFloat, CGFloat, CGFloat, CGFloat, CGFloat, CGFloat, CGFloat, ChatPresentationInterfaceState)?
     
     private var currentView: ItemCollectionsView?
 
     private let botsListPanel: ASDisplayNode
     private let topSeparator: ASDisplayNode
-    private let nodesContainer: ASDisplayNode
+    private let botsListContainer: ASDisplayNode
     private let botsListView: ListView
 
     private var buttonNodes: [ChatSuggestionsInputButtonNode] = []
@@ -57,15 +96,19 @@ final class ChatSuggestionsInputNode: ChatInputNode {
     private var theme: PresentationTheme?
     
     private var inputNodeInteraction: ChatBotsInputNodeInteraction!
+    private var paneArrangement: ChatBotsInputPaneArrangement
+    
+    private var panesAndAnimatingOut: [(ChatMediaInputPane, Bool)]
+    private var panRecognizer: UIPanGestureRecognizer?
 
     init(account: Account, controllerInteraction: ChatControllerInteraction, theme: PresentationTheme) {
         self.account = account
         self.controllerInteraction = controllerInteraction
         self.theme = theme
         
-        self.nodesContainer = ASDisplayNode()
-        self.nodesContainer.clipsToBounds = true
-        self.nodesContainer.backgroundColor = theme.chat.inputPanel.panelBackgroundColor
+        self.botsListContainer = ASDisplayNode()
+        self.botsListContainer.clipsToBounds = true
+        self.botsListContainer.backgroundColor = theme.chat.inputPanel.panelBackgroundColor
         
         self.botsListPanel = ASDisplayNode()
         self.botsListPanel.clipsToBounds = true
@@ -78,7 +121,13 @@ final class ChatSuggestionsInputNode: ChatInputNode {
         self.botsListView = ListView()
         self.botsListView.transform = CATransform3DMakeRotation(-CGFloat(Double.pi / 2.0), 0.0, 0.0, 1.0)
         self.botsListView.backgroundColor = UIColor.green
-
+        
+        self.paneArrangement = ChatBotsInputPaneArrangement(panes: [.store], currentIndex: 0, indexTransition: 0.0)
+        
+        self.panesAndAnimatingOut = [
+            (ChatBotsInputStorePane(), false)
+        ]
+        
         super.init()
         
         self.inputNodeInteraction = ChatBotsInputNodeInteraction(navigateToCollectionId: { [weak self] id in
@@ -88,9 +137,13 @@ final class ChatSuggestionsInputNode: ChatInputNode {
         backgroundColor = UIColor.brown
         
         self.botsListPanel.addSubnode(self.botsListView)
-        self.nodesContainer.addSubnode(self.topSeparator)
-        self.nodesContainer.addSubnode(self.botsListPanel)
-        self.addSubnode(self.nodesContainer)
+        self.botsListContainer.addSubnode(self.topSeparator)
+        self.botsListContainer.addSubnode(self.botsListPanel)
+        self.addSubnode(self.botsListContainer)
+        
+        let panRecognizer = UIPanGestureRecognizer(target: self, action: #selector(self.panGesture(_:)))
+        self.panRecognizer = panRecognizer
+        self.view.addGestureRecognizer(panRecognizer)
     }
     
     deinit {}
@@ -108,22 +161,56 @@ final class ChatSuggestionsInputNode: ChatInputNode {
 
     override func didLoad() {
         super.didLoad()
+        
+        var panes: [ChatBotsInputPaneType] = [.store]
+        
         let storeItem = ChatBotsStoreItem(inputNodeInteraction: self.inputNodeInteraction, theme: self.theme!) {
             let collectionId = ItemCollectionId(namespace: ChatBotsInputPanelAuxiliaryNamespace.store.rawValue, id: 0)
             self.inputNodeInteraction.navigateToCollectionId(collectionId)
         }
         
-        var insertItems: [ListViewInsertItem] = []
-        insertItems.append(ListViewInsertItem(index: 0, previousIndex: nil, item: storeItem, directionHint: nil))
+        self.panesAndAnimatingOut = [
+            (ChatBotsInputStorePane(), false)
+        ]
+        
+        var insertItems = [
+            ListViewInsertItem(index: 0, previousIndex: nil, item: storeItem, directionHint: nil)
+        ]
         for bot in ChatBotsManager.shared.bots {
             let botCollectionId = ItemCollectionId(namespace: ChatBotsInputPanelAuxiliaryNamespace.bots.rawValue, id: ItemCollectionId.Id(bot.id))
             let botItem = ChatBotsBotItem(inputNodeInteraction: self.inputNodeInteraction, theme: self.theme!, bot: bot, collectionId: botCollectionId) {
                 self.inputNodeInteraction.navigateToCollectionId(botCollectionId)
             }
             insertItems.append(ListViewInsertItem(index: insertItems.count, previousIndex: nil, item: botItem, directionHint: nil))
+            panes.append(.bot(bot.id))
+            self.panesAndAnimatingOut.append((ChatBotsInputSuggestionsPane(), false))
         }
         
         self.botsListView.transaction(deleteIndices: [], insertIndicesAndItems: insertItems, updateIndicesAndItems: [], options: [.Synchronous, .LowLatency], updateOpaqueState: nil)
+        
+        
+        
+        self.paneArrangement = ChatBotsInputPaneArrangement(panes: panes, currentIndex: 0, indexTransition: 0.0)
+        
+        
+        self.view.disablesInteractiveTransitionGestureRecognizer = true
+        
+//        var gridInsertItems: [GridNodeInsertItem] = []
+//        gridInsertItems.append(GridNodeInsertItem(index: 0, item: <#T##GridItem#>, previousIndex: nil))
+        
+        
+//        self.currentView = view
+//        self.enqueuePanelTransition(panelTransition, firstTime: panelFirstTime, thenGridTransition: gridTransition, gridFirstTime: gridFirstTime)
+//        if !self.initializedArrangement {
+//            self.initializedArrangement = true
+//            var currentPane = self.paneArrangement.panes[self.paneArrangement.currentIndex]
+//            if view.entries.isEmpty {
+//                currentPane = .trending
+//            }
+//            if currentPane != self.paneArrangement.panes[self.paneArrangement.currentIndex] {
+//                self.setCurrentPane(currentPane, transition: .immediate)
+//            }
+//        }
     }
 
     func set(messages: [String]) {
@@ -137,12 +224,14 @@ final class ChatSuggestionsInputNode: ChatInputNode {
     }
 
     override func updateLayout(width: CGFloat, leftInset: CGFloat, rightInset: CGFloat, bottomInset: CGFloat, standardInputHeight: CGFloat, inputHeight: CGFloat, maximumHeight: CGFloat, inputPanelHeight: CGFloat, transition: ContainedViewLayoutTransition, interfaceState: ChatPresentationInterfaceState) -> (CGFloat, CGFloat) {
+        self.validLayout = (width, leftInset, rightInset, bottomInset, standardInputHeight, inputHeight, maximumHeight, inputPanelHeight, interfaceState)
+        
         let separatorHeight = UIScreenPixel
         let panelHeight = standardInputHeight
         let contentVerticalOffset: CGFloat = 0.0
         let containerOffset: CGFloat = 0
 
-        transition.updateFrame(node: self.nodesContainer, frame: CGRect(origin: CGPoint(x: 0.0, y: contentVerticalOffset), size: CGSize(width: width, height: max(0.0, 41.0 + UIScreenPixel))))
+        transition.updateFrame(node: self.botsListContainer, frame: CGRect(origin: CGPoint(x: 0.0, y: contentVerticalOffset), size: CGSize(width: width, height: max(0.0, 41.0 + UIScreenPixel))))
         transition.updateFrame(node: self.botsListPanel, frame: CGRect(origin: CGPoint(x: 0.0, y: containerOffset), size: CGSize(width: width, height: 41.0)))
         transition.updateFrame(node: self.topSeparator, frame: CGRect(origin: CGPoint(x: 0.0, y: 41.0 + containerOffset), size: CGSize(width: width, height: separatorHeight)))
         
@@ -154,67 +243,63 @@ final class ChatSuggestionsInputNode: ChatInputNode {
         
         self.botsListView.transaction(deleteIndices: [], insertIndicesAndItems: [], updateIndicesAndItems: [], options: [.Synchronous, .LowLatency], scrollToItem: nil, updateSizeAndInsets: updateSizeAndInsets, stationaryItemRange: nil, updateOpaqueState: nil, completion: { _ in })
         
-//        print("\(trashedSuggestions())")
-//        transition.updateFrame(node: self.topSeparator, frame: CGRect(origin: CGPoint(), size: CGSize(width: width, height: UIScreenPixel)))
-//
-//        if self.theme !== interfaceState.theme {
-//            self.theme = interfaceState.theme
-//
-//            self.separatorNode.backgroundColor = interfaceState.theme.chat.inputButtonPanel.panelSerapatorColor
-//            self.backgroundColor = UIColor.brown//interfaceState.theme.chat.inputButtonPanel.panelBackgroundColor
-//        }
-//
-//        let suggestions = trashedSuggestions()
-//
-//        let verticalInset: CGFloat = 10.0
-//        let sideInset: CGFloat = 6.0 + leftInset
-//        let buttonHeight: CGFloat = 43.0
-//        let columnSpacing: CGFloat = 6.0
-//        let rowSpacing: CGFloat = 5.0
-//
-//        let panelHeight = standardInputHeight
-//
-//        let rowsHeight = verticalInset + CGFloat(suggestions.count) * buttonHeight + CGFloat(max(0, suggestions.count - 1)) * rowSpacing + verticalInset
-//
-//        var verticalOffset = verticalInset
-//        var buttonIndex = 0
-//        for suggestionsRow in suggestions {
-//            let buttonWidth = floor(((width - sideInset - sideInset) + columnSpacing - CGFloat(suggestionsRow.count) * columnSpacing) / CGFloat(suggestionsRow.count))
-//
-//            var columnIndex = 0
-//            for suggestion in suggestionsRow {
-//                let buttonNode: ChatSuggestionsInputButtonNode
-//                if buttonIndex < self.buttonNodes.count {
-//                    buttonNode = self.buttonNodes[buttonIndex]
-//                    buttonNode.updateTheme(theme: interfaceState.theme)
-//                } else {
-//                    buttonNode = ChatSuggestionsInputButtonNode(theme: interfaceState.theme)
-//                    buttonNode.titleNode.maximumNumberOfLines = 2
-//                    buttonNode.addTarget(self, action: #selector(self.buttonPressed(_:)), forControlEvents: [.touchUpInside])
-//                    self.scrollNode.addSubnode(buttonNode)
-//                    self.buttonNodes.append(buttonNode)
-//                }
-//                buttonIndex += 1
-//                if buttonNode.suggestion != suggestion {
-//                    buttonNode.suggestion = suggestion
-//                    buttonNode.setAttributedTitle(NSAttributedString(string: suggestion, font: Font.regular(16.0), textColor: interfaceState.theme.chat.inputButtonPanel.buttonTextColor, paragraphAlignment: .center), for: [])
-//                }
-//                buttonNode.frame = CGRect(origin: CGPoint(x: sideInset + CGFloat(columnIndex) * (buttonWidth + columnSpacing), y: verticalOffset), size: CGSize(width: buttonWidth, height: buttonHeight))
-//                columnIndex += 1
-//            }
-//            verticalOffset += buttonHeight + rowSpacing
-//        }
-//
-//        for i in (buttonIndex ..< self.buttonNodes.count).reversed() {
-//            self.buttonNodes[i].removeFromSupernode()
-//            self.buttonNodes.remove(at: i)
-//        }
-//
-//        transition.updateFrame(node: self.scrollNode, frame: CGRect(origin: CGPoint(), size: CGSize(width: width, height: panelHeight)))
-//        self.scrollNode.view.contentSize = CGSize(width: width, height: rowsHeight)
-//        self.scrollNode.view.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: bottomInset, right: 0)
-//
-        return (panelHeight, 0.0)
+        
+        var visiblePanes: [(ChatBotsInputPaneType, CGFloat)] = []
+        var paneIndex = 0
+        for pane in self.paneArrangement.panes {
+            let paneOrigin = CGFloat(paneIndex - self.paneArrangement.currentIndex) * width - self.paneArrangement.indexTransition * width
+            if paneOrigin.isLess(than: width) && CGFloat(0.0).isLess(than: (paneOrigin + width)) {
+                visiblePanes.append((pane, paneOrigin))
+            }
+            paneIndex += 1
+        }
+        
+        for (pane, paneOrigin) in visiblePanes {
+            guard let index = self.paneArrangement.panes.firstIndex(where: { $0 == pane }) else { continue }
+            
+            let paneFrame = CGRect(origin: CGPoint(x: paneOrigin + leftInset, y: 0.0), size: CGSize(width: width - leftInset - rightInset, height: panelHeight))
+            let (panelNode, _) = self.panesAndAnimatingOut[index]
+            
+            if panelNode.supernode == nil {
+                let x = index == 0 ? -width : width
+                self.insertSubnode(panelNode, belowSubnode: self.botsListContainer)
+                panelNode.frame = CGRect(origin: CGPoint(x: x, y: 0.0), size: CGSize(width: width, height: panelHeight))
+            }
+            if panelNode.frame != paneFrame {
+                panelNode.layer.removeAnimation(forKey: "position")
+                transition.updateFrame(node: panelNode, frame: paneFrame)
+            }
+        }
+        
+        for i in 0..<self.panesAndAnimatingOut.count {
+            let paneType = self.paneArrangement.panes[i]
+            let contains = visiblePanes.contains(where: { $0.0 == paneType })
+            guard self.panesAndAnimatingOut[i].0.supernode != nil, !contains else {
+                self.panesAndAnimatingOut[i].1 = false
+                continue
+            }
+
+            if case .animated = transition {
+                if !self.panesAndAnimatingOut[i].1 {
+                    self.panesAndAnimatingOut[i].1 = true
+                    var toLeft = false
+                    if i <= self.paneArrangement.currentIndex {
+                        toLeft = true
+                    }
+                    transition.animatePosition(node: self.panesAndAnimatingOut[i].0, to: CGPoint(x: (toLeft ? -width : width) + width / 2.0, y: self.panesAndAnimatingOut[i].0.layer.position.y), removeOnCompletion: false, completion: { [weak self] value in
+                        if let strongSelf = self, value {
+                            strongSelf.panesAndAnimatingOut[i].1 = false
+                            strongSelf.panesAndAnimatingOut[i].0.removeFromSupernode()
+                        }
+                    })
+                }
+            } else {
+                self.panesAndAnimatingOut[i].1 = false
+                self.panesAndAnimatingOut[i].0.removeFromSupernode()
+            }
+        }
+        
+        return (standardInputHeight, max(0.0, panelHeight - standardInputHeight))
     }
 
     @objc func buttonPressed(_ button: ASButtonNode) {
@@ -222,39 +307,172 @@ final class ChatSuggestionsInputNode: ChatInputNode {
         controllerInteraction.sendMessage(suggestion)
     }
     
+    @objc func panGesture(_ recognizer: UIPanGestureRecognizer) {
+        switch recognizer.state {
+        case .began:
+            for i in 0..<self.panesAndAnimatingOut.count {
+                if self.panesAndAnimatingOut[i].1 {
+                    self.panesAndAnimatingOut[i].1 = false
+                    self.panesAndAnimatingOut[i].0.removeFromSupernode()
+                }
+                self.panesAndAnimatingOut[i].0.layer.removeAllAnimations()
+            }
+        case .changed:
+            guard let (width, leftInset, rightInset, bottomInset, standardInputHeight, inputHeight, maximumHeight, inputPanelHeight, interfaceState) = self.validLayout else { break }
+            
+            let translationX = -recognizer.translation(in: self.view).x
+            var indexTransition = translationX / width
+            if self.paneArrangement.currentIndex == 0 {
+                indexTransition = max(0.0, indexTransition)
+            } else if self.paneArrangement.currentIndex == self.paneArrangement.panes.count - 1 {
+                indexTransition = min(0.0, indexTransition)
+            }
+            self.paneArrangement = self.paneArrangement.withIndexTransition(indexTransition)
+            let _ = self.updateLayout(width: width, leftInset: leftInset, rightInset: rightInset, bottomInset: bottomInset, standardInputHeight: standardInputHeight, inputHeight: inputHeight, maximumHeight: maximumHeight, inputPanelHeight: inputPanelHeight, transition: .immediate, interfaceState: interfaceState)
+        case .ended:
+            guard let (width, _, _, _, _, _, _, _, _) = self.validLayout else { break }
+            
+            var updatedIndex = self.paneArrangement.currentIndex
+            if abs(self.paneArrangement.indexTransition * width) > 30.0 {
+                if self.paneArrangement.indexTransition < 0.0 {
+                    updatedIndex = max(0, self.paneArrangement.currentIndex - 1)
+                } else {
+                    updatedIndex = min(self.paneArrangement.panes.count - 1, self.paneArrangement.currentIndex + 1)
+                }
+            }
+            self.paneArrangement = self.paneArrangement.withIndexTransition(0.0)
+            self.setCurrentPane(self.paneArrangement.panes[updatedIndex], transition: .animated(duration: 0.25, curve: .spring))
+        case .cancelled:
+            guard let (width, leftInset, rightInset, bottomInset, standardInputHeight, inputHeight, maximumHeight, inputPanelHeight, interfaceState) = self.validLayout else { break }
+            
+            self.paneArrangement = self.paneArrangement.withIndexTransition(0.0)
+            let _ = self.updateLayout(width: width, leftInset: leftInset, rightInset: rightInset, bottomInset: bottomInset, standardInputHeight: standardInputHeight, inputHeight: inputHeight, maximumHeight: maximumHeight, inputPanelHeight: inputPanelHeight, transition: .animated(duration: 0.25, curve: .spring), interfaceState: interfaceState)
+        default:
+            break
+        }
+    }
+    
     private func navigateToCollection(withId collectionId: ItemCollectionId) {
-        print("\(collectionId.namespace) \(collectionId.id)")
-//        if let currentView = self.currentView, (collectionId != self.inputNodeInteraction.highlightedItemCollectionId || true) {
-//            var index: Int32 = 0
-//            if collectionId.namespace == ChatMediaInputPanelAuxiliaryNamespace.recentGifs.rawValue {
-//                self.setCurrentPane(.gifs, transition: .animated(duration: 0.25, curve: .spring))
-//            } else if collectionId.namespace == ChatMediaInputPanelAuxiliaryNamespace.trending.rawValue {
-//                self.setCurrentPane(.trending, transition: .animated(duration: 0.25, curve: .spring))
-//            } else if collectionId.namespace == ChatMediaInputPanelAuxiliaryNamespace.savedStickers.rawValue {
-//                self.setCurrentPane(.stickers, transition: .animated(duration: 0.25, curve: .spring), collectionIdHint: collectionId.namespace)
-//                self.currentStickerPacksCollectionPosition = .navigate(index: nil, collectionId: collectionId)
-//                self.itemCollectionsViewPosition.set(.single(.navigate(index: nil, collectionId: collectionId)))
-//            } else if collectionId.namespace == ChatMediaInputPanelAuxiliaryNamespace.recentStickers.rawValue {
-//                self.setCurrentPane(.stickers, transition: .animated(duration: 0.25, curve: .spring), collectionIdHint: collectionId.namespace)
-//                self.currentStickerPacksCollectionPosition = .navigate(index: nil, collectionId: collectionId)
-//                self.itemCollectionsViewPosition.set(.single(.navigate(index: nil, collectionId: collectionId)))
-//            } else if collectionId.namespace == ChatMediaInputPanelAuxiliaryNamespace.peerSpecific.rawValue {
-//                self.setCurrentPane(.stickers, transition: .animated(duration: 0.25, curve: .spring))
-//                self.currentStickerPacksCollectionPosition = .navigate(index: nil, collectionId: collectionId)
-//                self.itemCollectionsViewPosition.set(.single(.navigate(index: nil, collectionId: collectionId)))
-//            } else {
-//                self.setCurrentPane(.stickers, transition: .animated(duration: 0.25, curve: .spring))
-//                for (id, _, _) in currentView.collectionInfos {
-//                    if id.namespace == collectionId.namespace {
-//                        if id == collectionId {
-//                            let itemIndex = ItemCollectionViewEntryIndex.lowerBound(collectionIndex: index, collectionId: id)
-//                            self.currentStickerPacksCollectionPosition = .navigate(index: itemIndex, collectionId: nil)
-//                            self.itemCollectionsViewPosition.set(.single(.navigate(index: itemIndex, collectionId: nil)))
-//                            break
-//                        }
-//                        index += 1
-//                    }
+        guard (collectionId != self.inputNodeInteraction.highlightedItemCollectionId || true) else { return }
+
+        if collectionId.namespace == ChatBotsInputPanelAuxiliaryNamespace.store.rawValue {
+            self.setCurrentPane(.store, transition: .animated(duration: 0.25, curve: .spring))
+        } else {
+            self.setCurrentPane(.bot(Int(collectionId.id)), transition: .animated(duration: 0.25, curve: .spring))
+        }
+    }
+    
+    private func setCurrentPane(_ pane: ChatBotsInputPaneType, transition: ContainedViewLayoutTransition, collectionIdHint: Int32? = nil) {
+        print("\(pane)")
+        if let index = self.paneArrangement.panes.index(of: pane), index != self.paneArrangement.currentIndex {
+            let previousStorePanelWasActive = self.paneArrangement.panes[self.paneArrangement.currentIndex] == .store
+            self.paneArrangement = self.paneArrangement.withIndexTransition(0.0).withCurrentIndex(index)
+            if let (width, leftInset, rightInset, bottomInset, standardInputHeight, inputHeight, maximumHeight, inputPanelHeight, interfaceState) = self.validLayout {
+                let _ = self.updateLayout(width: width, leftInset: leftInset, rightInset: rightInset, bottomInset: bottomInset, standardInputHeight: standardInputHeight, inputHeight: inputHeight, maximumHeight: maximumHeight, inputPanelHeight: inputPanelHeight,  transition: .animated(duration: 0.25, curve: .spring), interfaceState: interfaceState)
+                self.updateAppearanceTransition(transition: transition)
+            }
+            let updatedStorePanelWasActive = self.paneArrangement.panes[self.paneArrangement.currentIndex] == .store
+            if updatedStorePanelWasActive != previousStorePanelWasActive {
+                print("=>> UPDATE STORE PANE")
+    //            self.gifPaneIsActiveUpdated(updatedGifPanelWasActive)
+            }
+            switch pane {
+            case .store:
+                self.setHighlightedItemCollectionId(ItemCollectionId(namespace: ChatBotsInputPanelAuxiliaryNamespace.store.rawValue, id: 0))
+            case .bot:
+                if let highlightedItemCollectionId = self.inputNodeInteraction.highlightedItemCollectionId {
+                    self.setHighlightedItemCollectionId(highlightedItemCollectionId)
+                } else if let collectionIdHint = collectionIdHint {
+                    self.setHighlightedItemCollectionId(ItemCollectionId(namespace: collectionIdHint, id: 0))
+                }
+            }
+        } else {
+            if let (width, leftInset, rightInset, bottomInset, standardInputHeight, inputHeight, maximumHeight, inputPanelHeight, interfaceState) = self.validLayout {
+                let _ = self.updateLayout(width: width, leftInset: leftInset, rightInset: rightInset, bottomInset: bottomInset, standardInputHeight: standardInputHeight, inputHeight: inputHeight, maximumHeight: maximumHeight, inputPanelHeight: inputPanelHeight, transition: .animated(duration: 0.25, curve: .spring), interfaceState: interfaceState)
+            }
+        }
+    }
+    
+    private func updateAppearanceTransition(transition: ContainedViewLayoutTransition) {
+//        var value: CGFloat = 1.0 - abs(self.currentCollectionListPanelOffset() / 41.0)
+//        value = min(1.0, max(0.0, value))
+//        self.inputNodeInteraction.appearanceTransition = max(0.1, value)
+//        transition.updateAlpha(node: self.listView, alpha: value)
+//        self.listView.forEachItemNode { itemNode in
+//            if let itemNode = itemNode as? ChatMediaInputStickerPackItemNode {
+//                itemNode.updateAppearanceTransition(transition: transition)
+//            } else if let itemNode = itemNode as? ChatMediaInputMetaSectionItemNode {
+//                itemNode.updateAppearanceTransition(transition: transition)
+//            } else if let itemNode = itemNode as? ChatMediaInputRecentGifsItemNode {
+//                itemNode.updateAppearanceTransition(transition: transition)
+//            } else if let itemNode = itemNode as? ChatMediaInputTrendingItemNode {
+//                itemNode.updateAppearanceTransition(transition: transition)
+//            } else if let itemNode = itemNode as? ChatMediaInputPeerSpecificItemNode {
+//                itemNode.updateAppearanceTransition(transition: transition)
+//            }
+//        }
+    }
+    
+    private func setHighlightedItemCollectionId(_ collectionId: ItemCollectionId) {
+//        if collectionId.namespace == ChatMediaInputPanelAuxiliaryNamespace.recentGifs.rawValue {
+//            if self.paneArrangement.panes[self.paneArrangement.currentIndex] == .gifs {
+//                self.inputNodeInteraction.highlightedItemCollectionId = collectionId
+//            }
+//        } else if collectionId.namespace == ChatMediaInputPanelAuxiliaryNamespace.trending.rawValue {
+//            if self.paneArrangement.panes[self.paneArrangement.currentIndex] == .trending {
+//                self.inputNodeInteraction.highlightedItemCollectionId = collectionId
+//            }
+//        } else {
+//            self.inputNodeInteraction.highlightedStickerItemCollectionId = collectionId
+//            if self.paneArrangement.panes[self.paneArrangement.currentIndex] == .stickers {
+//                self.inputNodeInteraction.highlightedItemCollectionId = collectionId
+//            }
+//        }
+//        var ensuredNodeVisible = false
+//        var firstVisibleCollectionId: ItemCollectionId?
+//        self.listView.forEachItemNode { itemNode in
+//            if let itemNode = itemNode as? ChatMediaInputStickerPackItemNode {
+//                if firstVisibleCollectionId == nil {
+//                    firstVisibleCollectionId = itemNode.currentCollectionId
 //                }
+//                itemNode.updateIsHighlighted()
+//                if itemNode.currentCollectionId == collectionId {
+//                    self.listView.ensureItemNodeVisible(itemNode)
+//                    ensuredNodeVisible = true
+//                }
+//            } else if let itemNode = itemNode as? ChatMediaInputMetaSectionItemNode {
+//                itemNode.updateIsHighlighted()
+//                if itemNode.currentCollectionId == collectionId {
+//                    self.listView.ensureItemNodeVisible(itemNode)
+//                    ensuredNodeVisible = true
+//                }
+//            } else if let itemNode = itemNode as? ChatMediaInputRecentGifsItemNode {
+//                itemNode.updateIsHighlighted()
+//                if itemNode.currentCollectionId == collectionId {
+//                    self.listView.ensureItemNodeVisible(itemNode)
+//                    ensuredNodeVisible = true
+//                }
+//            } else if let itemNode = itemNode as? ChatMediaInputTrendingItemNode {
+//                itemNode.updateIsHighlighted()
+//                if itemNode.currentCollectionId == collectionId {
+//                    self.listView.ensureItemNodeVisible(itemNode)
+//                    ensuredNodeVisible = true
+//                }
+//            } else if let itemNode = itemNode as? ChatMediaInputPeerSpecificItemNode {
+//                itemNode.updateIsHighlighted()
+//                if itemNode.currentCollectionId == collectionId {
+//                    self.listView.ensureItemNodeVisible(itemNode)
+//                    ensuredNodeVisible = true
+//                }
+//            }
+//        }
+//
+//        if let currentView = self.currentView, let firstVisibleCollectionId = firstVisibleCollectionId, !ensuredNodeVisible {
+//            let targetIndex = currentView.collectionInfos.index(where: { id, _, _ in return id == collectionId })
+//            let firstVisibleIndex = currentView.collectionInfos.index(where: { id, _, _ in return id == firstVisibleCollectionId })
+//            if let targetIndex = targetIndex, let firstVisibleIndex = firstVisibleIndex {
+//                let toRight = targetIndex > firstVisibleIndex
+//                self.listView.transaction(deleteIndices: [], insertIndicesAndItems: [], updateIndicesAndItems: [], options: [], scrollToItem: ListViewScrollToItem(index: targetIndex, position: toRight ? .bottom(0.0) : .top(0.0), animated: true, curve: .Default(duration: nil), directionHint: toRight ? .Down : .Up), updateSizeAndInsets: nil, stationaryItemRange: nil, updateOpaqueState: nil)
 //            }
 //        }
     }
