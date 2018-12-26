@@ -30,7 +30,7 @@ final class ChatBotsStoreItem: ListViewItem {
     
     func nodeConfiguredForParams(async: @escaping (@escaping () -> Void) -> Void, params: ListViewItemLayoutParams, previousItem: ListViewItem?, nextItem: ListViewItem?, completion: @escaping (ListViewItemNode, @escaping () -> (Signal<Void, NoError>?, () -> Void)) -> Void) {
         async {
-            let node = ChatBotStoreItemNode()
+            let node = ChatBotsStoreItemNode()
             node.contentSize = CGSize(width: 41.0, height: 41.0)
             node.insets = ChatSuggestionsInputNode.setupPanelIconInsets(item: self, previousItem: previousItem, nextItem: nextItem)
             node.inputNodeInteraction = self.inputNodeInteraction
@@ -48,7 +48,7 @@ final class ChatBotsStoreItem: ListViewItem {
     public func updateNode(async: @escaping (@escaping () -> Void) -> Void, node: @escaping () -> ListViewItemNode, params: ListViewItemLayoutParams, previousItem: ListViewItem?, nextItem: ListViewItem?, animation: ListViewItemUpdateAnimation, completion: @escaping (ListViewItemNodeLayout, @escaping () -> Void) -> Void) {
         Queue.mainQueue().async {
             completion(ListViewItemNodeLayout(contentSize: node().contentSize, insets: ChatSuggestionsInputNode.setupPanelIconInsets(item: self, previousItem: previousItem, nextItem: nextItem)), {
-                (node() as? ChatBotStoreItemNode)?.updateTheme(theme: self.theme)
+                (node() as? ChatBotsStoreItemNode)?.updateTheme(theme: self.theme)
             })
         }
     }
@@ -63,7 +63,7 @@ private let boundingImageSize = CGSize(width: 30.0, height: 30.0)
 private let highlightSize = CGSize(width: 35.0, height: 35.0)
 private let verticalOffset: CGFloat = 3.0 + UIScreenPixel
 
-final class ChatBotStoreItemNode: ListViewItemNode {
+final class ChatBotsStoreItemNode: ListViewItemNode {
     private let imageNode: ASImageNode
     private let highlightNode: ASImageNode
     

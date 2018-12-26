@@ -249,7 +249,7 @@ final class ChatSuggestionsInputNode: ChatInputNode {
             switch paneType {
             case .store:
                 self.panesAndAnimatingOut.append((ChatBotsInputStorePane(), false))
-            case .bot(let id):
+            case .bot:
                 self.panesAndAnimatingOut.append((ChatBotsInputSuggestionsPane(), false))
             }
         }
@@ -422,12 +422,8 @@ final class ChatSuggestionsInputNode: ChatInputNode {
             switch pane {
             case .store:
                 self.setHighlightedItemCollectionId(ItemCollectionId(namespace: ChatBotsInputPanelAuxiliaryNamespace.store.rawValue, id: 0))
-            case .bot:
-                if let highlightedItemCollectionId = self.inputNodeInteraction.highlightedItemCollectionId {
-                    self.setHighlightedItemCollectionId(highlightedItemCollectionId)
-                } else if let collectionIdHint = collectionIdHint {
-                    self.setHighlightedItemCollectionId(ItemCollectionId(namespace: collectionIdHint, id: 0))
-                }
+            case .bot(let id):
+                self.setHighlightedItemCollectionId(ItemCollectionId(namespace: ChatBotsInputPanelAuxiliaryNamespace.bots.rawValue, id: ItemCollectionId.Id(id)))
             }
         } else {
             if let (width, leftInset, rightInset, bottomInset, standardInputHeight, inputHeight, maximumHeight, inputPanelHeight, interfaceState) = self.validLayout {
@@ -457,66 +453,52 @@ final class ChatSuggestionsInputNode: ChatInputNode {
     }
     
     private func setHighlightedItemCollectionId(_ collectionId: ItemCollectionId) {
-//        if collectionId.namespace == ChatMediaInputPanelAuxiliaryNamespace.recentGifs.rawValue {
-//            if self.paneArrangement.panes[self.paneArrangement.currentIndex] == .gifs {
-//                self.inputNodeInteraction.highlightedItemCollectionId = collectionId
-//            }
-//        } else if collectionId.namespace == ChatMediaInputPanelAuxiliaryNamespace.trending.rawValue {
-//            if self.paneArrangement.panes[self.paneArrangement.currentIndex] == .trending {
-//                self.inputNodeInteraction.highlightedItemCollectionId = collectionId
-//            }
-//        } else {
-//            self.inputNodeInteraction.highlightedStickerItemCollectionId = collectionId
-//            if self.paneArrangement.panes[self.paneArrangement.currentIndex] == .stickers {
-//                self.inputNodeInteraction.highlightedItemCollectionId = collectionId
-//            }
-//        }
-//        var ensuredNodeVisible = false
-//        var firstVisibleCollectionId: ItemCollectionId?
-//        self.listView.forEachItemNode { itemNode in
-//            if let itemNode = itemNode as? ChatMediaInputStickerPackItemNode {
-//                if firstVisibleCollectionId == nil {
-//                    firstVisibleCollectionId = itemNode.currentCollectionId
-//                }
-//                itemNode.updateIsHighlighted()
-//                if itemNode.currentCollectionId == collectionId {
-//                    self.listView.ensureItemNodeVisible(itemNode)
-//                    ensuredNodeVisible = true
-//                }
-//            } else if let itemNode = itemNode as? ChatMediaInputMetaSectionItemNode {
-//                itemNode.updateIsHighlighted()
-//                if itemNode.currentCollectionId == collectionId {
-//                    self.listView.ensureItemNodeVisible(itemNode)
-//                    ensuredNodeVisible = true
-//                }
-//            } else if let itemNode = itemNode as? ChatMediaInputRecentGifsItemNode {
-//                itemNode.updateIsHighlighted()
-//                if itemNode.currentCollectionId == collectionId {
-//                    self.listView.ensureItemNodeVisible(itemNode)
-//                    ensuredNodeVisible = true
-//                }
-//            } else if let itemNode = itemNode as? ChatMediaInputTrendingItemNode {
-//                itemNode.updateIsHighlighted()
-//                if itemNode.currentCollectionId == collectionId {
-//                    self.listView.ensureItemNodeVisible(itemNode)
-//                    ensuredNodeVisible = true
-//                }
-//            } else if let itemNode = itemNode as? ChatMediaInputPeerSpecificItemNode {
-//                itemNode.updateIsHighlighted()
-//                if itemNode.currentCollectionId == collectionId {
-//                    self.listView.ensureItemNodeVisible(itemNode)
-//                    ensuredNodeVisible = true
-//                }
-//            }
-//        }
-//
-//        if let currentView = self.currentView, let firstVisibleCollectionId = firstVisibleCollectionId, !ensuredNodeVisible {
-//            let targetIndex = currentView.collectionInfos.index(where: { id, _, _ in return id == collectionId })
-//            let firstVisibleIndex = currentView.collectionInfos.index(where: { id, _, _ in return id == firstVisibleCollectionId })
-//            if let targetIndex = targetIndex, let firstVisibleIndex = firstVisibleIndex {
-//                let toRight = targetIndex > firstVisibleIndex
-//                self.listView.transaction(deleteIndices: [], insertIndicesAndItems: [], updateIndicesAndItems: [], options: [], scrollToItem: ListViewScrollToItem(index: targetIndex, position: toRight ? .bottom(0.0) : .top(0.0), animated: true, curve: .Default(duration: nil), directionHint: toRight ? .Down : .Up), updateSizeAndInsets: nil, stationaryItemRange: nil, updateOpaqueState: nil)
-//            }
-//        }
+        self.inputNodeInteraction.highlightedItemCollectionId = collectionId
+        
+        var ensuredNodeVisible = false
+        var firstVisibleCollectionId: ItemCollectionId?
+        self.botsListView.forEachItemNode { itemNode in
+            if let itemNode = itemNode as? ChatBotsStoreItemNode {
+                if firstVisibleCollectionId == nil {
+                    firstVisibleCollectionId = itemNode.currentCollectionId
+                }
+                itemNode.updateIsHighlighted()
+                if itemNode.currentCollectionId == collectionId {
+                    self.botsListView.ensureItemNodeVisible(itemNode)
+                    ensuredNodeVisible = true
+                }
+            } else if let itemNode = itemNode as? ChatBotsBotItemNode {
+                if firstVisibleCollectionId == nil {
+                    firstVisibleCollectionId = itemNode.currentCollectionId
+                }
+                itemNode.updateIsHighlighted()
+                if itemNode.currentCollectionId == collectionId {
+                    self.botsListView.ensureItemNodeVisible(itemNode)
+                    ensuredNodeVisible = true
+                }
+            }
+        }
+
+        if let firstVisibleCollectionId = firstVisibleCollectionId, !ensuredNodeVisible {
+            var collectionIdType: ChatBotsInputPaneType = .store
+            switch collectionId.namespace {
+            case ChatBotsInputPanelAuxiliaryNamespace.store.rawValue: collectionIdType = .store
+            case ChatBotsInputPanelAuxiliaryNamespace.bots.rawValue: collectionIdType = .bot(Int(collectionId.id))
+            default: break
+            }
+            var firstVisibleCollectionIdType: ChatBotsInputPaneType = .store
+            switch firstVisibleCollectionId.namespace {
+            case ChatBotsInputPanelAuxiliaryNamespace.store.rawValue: firstVisibleCollectionIdType = .store
+            case ChatBotsInputPanelAuxiliaryNamespace.bots.rawValue: firstVisibleCollectionIdType = .bot(Int(firstVisibleCollectionId.id))
+            default: break
+            }
+            
+            let targetIndex = self.paneArrangement.panes.firstIndex(where: { $0 == collectionIdType })
+            let firstVisibleIndex = self.paneArrangement.panes.firstIndex(where: { $0 == firstVisibleCollectionIdType })
+            if let targetIndex = targetIndex, let firstVisibleIndex = firstVisibleIndex {
+                let toRight = targetIndex > firstVisibleIndex
+                self.botsListView.transaction(deleteIndices: [], insertIndicesAndItems: [], updateIndicesAndItems: [], options: [], scrollToItem: ListViewScrollToItem(index: targetIndex, position: toRight ? .bottom(0.0) : .top(0.0), animated: true, curve: .Default(duration: nil), directionHint: toRight ? .Down : .Up), updateSizeAndInsets: nil, stationaryItemRange: nil, updateOpaqueState: nil)
+            }
+        }
     }
 }
