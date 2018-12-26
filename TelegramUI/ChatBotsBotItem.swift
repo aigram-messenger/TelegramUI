@@ -22,12 +22,12 @@ final class ChatBotsBotItem: ListViewItem {
 
     var selectable: Bool { return true }
 
-    init(inputNodeInteraction: ChatBotsInputNodeInteraction, theme: PresentationTheme, bot: ChatBot, collectionId: ItemCollectionId, selected: @escaping () -> Void) {
+    init(inputNodeInteraction: ChatBotsInputNodeInteraction, theme: PresentationTheme, bot: ChatBot, selected: @escaping () -> Void) {
         self.inputNodeInteraction = inputNodeInteraction
         self.selectedItem = selected
         self.theme = theme
         self.bot = bot
-        self.collectionId = collectionId
+        self.collectionId = ItemCollectionId(namespace: ChatBotsInputPanelAuxiliaryNamespace.bots.rawValue, id: ItemCollectionId.Id(bot.id))
     }
 
     func nodeConfiguredForParams(async: @escaping (@escaping () -> Void) -> Void, params: ListViewItemLayoutParams, previousItem: ListViewItem?, nextItem: ListViewItem?, completion: @escaping (ListViewItemNode, @escaping () -> (Signal<Void, NoError>?, () -> Void)) -> Void) {

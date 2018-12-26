@@ -26,3 +26,9 @@ final class ChatBotsInputSuggestionsPane: ChatMediaInputPane, UIScrollViewDelega
         self.backgroundColor = colors[index]
     }
 }
+
+extension ChatBotsInputSuggestionsPane: ChatBotsUpdatingSuggestions {
+    func setMessages(_ messages: [String]) {
+        print("\(self)\n\(messages)")
+    }
+}

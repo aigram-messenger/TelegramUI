@@ -15,6 +15,10 @@ public enum ChatBotError: Error {
     case modelFileNotExists
 }
 
+public protocol ChatBotsUpdatingSuggestions {
+    func setMessages(_ messages: [String])
+}
+
 public struct ChatBot {
     public var id: Int = 0
     public var title: String = ""
@@ -49,19 +53,47 @@ extension ChatBot: Equatable {
     }
 }
 
+public struct ChatBotResult {
+    public let bot: ChatBot
+    public let originalMessages: [String]
+    public let responses: [BotResponse]
+}
+
 public final class ChatBotsManager {
     static let shared: ChatBotsManager = .init()
     private(set) public var bots: [ChatBot] = []
     
     private init() {
         let bundle = Bundle(for: ChatBotsManager.self)
-        let urls = bundle.urls(forResourcesWithExtension: "chatbot", subdirectory: nil) ?? []
+        var urls = bundle.urls(forResourcesWithExtension: "chatbot", subdirectory: nil) ?? []
+        urls.append(contentsOf: urls)
+        urls.append(contentsOf: urls)
         var id = 0
         for url in urls {
             guard var bot = try? ChatBot(url: url) else { continue }
             bot.id = id
             bots.append(bot)
             id += 1
+        }
+    }
+    
+    public func handleMessages(_ messages: [String], completion: @escaping ([ChatBotResult]) -> Void) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [unowned self] in
+            var tempResults: [Int: (ChatBot, [String], [BotResponse])] = [:]
+            for message in messages {
+                for bot in self.bots {
+                    guard arc4random_uniform(20) % 5 == 0 else { continue }
+                    var (chatBot, originalMessages, responses) = tempResults[bot.id] ?? (bot, [], [])
+                    originalMessages.append(message)
+                    responses.append(contentsOf: bot.responses)
+                    tempResults[bot.id] = (chatBot, originalMessages, responses)
+                }
+            }
+            
+            let results: [ChatBotResult] = tempResults.map {
+                ChatBotResult(bot: $1.0, originalMessages: $1.1, responses: $1.2)
+            }
+            completion(results)
         }
     }
 }

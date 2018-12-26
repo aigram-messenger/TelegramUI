@@ -18,14 +18,29 @@ enum ChatBotsInputPanelAuxiliaryNamespace: Int32 {
     case bots = 9
 }
 
-private enum ChatBotsInputPaneType: Equatable {
+private enum ChatBotsInputPaneType: Equatable, Comparable, Identifiable {
     case store
     case bot(Int)
+    
+    var stableId: Int {
+        switch self {
+        case .store: return 1
+        case .bot(let id): return 10 + id
+        }
+    }
     
     static func == (lhs: ChatBotsInputPaneType, rhs: ChatBotsInputPaneType) -> Bool {
         switch (lhs, rhs) {
         case (.store, .store): return true
         case let (.bot(id1), .bot(id2)): return id1 == id2
+        default: return false
+        }
+    }
+    
+    static func < (lhs: ChatBotsInputPaneType, rhs: ChatBotsInputPaneType) -> Bool {
+        switch (lhs, rhs) {
+        case (.store, .store): return false
+        case let (.bot(id1), .bot(id2)): return id1 < id2
         default: return false
         }
     }
@@ -122,10 +137,10 @@ final class ChatSuggestionsInputNode: ChatInputNode {
         self.botsListView.transform = CATransform3DMakeRotation(-CGFloat(Double.pi / 2.0), 0.0, 0.0, 1.0)
         self.botsListView.backgroundColor = UIColor.green
         
-        self.paneArrangement = ChatBotsInputPaneArrangement(panes: [.store], currentIndex: 0, indexTransition: 0.0)
+        self.paneArrangement = ChatBotsInputPaneArrangement(panes: [], currentIndex: -1, indexTransition: 0.0)
         
         self.panesAndAnimatingOut = [
-            (ChatBotsInputStorePane(), false)
+//            (ChatBotsInputStorePane(), false)
         ]
         
         super.init()
@@ -144,6 +159,9 @@ final class ChatSuggestionsInputNode: ChatInputNode {
         let panRecognizer = UIPanGestureRecognizer(target: self, action: #selector(self.panGesture(_:)))
         self.panRecognizer = panRecognizer
         self.view.addGestureRecognizer(panRecognizer)
+        
+//        let insertItems = [ListViewInsertItem(index: 0, previousIndex: nil, item: storeItem, directionHint: nil)]
+//        self.botsListView.transaction(deleteIndices: [], insertIndicesAndItems: insertItems, updateIndicesAndItems: [], options: [.Synchronous, .LowLatency], updateOpaqueState: nil)
     }
     
     deinit {}
@@ -161,60 +179,86 @@ final class ChatSuggestionsInputNode: ChatInputNode {
 
     override func didLoad() {
         super.didLoad()
-        
-        var panes: [ChatBotsInputPaneType] = [.store]
-        
-        let storeItem = ChatBotsStoreItem(inputNodeInteraction: self.inputNodeInteraction, theme: self.theme!) {
-            let collectionId = ItemCollectionId(namespace: ChatBotsInputPanelAuxiliaryNamespace.store.rawValue, id: 0)
-            self.inputNodeInteraction.navigateToCollectionId(collectionId)
-        }
-        
-        self.panesAndAnimatingOut = [
-            (ChatBotsInputStorePane(), false)
-        ]
-        
-        var insertItems = [
-            ListViewInsertItem(index: 0, previousIndex: nil, item: storeItem, directionHint: nil)
-        ]
-        for bot in ChatBotsManager.shared.bots {
-            let botCollectionId = ItemCollectionId(namespace: ChatBotsInputPanelAuxiliaryNamespace.bots.rawValue, id: ItemCollectionId.Id(bot.id))
-            let botItem = ChatBotsBotItem(inputNodeInteraction: self.inputNodeInteraction, theme: self.theme!, bot: bot, collectionId: botCollectionId) {
-                self.inputNodeInteraction.navigateToCollectionId(botCollectionId)
-            }
-            insertItems.append(ListViewInsertItem(index: insertItems.count, previousIndex: nil, item: botItem, directionHint: nil))
-            panes.append(.bot(bot.id))
-            self.panesAndAnimatingOut.append((ChatBotsInputSuggestionsPane(), false))
-        }
-        
-        self.botsListView.transaction(deleteIndices: [], insertIndicesAndItems: insertItems, updateIndicesAndItems: [], options: [.Synchronous, .LowLatency], updateOpaqueState: nil)
-        
-        
-        
-        self.paneArrangement = ChatBotsInputPaneArrangement(panes: panes, currentIndex: 0, indexTransition: 0.0)
-        
-        
         self.view.disablesInteractiveTransitionGestureRecognizer = true
-        
-//        var gridInsertItems: [GridNodeInsertItem] = []
-//        gridInsertItems.append(GridNodeInsertItem(index: 0, item: <#T##GridItem#>, previousIndex: nil))
-        
-        
-//        self.currentView = view
-//        self.enqueuePanelTransition(panelTransition, firstTime: panelFirstTime, thenGridTransition: gridTransition, gridFirstTime: gridFirstTime)
-//        if !self.initializedArrangement {
-//            self.initializedArrangement = true
-//            var currentPane = self.paneArrangement.panes[self.paneArrangement.currentIndex]
-//            if view.entries.isEmpty {
-//                currentPane = .trending
-//            }
-//            if currentPane != self.paneArrangement.panes[self.paneArrangement.currentIndex] {
-//                self.setCurrentPane(currentPane, transition: .immediate)
-//            }
-//        }
     }
 
     func set(messages: [String]) {
         self.messages = messages
+        
+        ChatBotsManager.shared.handleMessages(messages) { [weak self] (results) in
+            self?.updateBotsResults(results)
+        }
+    }
+    
+    private func insertListItems(with inserts: ([(Int, ChatBotsInputPaneType, Int?)]), botsResults: [ChatBotResult]) -> [ListViewInsertItem] {
+        var result: [ListViewInsertItem] = []
+        for insert in inserts {
+            var item: ListViewItem
+            switch insert.1 {
+            case .store:
+                item = ChatBotsStoreItem(inputNodeInteraction: self.inputNodeInteraction, theme: self.theme!) {
+                    let collectionId = ItemCollectionId(namespace: ChatBotsInputPanelAuxiliaryNamespace.store.rawValue, id: 0)
+                    self.inputNodeInteraction.navigateToCollectionId(collectionId)
+                }
+            case let .bot(id):
+                let collectionId = ItemCollectionId(namespace: ChatBotsInputPanelAuxiliaryNamespace.bots.rawValue, id: ItemCollectionId.Id(id))
+                guard let bot = botsResults.first(where: { $0.bot.id == id })?.bot else { continue }
+                item = ChatBotsBotItem(inputNodeInteraction: self.inputNodeInteraction, theme: self.theme!, bot: bot) {
+                    self.inputNodeInteraction.navigateToCollectionId(collectionId)
+                }
+            }
+            result.append(ListViewInsertItem(index: insert.0, previousIndex: insert.2, item: item, directionHint: nil))
+        }
+        return result
+    }
+    
+    private func updateListItems(with updates: ([(Int, ChatBotsInputPaneType, Int)]), botsResults: [ChatBotResult]) -> [ListViewUpdateItem] {
+        var result = [ListViewUpdateItem]()
+        for update in updates {
+            var item: ListViewItem
+            switch update.1 {
+            case .store:
+                item = ChatBotsStoreItem(inputNodeInteraction: self.inputNodeInteraction, theme: self.theme!) {
+                    let collectionId = ItemCollectionId(namespace: ChatBotsInputPanelAuxiliaryNamespace.store.rawValue, id: 0)
+                    self.inputNodeInteraction.navigateToCollectionId(collectionId)
+                }
+            case let .bot(id):
+                let collectionId = ItemCollectionId(namespace: ChatBotsInputPanelAuxiliaryNamespace.bots.rawValue, id: ItemCollectionId.Id(id))
+                guard let bot = botsResults.first(where: { $0.bot.id == id })?.bot else { continue }
+                item = ChatBotsBotItem(inputNodeInteraction: self.inputNodeInteraction, theme: self.theme!, bot: bot) {
+                    self.inputNodeInteraction.navigateToCollectionId(collectionId)
+                }
+            }
+            result.append(ListViewUpdateItem(index: update.0, previousIndex: update.2, item: item, directionHint: nil))
+        }
+        return result
+    }
+    
+    func updateBotsResults(_ results: [ChatBotResult]) {
+        var toArrangements: [ChatBotsInputPaneType] = [.store]
+        toArrangements.append(contentsOf: results.map { .bot($0.bot.id) })
+        let (deletes, inserts, updates) = mergeListsStableWithUpdates(leftList: self.paneArrangement.panes, rightList: toArrangements)
+        self.paneArrangement = ChatBotsInputPaneArrangement(panes: toArrangements, currentIndex: results.isEmpty ? 0 : 1, indexTransition: 0)
+        
+        let deleteListItems = deletes.map { ListViewDeleteItem(index: $0, directionHint: nil) }
+        let insertListItems = self.insertListItems(with: inserts, botsResults: results)
+        let updateListItems = self.updateListItems(with: updates, botsResults: results)
+        
+        self.panesAndAnimatingOut = []
+        for paneType in toArrangements {
+            switch paneType {
+            case .store:
+                self.panesAndAnimatingOut.append((ChatBotsInputStorePane(), false))
+            case .bot(let id):
+                self.panesAndAnimatingOut.append((ChatBotsInputSuggestionsPane(), false))
+            }
+        }
+
+        self.botsListView.transaction(deleteIndices: deleteListItems,
+                                      insertIndicesAndItems: insertListItems,
+                                      updateIndicesAndItems: updateListItems,
+                                      options: [.Synchronous, .LowLatency],
+                                      updateOpaqueState: nil)
     }
 
     func trashedSuggestions() -> [[String]] {
@@ -242,7 +286,6 @@ final class ChatSuggestionsInputNode: ChatInputNode {
         let updateSizeAndInsets = ListViewUpdateSizeAndInsets(size: CGSize(width: 41.0, height: width), insets: UIEdgeInsets(top: 4.0 + leftInset, left: 0.0, bottom: 4.0 + rightInset, right: 0.0), duration: 0, curve: .Default(duration: 0))
         
         self.botsListView.transaction(deleteIndices: [], insertIndicesAndItems: [], updateIndicesAndItems: [], options: [.Synchronous, .LowLatency], scrollToItem: nil, updateSizeAndInsets: updateSizeAndInsets, stationaryItemRange: nil, updateOpaqueState: nil, completion: { _ in })
-        
         
         var visiblePanes: [(ChatBotsInputPaneType, CGFloat)] = []
         var paneIndex = 0
