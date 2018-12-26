@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import NaturalLanguage
 
 public typealias BotResponse = [String: String]
 
@@ -78,22 +79,40 @@ public final class ChatBotsManager {
     }
     
     public func handleMessages(_ messages: [String], completion: @escaping ([ChatBotResult]) -> Void) {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [unowned self] in
-            var tempResults: [Int: (ChatBot, [String], [BotResponse])] = [:]
-            for message in messages {
-                for bot in self.bots {
-                    guard arc4random_uniform(20) % 5 == 0 else { continue }
-                    var (chatBot, originalMessages, responses) = tempResults[bot.id] ?? (bot, [], [])
-                    originalMessages.append(message)
-                    responses.append(contentsOf: bot.responses)
-                    tempResults[bot.id] = (chatBot, originalMessages, responses)
-                }
-            }
-            
-            let results: [ChatBotResult] = tempResults.map {
-                ChatBotResult(bot: $1.0, originalMessages: $1.1, responses: $1.2)
-            }
-            completion(results)
+        for message in messages {
+            let words = self.words(of: message)
+            print("\(words)\n=====")
         }
+        
+//        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [unowned self] in
+//            var tempResults: [Int: (ChatBot, [String], [BotResponse])] = [:]
+//            for message in messages {
+//                for bot in self.bots {
+//                    guard arc4random_uniform(20) % 5 == 0 else { continue }
+//                    var (chatBot, originalMessages, responses) = tempResults[bot.id] ?? (bot, [], [])
+//                    originalMessages.append(message)
+//                    responses.append(contentsOf: bot.responses)
+//                    tempResults[bot.id] = (chatBot, originalMessages, responses)
+//                }
+//            }
+//
+//            let results: [ChatBotResult] = tempResults.map {
+//                ChatBotResult(bot: $1.0, originalMessages: $1.1, responses: $1.2)
+//            }
+//            completion(results)
+//        }
+    }
+    
+    private func words(of message: String) -> [String] {
+    let tagger = NSLinguisticTagger(tagSchemes: [.lemma], options: 0)
+        tagger.string = message
+        let range = NSRange(location: 0, length: message.count)
+        let options: NSLinguisticTagger.Options = [.omitPunctuation, .omitWhitespace]
+        var words: [String] = []
+        tagger.enumerateTags(in: range, scheme: .lemma, options: options) { (tag, tokenRange, sentenceRange, stop) in
+            let word = (message as NSString).substring(with: tokenRange)
+            words.append(word.lowercased())
+        }
+        return words
     }
 }

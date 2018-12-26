@@ -39,7 +39,6 @@ private enum ChatBotsInputPaneType: Equatable, Comparable, Identifiable {
     
     static func < (lhs: ChatBotsInputPaneType, rhs: ChatBotsInputPaneType) -> Bool {
         switch (lhs, rhs) {
-        case (.store, .store): return false
         case let (.bot(id1), .bot(id2)): return id1 < id2
         default: return false
         }
@@ -139,9 +138,7 @@ final class ChatSuggestionsInputNode: ChatInputNode {
         
         self.paneArrangement = ChatBotsInputPaneArrangement(panes: [], currentIndex: -1, indexTransition: 0.0)
         
-        self.panesAndAnimatingOut = [
-//            (ChatBotsInputStorePane(), false)
-        ]
+        self.panesAndAnimatingOut = []
         
         super.init()
         
@@ -159,9 +156,6 @@ final class ChatSuggestionsInputNode: ChatInputNode {
         let panRecognizer = UIPanGestureRecognizer(target: self, action: #selector(self.panGesture(_:)))
         self.panRecognizer = panRecognizer
         self.view.addGestureRecognizer(panRecognizer)
-        
-//        let insertItems = [ListViewInsertItem(index: 0, previousIndex: nil, item: storeItem, directionHint: nil)]
-//        self.botsListView.transaction(deleteIndices: [], insertIndicesAndItems: insertItems, updateIndicesAndItems: [], options: [.Synchronous, .LowLatency], updateOpaqueState: nil)
     }
     
     deinit {}
