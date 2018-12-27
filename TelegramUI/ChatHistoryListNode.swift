@@ -352,29 +352,15 @@ public final class ChatHistoryListNode: ListView, ChatHistoryNode {
 
     public var lastMessages: [Message] {
         var messages: [Message] = []
-        let subnodes = self.subnodes ?? []
         var counter = 0
-        for subnode in subnodes where subnode is ChatMessageItemView {
-            let subnode = subnode as? ChatMessageItemView
-            guard let item = subnode?.item else { break }
-            guard item.message.flags.contains(.Incoming) else { break }
-            messages.append(item.message)
+        forEachMessageInCurrentHistoryView(reversed: true) { (message) -> Bool in
+            guard counter < 3, message.flags.contains(.Incoming) else { return false }
+            messages.append(message)
             counter += 1
-            if counter >= 3 { break }
+            return true
         }
+        print("\(messages)")
         return messages
-    }
-
-    public override func insertSubnode(_ subnode: ASDisplayNode, at idx: Int) {
-        super.insertSubnode(subnode, at: idx)
-
-        let chatController = closestViewController as? ChatController
-        chatController?.updateWithReceivedMessages(lastMessages)
-    }
-
-    public override func replaceSubnode(_ subnode: ASDisplayNode, withSubnode replacementSubnode: ASDisplayNode) {
-        super.replaceSubnode(subnode, withSubnode: replacementSubnode)
-        debugPrint("REPLACE SUBNODE")
     }
     
     public init(account: Account, chatLocation: ChatLocation, tagMask: MessageTags?, messageId: MessageId?, controllerInteraction: ChatControllerInteraction, selectedMessages: Signal<Set<MessageId>?, NoError>, mode: ChatHistoryListMode = .bubbles) {
@@ -893,9 +879,10 @@ public final class ChatHistoryListNode: ListView, ChatHistoryNode {
         return nil
     }
     
-    public func forEachMessageInCurrentHistoryView(_ f: (Message) -> Bool) {
+    public func forEachMessageInCurrentHistoryView(reversed: Bool, _ f: (Message) -> Bool) {
         if let historyView = self.historyView {
-            for entry in historyView.filteredEntries {
+            let entries = reversed ? historyView.filteredEntries.reversed() : historyView.filteredEntries
+            for entry in entries {
                 if case let .MessageEntry(message, _, _, _, _, _) = entry {
                     if !f(message) {
                         return
@@ -909,6 +896,10 @@ public final class ChatHistoryListNode: ListView, ChatHistoryNode {
                 }
             }
         }
+    }
+    
+    public func forEachMessageInCurrentHistoryView(_ f: (Message) -> Bool) {
+        forEachMessageInCurrentHistoryView(reversed: false, f)
     }
     
     private func updateMaxVisibleReadIncomingMessageIndex(_ index: MessageIndex) {
@@ -933,6 +924,10 @@ public final class ChatHistoryListNode: ListView, ChatHistoryNode {
                             strongSelf.scrolledToIndex?(scrolledToIndex)
                         }
                     }
+                    let chatController = self?.closestViewController as? ChatController
+                    let messages = self?.lastMessages ?? []
+                    chatController?.updateWithReceivedMessages(messages)
+                    
                     subscriber.putCompletion()
                 })
                 

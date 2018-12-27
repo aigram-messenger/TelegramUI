@@ -416,7 +416,7 @@ final class ChatMediaInputNode: ChatInputNode {
         
         self.collectionListPanel = ASDisplayNode()
         self.collectionListPanel.clipsToBounds = true
-        self.collectionListPanel.backgroundColor = theme.chat.inputPanel.panelBackgroundColor
+        self.collectionListPanel.backgroundColor =  theme.chat.inputPanel.panelBackgroundColor
         
         self.collectionListSeparator = ASDisplayNode()
         self.collectionListSeparator.isLayerBacked = true
