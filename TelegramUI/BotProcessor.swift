@@ -27,7 +27,7 @@ extension BotProcessor {
         let lock = NSRecursiveLock()
         var responses: [BotResponse] = []
         for message in messages {
-            guard arc4random_uniform(20) % 4 == 0 else { continue }
+//            guard arc4random_uniform(20) % 4 == 0 else { continue }
             let words = self.words(of: message)
             
             let operation = BlockOperation {

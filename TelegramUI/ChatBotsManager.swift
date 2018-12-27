@@ -59,6 +59,8 @@ public struct ChatBotResult {
 public final class ChatBotsManager {
     static let shared: ChatBotsManager = .init()
     private(set) public var bots: [ChatBot] = []
+    private var queue: OperationQueue
+    private var lastMessages: [String]?
     
     private init() {
         let bundle = Bundle(for: ChatBotsManager.self)
@@ -70,16 +72,19 @@ public final class ChatBotsManager {
             bots.append(bot)
             id += 1
         }
+        queue = OperationQueue()
+        queue.maxConcurrentOperationCount = 1
     }
     
     public func handleMessages(_ messages: [String], completion: @escaping ([ChatBotResult]) -> Void) {
-        DispatchQueue.global().async {
-            let queue = OperationQueue()
+        lastMessages = messages
+        queue.addOperation {
+            let localQueue = OperationQueue()
             let lock = NSRecursiveLock()
             var results: [ChatBotResult] = []
             
             for bot in self.bots {
-                queue.addOperation {
+                localQueue.addOperation {
                     let processor = BotProcessor(bot: bot)
                     let result = processor.process(messages: messages)
                     if !result.responses.isEmpty {
@@ -89,10 +94,13 @@ public final class ChatBotsManager {
                     }
                 }
             }
-        
-            queue.waitUntilAllOperationsAreFinished()
+            
+            localQueue.waitUntilAllOperationsAreFinished()
             DispatchQueue.main.async {
-                completion(results)
+                if messages == self.lastMessages {
+                    self.lastMessages = nil
+                    completion(results)
+                }
             }
         }
     }

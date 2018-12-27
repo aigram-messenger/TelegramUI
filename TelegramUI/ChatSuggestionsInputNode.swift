@@ -82,8 +82,6 @@ final class ChatSuggestionsInputNode: ChatInputNode {
     private let botsListContainer: ASDisplayNode
     private let botsListView: ListView
 
-//    private var buttonNodes: [ChatSuggestionsInputButtonNode] = []
-//    private var messages: [String] = []
     private var bots: [ChatBot] = []
 
     private var theme: PresentationTheme?
@@ -93,6 +91,7 @@ final class ChatSuggestionsInputNode: ChatInputNode {
     
     private var panesAndAnimatingOut: [(ChatMediaInputPane, Bool)]
     private var panRecognizer: UIPanGestureRecognizer?
+    private var currentMessages: [String]?
 
     init(account: Account, controllerInteraction: ChatControllerInteraction, theme: PresentationTheme) {
         self.account = account
@@ -156,6 +155,9 @@ final class ChatSuggestionsInputNode: ChatInputNode {
     }
 
     func set(messages: [String]) {
+        guard currentMessages != messages else { return }
+        currentMessages = messages
+        print("SET \(messages)")
         ChatBotsManager.shared.handleMessages(messages) { [weak self] (results) in
             self?.updateBotsResults(results)
         }
@@ -215,6 +217,9 @@ final class ChatSuggestionsInputNode: ChatInputNode {
         let insertListItems = self.insertListItems(with: inserts, botsResults: results)
         let updateListItems = self.updateListItems(with: updates, botsResults: results)
         
+        for (pane, _) in self.panesAndAnimatingOut {
+            pane.removeFromSupernode()
+        }
         self.panesAndAnimatingOut = []
         var resultIndex = 0
         for paneType in toArrangements {
