@@ -8,16 +8,12 @@
 
 import Foundation
 import UIKit
-import NaturalLanguage
+
 
 public typealias BotResponse = [String: String]
 
 public enum ChatBotError: Error {
     case modelFileNotExists
-}
-
-public protocol ChatBotsUpdatingSuggestions {
-    func setMessages(_ messages: [String])
 }
 
 public struct ChatBot {
@@ -56,7 +52,7 @@ extension ChatBot: Equatable {
 
 public struct ChatBotResult {
     public let bot: ChatBot
-    public let originalMessages: [String]
+//    public let originalMessages: [String]
     public let responses: [BotResponse]
 }
 
@@ -66,9 +62,7 @@ public final class ChatBotsManager {
     
     private init() {
         let bundle = Bundle(for: ChatBotsManager.self)
-        var urls = bundle.urls(forResourcesWithExtension: "chatbot", subdirectory: nil) ?? []
-        urls.append(contentsOf: urls)
-        urls.append(contentsOf: urls)
+        let urls = bundle.urls(forResourcesWithExtension: "chatbot", subdirectory: nil) ?? []
         var id = 0
         for url in urls {
             guard var bot = try? ChatBot(url: url) else { continue }
@@ -79,32 +73,32 @@ public final class ChatBotsManager {
     }
     
     public func handleMessages(_ messages: [String], completion: @escaping ([ChatBotResult]) -> Void) {
-        for message in messages {
-            let words = self.words(of: message)
-            print("\(words)\n=====")
-        }
+        DispatchQueue.global().async {
+            let queue = OperationQueue()
+            let lock = NSRecursiveLock()
+            var results: [ChatBotResult] = []
+            
+            for bot in self.bots {
+                queue.addOperation {
+                    let processor = BotProcessor(bot: bot)
+                    let result = processor.process(messages: messages)
+                    if !result.responses.isEmpty {
+                        lock.lock()
+                        results.append(result)
+                        lock.unlock()
+                    }
+                }
+            }
         
-//        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [unowned self] in
-//            var tempResults: [Int: (ChatBot, [String], [BotResponse])] = [:]
-//            for message in messages {
-//                for bot in self.bots {
-//                    guard arc4random_uniform(20) % 5 == 0 else { continue }
-//                    var (chatBot, originalMessages, responses) = tempResults[bot.id] ?? (bot, [], [])
-//                    originalMessages.append(message)
-//                    responses.append(contentsOf: bot.responses)
-//                    tempResults[bot.id] = (chatBot, originalMessages, responses)
-//                }
-//            }
-//
-//            let results: [ChatBotResult] = tempResults.map {
-//                ChatBotResult(bot: $1.0, originalMessages: $1.1, responses: $1.2)
-//            }
-//            completion(results)
-//        }
+            queue.waitUntilAllOperationsAreFinished()
+            DispatchQueue.main.async {
+                completion(results)
+            }
+        }
     }
     
     private func words(of message: String) -> [String] {
-    let tagger = NSLinguisticTagger(tagSchemes: [.lemma], options: 0)
+        let tagger = NSLinguisticTagger(tagSchemes: [.lemma], options: 0)
         tagger.string = message
         let range = NSRange(location: 0, length: message.count)
         let options: NSLinguisticTagger.Options = [.omitPunctuation, .omitWhitespace]

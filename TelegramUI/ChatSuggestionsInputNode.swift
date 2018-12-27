@@ -45,27 +45,6 @@ private enum ChatBotsInputPaneType: Equatable, Comparable, Identifiable {
     }
 }
 
-private final class ChatSuggestionsInputButtonNode: ASButtonNode {
-    var suggestion: String?
-
-    private var theme: PresentationTheme?
-
-    init(theme: PresentationTheme) {
-        super.init()
-        
-        self.updateTheme(theme: theme)
-    }
-
-    func updateTheme(theme: PresentationTheme) {
-        if theme !== self.theme {
-            self.theme = theme
-
-            self.setBackgroundImage(PresentationResourcesChat.chatInputButtonPanelButtonImage(theme), for: [])
-            self.setBackgroundImage(PresentationResourcesChat.chatInputButtonPanelButtonHighlightedImage(theme), for: [.highlighted])
-        }
-    }
-}
-
 private final class CollectionListContainerNode: ASDisplayNode {
     override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
         for subview in self.view.subviews {
@@ -103,8 +82,8 @@ final class ChatSuggestionsInputNode: ChatInputNode {
     private let botsListContainer: ASDisplayNode
     private let botsListView: ListView
 
-    private var buttonNodes: [ChatSuggestionsInputButtonNode] = []
-    private var messages: [String] = []
+//    private var buttonNodes: [ChatSuggestionsInputButtonNode] = []
+//    private var messages: [String] = []
     private var bots: [ChatBot] = []
 
     private var theme: PresentationTheme?
@@ -177,8 +156,6 @@ final class ChatSuggestionsInputNode: ChatInputNode {
     }
 
     func set(messages: [String]) {
-        self.messages = messages
-        
         ChatBotsManager.shared.handleMessages(messages) { [weak self] (results) in
             self?.updateBotsResults(results)
         }
@@ -239,12 +216,14 @@ final class ChatSuggestionsInputNode: ChatInputNode {
         let updateListItems = self.updateListItems(with: updates, botsResults: results)
         
         self.panesAndAnimatingOut = []
+        var resultIndex = 0
         for paneType in toArrangements {
             switch paneType {
             case .store:
                 self.panesAndAnimatingOut.append((ChatBotsInputStorePane(), false))
             case .bot:
-                self.panesAndAnimatingOut.append((ChatBotsInputSuggestionsPane(), false))
+                self.panesAndAnimatingOut.append((ChatBotsInputSuggestionsPane(responses: results[resultIndex].responses, controllerInteraction: self.controllerInteraction), false))
+                resultIndex += 1
             }
         }
 
@@ -253,12 +232,7 @@ final class ChatSuggestionsInputNode: ChatInputNode {
                                       updateIndicesAndItems: updateListItems,
                                       options: [.Synchronous, .LowLatency],
                                       updateOpaqueState: nil)
-    }
-
-    func trashedSuggestions() -> [[String]] {
-        var result: [[String]] = []
-        
-        return result
+        self.setCurrentPane(self.paneArrangement.panes[self.paneArrangement.currentIndex], transition: .animated(duration: 0.25, curve: .spring))
     }
 
     override func updateLayout(width: CGFloat, leftInset: CGFloat, rightInset: CGFloat, bottomInset: CGFloat, standardInputHeight: CGFloat, inputHeight: CGFloat, maximumHeight: CGFloat, inputPanelHeight: CGFloat, transition: ContainedViewLayoutTransition, interfaceState: ChatPresentationInterfaceState) -> (CGFloat, CGFloat) {
@@ -309,6 +283,8 @@ final class ChatSuggestionsInputNode: ChatInputNode {
         }
         
         for i in 0..<self.panesAndAnimatingOut.count {
+            self.panesAndAnimatingOut[i].0.updateLayout(size: CGSize(width: width - leftInset - rightInset, height: panelHeight), topInset: 41.0, bottomInset: bottomInset, isExpanded: false, transition: transition)
+            
             let paneType = self.paneArrangement.panes[i]
             let contains = visiblePanes.contains(where: { $0.0 == paneType })
             guard self.panesAndAnimatingOut[i].0.supernode != nil, !contains else {
@@ -337,11 +313,6 @@ final class ChatSuggestionsInputNode: ChatInputNode {
         }
         
         return (standardInputHeight, max(0.0, panelHeight - standardInputHeight))
-    }
-
-    @objc func buttonPressed(_ button: ASButtonNode) {
-        guard let button = button as? ChatSuggestionsInputButtonNode, let suggestion = button.suggestion else { return }
-        controllerInteraction.sendMessage(suggestion)
     }
     
     @objc func panGesture(_ recognizer: UIPanGestureRecognizer) {

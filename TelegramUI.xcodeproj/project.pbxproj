@@ -1061,6 +1061,9 @@
 		D0FFF7F81F55B83600BEBC01 /* InstantPageAudioNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0FFF7F71F55B83600BEBC01 /* InstantPageAudioNode.swift */; };
 		F73095DF21D0F06900343BD5 /* ChatBotsStoreItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F73095DE21D0F06900343BD5 /* ChatBotsStoreItem.swift */; };
 		F73095E121D11AE900343BD5 /* ChatBotsInputNodeInteraction.swift in Sources */ = {isa = PBXBuildFile; fileRef = F73095E021D11AE900343BD5 /* ChatBotsInputNodeInteraction.swift */; };
+		F731702821D4B34E001850D8 /* BotProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F731702721D4B34E001850D8 /* BotProcessor.swift */; };
+		F731703921D4E672001850D8 /* trashbot.chatbot in Resources */ = {isa = PBXBuildFile; fileRef = F731703721D4E672001850D8 /* trashbot.chatbot */; };
+		F731703A21D4E672001850D8 /* other.chatbot in Resources */ = {isa = PBXBuildFile; fileRef = F731703821D4E672001850D8 /* other.chatbot */; };
 		F7C4373921D23041008B5C3B /* binbank.chatbot in Resources */ = {isa = PBXBuildFile; fileRef = F7C4373821D23041008B5C3B /* binbank.chatbot */; };
 		F7C4373B21D23F64008B5C3B /* alfa.chatbot in Resources */ = {isa = PBXBuildFile; fileRef = F7C4373A21D23F63008B5C3B /* alfa.chatbot */; };
 		F7E0F2E121D2270100974C76 /* ChatBotsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7E0F2E021D2270100974C76 /* ChatBotsManager.swift */; };
@@ -2210,6 +2213,9 @@
 		D0FFF7F71F55B83600BEBC01 /* InstantPageAudioNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstantPageAudioNode.swift; sourceTree = "<group>"; };
 		F73095DE21D0F06900343BD5 /* ChatBotsStoreItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotsStoreItem.swift; sourceTree = "<group>"; };
 		F73095E021D11AE900343BD5 /* ChatBotsInputNodeInteraction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotsInputNodeInteraction.swift; sourceTree = "<group>"; };
+		F731702721D4B34E001850D8 /* BotProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BotProcessor.swift; sourceTree = "<group>"; };
+		F731703721D4E672001850D8 /* trashbot.chatbot */ = {isa = PBXFileReference; lastKnownFileType = folder; path = trashbot.chatbot; sourceTree = "<group>"; };
+		F731703821D4E672001850D8 /* other.chatbot */ = {isa = PBXFileReference; lastKnownFileType = folder; path = other.chatbot; sourceTree = "<group>"; };
 		F7C4373821D23041008B5C3B /* binbank.chatbot */ = {isa = PBXFileReference; lastKnownFileType = folder; path = binbank.chatbot; sourceTree = "<group>"; };
 		F7C4373A21D23F63008B5C3B /* alfa.chatbot */ = {isa = PBXFileReference; lastKnownFileType = folder; path = alfa.chatbot; sourceTree = "<group>"; };
 		F7E0F2E021D2270100974C76 /* ChatBotsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotsManager.swift; sourceTree = "<group>"; };
@@ -2669,6 +2675,8 @@
 		D0471B521EFD8EBC0074D609 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				F731703821D4E672001850D8 /* other.chatbot */,
+				F731703721D4E672001850D8 /* trashbot.chatbot */,
 				F7C4373A21D23F63008B5C3B /* alfa.chatbot */,
 				F7C4373821D23041008B5C3B /* binbank.chatbot */,
 				D0955FB32191278C00F89427 /* PresentationStrings.mapping */,
@@ -4638,6 +4646,7 @@
 			isa = PBXGroup;
 			children = (
 				F7E0F2E021D2270100974C76 /* ChatBotsManager.swift */,
+				F731702721D4B34E001850D8 /* BotProcessor.swift */,
 			);
 			name = Additions;
 			sourceTree = "<group>";
@@ -4864,6 +4873,7 @@
 				D0E9BA931F056F4C00F079A4 /* stp_card_amex_template@2x.png in Resources */,
 				D0E9BAA91F056F4C00F079A4 /* stp_card_form_front@2x.png in Resources */,
 				D0E9BAA41F056F4C00F079A4 /* stp_card_discover_template@3x.png in Resources */,
+				F731703A21D4E672001850D8 /* other.chatbot in Resources */,
 				D0E9BAA81F056F4C00F079A4 /* stp_card_form_back@3x.png in Resources */,
 				D0E9BAA11F056F4C00F079A4 /* stp_card_discover@2x.png in Resources */,
 				D0E9B9EA1F00853C00F079A4 /* PhoneCountries.txt in Resources */,
@@ -4878,6 +4888,7 @@
 				D0E9BAA51F056F4C00F079A4 /* stp_card_form_applepay@2x.png in Resources */,
 				D0E9BAB81F056F4C00F079A4 /* stp_card_visa_template@3x.png in Resources */,
 				D0E9BA9B1F056F4C00F079A4 /* stp_card_cvc_amex@2x.png in Resources */,
+				F731703921D4E672001850D8 /* trashbot.chatbot in Resources */,
 				09310D30213ED5FB0020033A /* anim_unread.json in Resources */,
 				D0E9BAB61F056F4C00F079A4 /* stp_card_visa@3x.png in Resources */,
 				D0E9BAA61F056F4C00F079A4 /* stp_card_form_applepay@3x.png in Resources */,
@@ -5063,6 +5074,7 @@
 				096C98BF21787C6700C211FF /* TGBridgeAudioEncoder.m in Sources */,
 				D01776B81F1D6FB30044446D /* RadialProgressContentNode.swift in Sources */,
 				D05D8B762195CD930064586F /* SetupTwoStepVerificationControllerNode.swift in Sources */,
+				F731702821D4B34E001850D8 /* BotProcessor.swift in Sources */,
 				D0EC6CFA1EB9F58800EBF1C3 /* ManagedAudioSession.swift in Sources */,
 				D0EB5ADF1F798033004E89B6 /* PeerMediaCollectionEmptyNode.swift in Sources */,
 				D0EC6CFB1EB9F58800EBF1C3 /* ManagedAudioRecorder.swift in Sources */,
