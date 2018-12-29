@@ -122,6 +122,8 @@ final class ChatSuggestionsInputNode: ChatInputNode {
         
         self.inputNodeInteraction = ChatBotsInputNodeInteraction(navigateToCollectionId: { [weak self] id in
             self?.navigateToCollection(withId: id)
+        }, sendMessage: { [weak self] in
+            self?.controllerInteraction.sendMessage($0)
         })
 
         backgroundColor = UIColor.brown
@@ -157,7 +159,6 @@ final class ChatSuggestionsInputNode: ChatInputNode {
     func set(messages: [String]) {
         guard currentMessages != messages else { return }
         currentMessages = messages
-        print("SET \(messages)")
         ChatBotsManager.shared.handleMessages(messages) { [weak self] (results) in
             self?.updateBotsResults(results)
         }
@@ -227,7 +228,7 @@ final class ChatSuggestionsInputNode: ChatInputNode {
             case .store:
                 self.panesAndAnimatingOut.append((ChatBotsInputStorePane(), false))
             case .bot:
-                self.panesAndAnimatingOut.append((ChatBotsInputSuggestionsPane(responses: results[resultIndex].responses, controllerInteraction: self.controllerInteraction), false))
+                self.panesAndAnimatingOut.append((ChatBotsInputSuggestionsPane(responses: results[resultIndex].responses, inputNodeInteraction: self.inputNodeInteraction, theme: self.theme!), false))
                 resultIndex += 1
             }
         }

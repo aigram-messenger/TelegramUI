@@ -2229,7 +2229,6 @@
 		F76439B721D747BD005AC13C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "TelegramUI/Resources/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		F76439B921D77A15005AC13C /* bots */ = {isa = PBXFileReference; lastKnownFileType = folder; path = bots; sourceTree = "<group>"; };
 		F7E0F2E021D2270100974C76 /* ChatBotsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotsManager.swift; sourceTree = "<group>"; };
-		F7F28FCC21CD0F4A008DC5A4 /* ChatBotsInputNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotsInputNode.swift; sourceTree = "<group>"; };
 		F7F28FCE21CD1DB3008DC5A4 /* ChatBotsInputStoreGridItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotsInputStoreGridItem.swift; sourceTree = "<group>"; };
 		F7F28FD021CD1E2D008DC5A4 /* ChatBotsInputSuggestionsPane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotsInputSuggestionsPane.swift; sourceTree = "<group>"; };
 		FB32415A21D169C00023532E /* ChatBotsBotItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotsBotItem.swift; sourceTree = "<group>"; };
@@ -4678,7 +4677,6 @@
 			children = (
 				F7E0F2DF21D226F100974C76 /* Additions */,
 				FB32415921D160000023532E /* Panes List Items */,
-				F7F28FCC21CD0F4A008DC5A4 /* ChatBotsInputNode.swift */,
 				FB929AD121BFE57C004000E0 /* ChatSuggestionsInputNode.swift */,
 				F7F28FCE21CD1DB3008DC5A4 /* ChatBotsInputStoreGridItem.swift */,
 				F7F28FD021CD1E2D008DC5A4 /* ChatBotsInputSuggestionsPane.swift */,
