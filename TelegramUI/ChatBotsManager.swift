@@ -25,7 +25,7 @@ public struct ChatBot {
     
     public init(url: URL) throws {
         title = url.deletingPathExtension().lastPathComponent
-        modelURL = url.appendingPathComponent("model.tflite")
+        modelURL = url.appendingPathComponent("\(title)converted_model.tflite")
         if !(try modelURL.checkResourceIsReachable()) {
             throw ChatBotError.modelFileNotExists
         }
@@ -35,10 +35,10 @@ public struct ChatBot {
         }
         
         let decoder = JSONDecoder()
-        var data = try Data(contentsOf: url.appendingPathComponent("words.json"))
+        var data = try Data(contentsOf: url.appendingPathComponent("words_\(title).json"))
         words = try decoder.decode(type(of: words), from: data)
         
-        data = try Data(contentsOf: url.appendingPathComponent("responses.json"))
+        data = try Data(contentsOf: url.appendingPathComponent("response_\(title).json"))
         responses = try decoder.decode(type(of: responses), from: data)
     }
 }
@@ -63,7 +63,7 @@ public final class ChatBotsManager {
     
     private init() {
         let bundle = Bundle(for: ChatBotsManager.self)
-        let urls = bundle.urls(forResourcesWithExtension: "chatbot", subdirectory: nil) ?? []
+        let urls = bundle.urls(forResourcesWithExtension: "chatbot", subdirectory: "bots") ?? []
         var id = 0
         for url in urls {
             guard var bot = try? ChatBot(url: url) else { continue }

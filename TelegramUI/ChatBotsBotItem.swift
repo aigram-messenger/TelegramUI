@@ -81,7 +81,7 @@ final class ChatBotsBotItemNode: ListViewItemNode {
         
         self.imageNode = ASImageNode()
         self.imageNode.isLayerBacked = true
-        self.imageNode.contentMode = .center
+        self.imageNode.contentMode = .scaleAspectFit
         self.imageNode.contentsScale = UIScreenScale
 
         self.highlightNode.frame = CGRect(origin: CGPoint(x: floor((boundingSize.width - highlightSize.width) / 2.0) + verticalOffset, y: floor((boundingSize.height - highlightSize.height) / 2.0)), size: highlightSize)
