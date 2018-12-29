@@ -57,11 +57,22 @@ struct ChatSuggestionListItem: ListViewItem {
 private class ChatSuggestionItemNode: ListViewItemNode {
     private var response: BotResponse
     private var theme: PresentationTheme?
+    private let textNode: TextNode
     
     init() {
         self.response = BotResponse()
+        
+        self.textNode = TextNode()
+        self.textNode.isUserInteractionEnabled = false
+        self.textNode.contentMode = .left
+        self.textNode.contentsScale = UIScreen.main.scale
+//        self.textNode = ASTextNode()
+//        self.textNode.maximumNumberOfLines = 0
+//        self.textNode.truncationMode = .byTruncatingTail
+        
         super.init(layerBacked: true)
-        self.backgroundColor = UIColor(argb: arc4random())
+        
+        self.addSubnode(self.textNode)
     }
     
     func update(response: BotResponse, theme: PresentationTheme, params: ListViewItemLayoutParams) {
@@ -69,7 +80,14 @@ private class ChatSuggestionItemNode: ListViewItemNode {
         if theme != self.theme {
             self.theme = theme
         }
-        self.contentSize = CGSize(width: params.width, height: 40)
+        
+        let attributes: [NSAttributedStringKey: Any] = [
+            .font: UIFont.systemFont(ofSize: 16),
+            .foregroundColor: UIColor.black
+        ]
+        self.textNode.attributedText = NSAttributedString(string: self.response["response"] ?? "", attributes: attributes)
+        let size = self.textNode.calculateSizeThatFits(CGSize(width: params.width, height: .infinity))
+        self.contentSize = size//CGSize(width: params.width, height: 40)
     }
     
     override func animateAdded(_ currentTimestamp: Double, duration: Double) {
