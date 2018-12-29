@@ -29,11 +29,11 @@ struct ChatSuggestionListItem: ListViewItem {
     func nodeConfiguredForParams(async: @escaping (@escaping () -> Void) -> Void, params: ListViewItemLayoutParams, previousItem: ListViewItem?, nextItem: ListViewItem?, completion: @escaping (ListViewItemNode, @escaping () -> (Signal<Void, NoError>?, () -> Void)) -> Void) {
         async {
             let node = ChatSuggestionItemNode()
-            node.contentSize = CGSize(width: 100, height: 40)
+            node.contentSize = CGSize(width: params.width, height: 40)
             Queue.mainQueue().async {
                 completion(node, {
                     return (nil, {
-                        node.update(response: self.response, theme: self.theme)
+                        node.update(response: self.response, theme: self.theme, params: params)
                     })
                 })
             }
@@ -43,7 +43,7 @@ struct ChatSuggestionListItem: ListViewItem {
     func updateNode(async: @escaping (@escaping () -> Void) -> Void, node: @escaping () -> ListViewItemNode, params: ListViewItemLayoutParams, previousItem: ListViewItem?, nextItem: ListViewItem?, animation: ListViewItemUpdateAnimation, completion: @escaping (ListViewItemNodeLayout, @escaping () -> Void) -> Void) {
         Queue.mainQueue().async {
             completion(ListViewItemNodeLayout(contentSize: node().contentSize, insets: ChatSuggestionsInputNode.setupPanelIconInsets(item: self, previousItem: previousItem, nextItem: nextItem)), {
-                (node() as? ChatSuggestionItemNode)?.update(response: self.response, theme: self.theme)
+                (node() as? ChatSuggestionItemNode)?.update(response: self.response, theme: self.theme, params: params)
             })
         }
     }
@@ -64,13 +64,12 @@ private class ChatSuggestionItemNode: ListViewItemNode {
         self.backgroundColor = UIColor(argb: arc4random())
     }
     
-    func update(response: BotResponse, theme: PresentationTheme) {
+    func update(response: BotResponse, theme: PresentationTheme, params: ListViewItemLayoutParams) {
         self.response = response
         if theme != self.theme {
             self.theme = theme
         }
-        print("\(self.response)")
-        self.contentSize = CGSize(width: 100, height: 40)
+        self.contentSize = CGSize(width: params.width, height: 40)
     }
     
     override func animateAdded(_ currentTimestamp: Double, duration: Double) {
@@ -104,7 +103,6 @@ final class ChatBotsInputSuggestionsPane: ChatMediaInputPane, UIScrollViewDelega
             UIColor.blue
         ]
         var index = Int(arc4random_uniform(UInt32(colors.count)))
-//        self.backgroundColor = colors[index]
         
         self.listView.backgroundColor = colors[index]
         
@@ -121,56 +119,11 @@ final class ChatBotsInputSuggestionsPane: ChatMediaInputPane, UIScrollViewDelega
     }
     
     override func updateLayout(size: CGSize, topInset: CGFloat, bottomInset: CGFloat, isExpanded: Bool, transition: ContainedViewLayoutTransition) {
-//        let suggestions = self.responses.map { $0["response"] ?? "" }
-
-//        let verticalInset: CGFloat = 10.0
-//        let sideInset: CGFloat = 6.0
-//        let buttonHeight: CGFloat = 43.0
-//        let rowSpacing: CGFloat = 5.0
-//
-//        let rowsHeight = verticalInset + CGFloat(suggestions.count) * buttonHeight + CGFloat(max(0, suggestions.count - 1)) * rowSpacing + verticalInset
-//
-//        var verticalOffset = verticalInset
-//        var buttonIndex = 0
-//        for suggestion in suggestions {
-//            let buttonWidth = floor(size.width - sideInset - sideInset)
-//
-//            let buttonNode: ChatSuggestionsInputButtonNode
-//            if buttonIndex < self.buttonNodes.count {
-//                buttonNode = self.buttonNodes[buttonIndex]
-//            } else {
-//                buttonNode = ChatSuggestionsInputButtonNode()
-//                buttonNode.titleNode.maximumNumberOfLines = 2
-//                buttonNode.addTarget(self, action: #selector(self.buttonPressed(_:)), forControlEvents: [.touchUpInside])
-//                self.scrollNode.addSubnode(buttonNode)
-//                self.buttonNodes.append(buttonNode)
-//            }
-//            buttonIndex += 1
-//            buttonNode.frame = CGRect(origin: CGPoint(x: sideInset, y: verticalOffset), size: CGSize(width: buttonWidth, height: buttonHeight))
-//            if buttonNode.suggestion != suggestion {
-//                buttonNode.suggestion = suggestion
-//                buttonNode.setAttributedTitle(NSAttributedString(string: suggestion, font: Font.regular(16.0), textColor: UIColor.white, paragraphAlignment: .right), for: [])
-//            }
-//            verticalOffset += buttonHeight + rowSpacing
-//        }
-//
-//        for i in (buttonIndex ..< self.buttonNodes.count).reversed() {
-//            self.buttonNodes[i].removeFromSupernode()
-//            self.buttonNodes.remove(at: i)
-//        }
-
         var size = size
         size.height -= topInset + bottomInset
         transition.updateFrame(node: self.listView, frame: CGRect(origin: CGPoint(x: 0, y: topInset), size: size))
         
         let updateSizeAndInsets = ListViewUpdateSizeAndInsets(size: size, insets: UIEdgeInsets(), duration: 0, curve: .Default(duration: 0))
         self.listView.transaction(deleteIndices: [], insertIndicesAndItems: [], updateIndicesAndItems: [], options: [.Synchronous, .LowLatency], scrollToItem: nil, updateSizeAndInsets: updateSizeAndInsets, stationaryItemRange: nil, updateOpaqueState: nil, completion: { _ in })
-//        self.listView.contentSize = CGSize(width: size.width, height: rowsHeight)
-//        self.listView.contentInset = UIEdgeInsets(top: topInset, left: 0, bottom: bottomInset, right: 0)
-    }
-    
-    @objc func buttonPressed(_ button: ASButtonNode) {
-//        guard let button = button as? ChatSuggestionsInputButtonNode else { return }
-//        self.controllerInteraction.sendMessage(button.suggestion)
     }
 }
