@@ -9,7 +9,6 @@
 import Foundation
 import UIKit
 
-
 public typealias BotResponse = [String: String]
 
 public enum ChatBotError: Error {

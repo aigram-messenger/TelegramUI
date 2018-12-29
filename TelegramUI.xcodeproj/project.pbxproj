@@ -1064,6 +1064,14 @@
 		F731702821D4B34E001850D8 /* BotProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F731702721D4B34E001850D8 /* BotProcessor.swift */; };
 		F731703921D4E672001850D8 /* trashbot.chatbot in Resources */ = {isa = PBXBuildFile; fileRef = F731703721D4E672001850D8 /* trashbot.chatbot */; };
 		F731703A21D4E672001850D8 /* other.chatbot in Resources */ = {isa = PBXBuildFile; fileRef = F731703821D4E672001850D8 /* other.chatbot */; };
+		F76439AF21D66453005AC13C /* nanopb.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F76439A921D66452005AC13C /* nanopb.framework */; };
+		F76439B021D66453005AC13C /* FirebaseMLModelInterpreter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F76439AA21D66452005AC13C /* FirebaseMLModelInterpreter.framework */; };
+		F76439B121D66453005AC13C /* FirebaseCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F76439AB21D66452005AC13C /* FirebaseCore.framework */; };
+		F76439B221D66453005AC13C /* FirebaseMLCommon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F76439AC21D66453005AC13C /* FirebaseMLCommon.framework */; };
+		F76439B321D66453005AC13C /* GoogleUtilities.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F76439AD21D66453005AC13C /* GoogleUtilities.framework */; };
+		F76439B421D66453005AC13C /* tensorflow_lite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F76439AE21D66453005AC13C /* tensorflow_lite.framework */; };
+		F76439B621D6687A005AC13C /* FirebaseInstanceID.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F76439B521D66879005AC13C /* FirebaseInstanceID.framework */; };
+		F76439B821D747BD005AC13C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F76439B721D747BD005AC13C /* GoogleService-Info.plist */; };
 		F7C4373921D23041008B5C3B /* binbank.chatbot in Resources */ = {isa = PBXBuildFile; fileRef = F7C4373821D23041008B5C3B /* binbank.chatbot */; };
 		F7C4373B21D23F64008B5C3B /* alfa.chatbot in Resources */ = {isa = PBXBuildFile; fileRef = F7C4373A21D23F63008B5C3B /* alfa.chatbot */; };
 		F7E0F2E121D2270100974C76 /* ChatBotsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7E0F2E021D2270100974C76 /* ChatBotsManager.swift */; };
@@ -2216,6 +2224,14 @@
 		F731702721D4B34E001850D8 /* BotProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BotProcessor.swift; sourceTree = "<group>"; };
 		F731703721D4E672001850D8 /* trashbot.chatbot */ = {isa = PBXFileReference; lastKnownFileType = folder; path = trashbot.chatbot; sourceTree = "<group>"; };
 		F731703821D4E672001850D8 /* other.chatbot */ = {isa = PBXFileReference; lastKnownFileType = folder; path = other.chatbot; sourceTree = "<group>"; };
+		F76439A921D66452005AC13C /* nanopb.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = nanopb.framework; path = "third-party/nanopb.framework"; sourceTree = "<group>"; };
+		F76439AA21D66452005AC13C /* FirebaseMLModelInterpreter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FirebaseMLModelInterpreter.framework; path = "third-party/FirebaseMLModelInterpreter.framework"; sourceTree = "<group>"; };
+		F76439AB21D66452005AC13C /* FirebaseCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FirebaseCore.framework; path = "third-party/FirebaseCore.framework"; sourceTree = "<group>"; };
+		F76439AC21D66453005AC13C /* FirebaseMLCommon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FirebaseMLCommon.framework; path = "third-party/FirebaseMLCommon.framework"; sourceTree = "<group>"; };
+		F76439AD21D66453005AC13C /* GoogleUtilities.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GoogleUtilities.framework; path = "third-party/GoogleUtilities.framework"; sourceTree = "<group>"; };
+		F76439AE21D66453005AC13C /* tensorflow_lite.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = tensorflow_lite.framework; path = "third-party/tensorflow_lite.framework"; sourceTree = "<group>"; };
+		F76439B521D66879005AC13C /* FirebaseInstanceID.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FirebaseInstanceID.framework; path = "third-party/FirebaseInstanceID.framework"; sourceTree = "<group>"; };
+		F76439B721D747BD005AC13C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "TelegramUI/Resources/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		F7C4373821D23041008B5C3B /* binbank.chatbot */ = {isa = PBXFileReference; lastKnownFileType = folder; path = binbank.chatbot; sourceTree = "<group>"; };
 		F7C4373A21D23F63008B5C3B /* alfa.chatbot */ = {isa = PBXFileReference; lastKnownFileType = folder; path = alfa.chatbot; sourceTree = "<group>"; };
 		F7E0F2E021D2270100974C76 /* ChatBotsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotsManager.swift; sourceTree = "<group>"; };
@@ -2231,6 +2247,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F76439AF21D66453005AC13C /* nanopb.framework in Frameworks */,
+				F76439B021D66453005AC13C /* FirebaseMLModelInterpreter.framework in Frameworks */,
+				F76439B121D66453005AC13C /* FirebaseCore.framework in Frameworks */,
+				F76439B221D66453005AC13C /* FirebaseMLCommon.framework in Frameworks */,
+				F76439B321D66453005AC13C /* GoogleUtilities.framework in Frameworks */,
+				F76439B421D66453005AC13C /* tensorflow_lite.framework in Frameworks */,
+				F76439B621D6687A005AC13C /* FirebaseInstanceID.framework in Frameworks */,
 				091BEAB3214552D9003AEA30 /* Vision.framework in Frameworks */,
 				D0C45E9F213FFAFD00988156 /* Lottie.framework in Frameworks */,
 				D00ACA4B20222C280045D427 /* libtgvoip.framework in Frameworks */,
@@ -2675,6 +2698,7 @@
 		D0471B521EFD8EBC0074D609 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				F76439B721D747BD005AC13C /* GoogleService-Info.plist */,
 				F731703821D4E672001850D8 /* other.chatbot */,
 				F731703721D4E672001850D8 /* trashbot.chatbot */,
 				F7C4373A21D23F63008B5C3B /* alfa.chatbot */,
@@ -3212,6 +3236,13 @@
 		D08D45281D5E340200A7428A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				F76439B521D66879005AC13C /* FirebaseInstanceID.framework */,
+				F76439AB21D66452005AC13C /* FirebaseCore.framework */,
+				F76439AC21D66453005AC13C /* FirebaseMLCommon.framework */,
+				F76439AA21D66452005AC13C /* FirebaseMLModelInterpreter.framework */,
+				F76439AD21D66453005AC13C /* GoogleUtilities.framework */,
+				F76439A921D66452005AC13C /* nanopb.framework */,
+				F76439AE21D66453005AC13C /* tensorflow_lite.framework */,
 				D0C45E9E213FFAFD00988156 /* Lottie.framework */,
 				D02DADBE2138D76F00116225 /* Vision.framework */,
 				D00ACA4C20222C280045D427 /* libtgvoip.framework */,
@@ -4886,6 +4917,7 @@
 				D0E9BAB21F056F4C00F079A4 /* stp_card_mastercard_template@3x.png in Resources */,
 				D0E9BA981F056F4C00F079A4 /* stp_card_applepay_template@3x.png in Resources */,
 				D0E9BAA51F056F4C00F079A4 /* stp_card_form_applepay@2x.png in Resources */,
+				F76439B821D747BD005AC13C /* GoogleService-Info.plist in Resources */,
 				D0E9BAB81F056F4C00F079A4 /* stp_card_visa_template@3x.png in Resources */,
 				D0E9BA9B1F056F4C00F079A4 /* stp_card_cvc_amex@2x.png in Resources */,
 				F731703921D4E672001850D8 /* trashbot.chatbot in Resources */,
@@ -5934,7 +5966,7 @@
 				HEADERMAP_USES_VFS = YES;
 				HEADER_SEARCH_PATHS = "third-party/ogg";
 				INFOPLIST_FILE = "$(SRCROOT)/TelegramUI/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -6129,7 +6161,7 @@
 				HEADERMAP_USES_VFS = YES;
 				HEADER_SEARCH_PATHS = "third-party/ogg";
 				INFOPLIST_FILE = "$(SRCROOT)/TelegramUI/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -6244,7 +6276,7 @@
 				HEADERMAP_USES_VFS = YES;
 				HEADER_SEARCH_PATHS = "third-party/ogg";
 				INFOPLIST_FILE = "$(SRCROOT)/TelegramUI/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -6367,7 +6399,7 @@
 				HEADERMAP_USES_VFS = YES;
 				HEADER_SEARCH_PATHS = "third-party/ogg";
 				INFOPLIST_FILE = "$(SRCROOT)/TelegramUI/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -6480,7 +6512,7 @@
 				HEADERMAP_USES_VFS = YES;
 				HEADER_SEARCH_PATHS = "third-party/ogg";
 				INFOPLIST_FILE = "$(SRCROOT)/TelegramUI/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -6524,7 +6556,7 @@
 				HEADERMAP_USES_VFS = YES;
 				HEADER_SEARCH_PATHS = "third-party/ogg";
 				INFOPLIST_FILE = "$(SRCROOT)/TelegramUI/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -6566,7 +6598,7 @@
 				HEADERMAP_USES_VFS = YES;
 				HEADER_SEARCH_PATHS = "third-party/ogg";
 				INFOPLIST_FILE = "$(SRCROOT)/TelegramUI/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -6607,7 +6639,7 @@
 				HEADERMAP_USES_VFS = YES;
 				HEADER_SEARCH_PATHS = "third-party/ogg";
 				INFOPLIST_FILE = "$(SRCROOT)/TelegramUI/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",

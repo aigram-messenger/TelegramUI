@@ -18,6 +18,11 @@ private final class ChatSuggestionsInputButtonNode: ASButtonNode {
     
     private var theme: PresentationTheme?
     
+    override init() {
+        super.init()
+        backgroundColor = UIColor.darkGray
+    }
+    
 //    init(theme: PresentationTheme) {
 //        super.init()
 //
@@ -99,11 +104,11 @@ final class ChatBotsInputSuggestionsPane: ChatMediaInputPane, UIScrollViewDelega
                 self.buttonNodes.append(buttonNode)
             }
             buttonIndex += 1
+            buttonNode.frame = CGRect(origin: CGPoint(x: sideInset, y: verticalOffset), size: CGSize(width: buttonWidth, height: buttonHeight))
             if buttonNode.suggestion != suggestion {
                 buttonNode.suggestion = suggestion
                 buttonNode.setAttributedTitle(NSAttributedString(string: suggestion, font: Font.regular(16.0), textColor: UIColor.white, paragraphAlignment: .right), for: [])
             }
-            buttonNode.frame = CGRect(origin: CGPoint(x: sideInset, y: verticalOffset), size: CGSize(width: buttonWidth, height: buttonHeight))
             verticalOffset += buttonHeight + rowSpacing
         }
 
