@@ -226,7 +226,7 @@ final class ChatSuggestionsInputNode: ChatInputNode {
         for paneType in toArrangements {
             switch paneType {
             case .store:
-                self.panesAndAnimatingOut.append((ChatBotsInputStorePane(), false))
+                self.panesAndAnimatingOut.append((ChatBotsInputStorePane(inputNodeInteraction: self.inputNodeInteraction, theme: self.theme!), false))
             case .bot:
                 self.panesAndAnimatingOut.append((ChatBotsInputSuggestionsPane(responses: results[resultIndex].responses, inputNodeInteraction: self.inputNodeInteraction, theme: self.theme!), false))
                 resultIndex += 1
