@@ -22,8 +22,10 @@ public struct ChatBot {
     public var responses: [BotResponse] = []
     public var modelURL: URL
     public var icon: UIImage = UIImage()
+    public let url: URL
     
     public init(url: URL) throws {
+        self.url = url
         title = url.deletingPathExtension().lastPathComponent
         modelURL = url.appendingPathComponent("\(title)converted_model.tflite")
         if !(try modelURL.checkResourceIsReachable()) {
@@ -80,8 +82,6 @@ public final class ChatBotsManager {
             bots.append(bot)
             id += 1
         }
-        
-        print("\(botsInStore())")
     }
     
     public func handleMessages(_ messages: [String], completion: @escaping ([ChatBotResult]) -> Void) {
@@ -125,6 +125,34 @@ public final class ChatBotsManager {
         
         return result
     }
+    
+    public func copyBot(_ bot: ChatBot) -> Bool {
+        let fm = FileManager.default
+        guard var destinationUrl = fm.urls(for: .documentDirectory, in: .userDomainMask).first else { return false }
+        destinationUrl.appendPathComponent("chatbots", isDirectory: true)
+        if !((try? destinationUrl.checkResourceIsReachable()) ?? false) {
+            do {
+                try fm.createDirectory(at: destinationUrl, withIntermediateDirectories: true, attributes: nil)
+            } catch {
+                return false
+            }
+        }
+        destinationUrl.appendPathComponent("\(bot.title).chatbot", isDirectory: true)
+        if ((try? destinationUrl.checkResourceIsReachable()) ?? false) {
+            try? fm.removeItem(at: destinationUrl)
+        }
+        
+        do {
+            try fm.copyItem(at: bot.url, to: destinationUrl)
+            var newBot = try ChatBot(url: destinationUrl)
+            newBot.id = nextBotId
+            bots.append(newBot)
+        } catch {
+            return false
+        }
+        
+        return true
+    }
 }
 
 extension ChatBotsManager {
@@ -139,5 +167,16 @@ extension ChatBotsManager {
             words.append(word.lowercased())
         }
         return words
+    }
+    
+    private var nextBotId: Int {
+        var result = 0
+        
+        for bot in bots {
+            result = max(result, bot.id)
+        }
+        result += 1
+        
+        return result
     }
 }
