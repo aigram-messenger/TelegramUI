@@ -51,7 +51,6 @@ extension ChatBot: Equatable {
 
 public struct ChatBotResult {
     public let bot: ChatBot
-//    public let originalMessages: [String]
     public let responses: [BotResponse]
 }
 
@@ -62,8 +61,18 @@ public final class ChatBotsManager {
     private var lastMessages: [String]?
     
     private init() {
-        let bundle = Bundle(for: ChatBotsManager.self)
-        let urls = bundle.urls(forResourcesWithExtension: "chatbot", subdirectory: "bots") ?? []
+        queue = OperationQueue()
+        queue.maxConcurrentOperationCount = 1
+        
+        let fm = FileManager.default
+        guard var chatBotsUrl = fm.urls(for: .documentDirectory, in: .userDomainMask).first else { return }
+        chatBotsUrl.appendPathComponent("chatbots", isDirectory: true)
+        if !((try? chatBotsUrl.checkResourceIsReachable()) ?? false) {
+            try? fm.createDirectory(at: chatBotsUrl, withIntermediateDirectories: true, attributes: nil)
+        }
+        
+        let urls = (try? fm.contentsOfDirectory(at: chatBotsUrl, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles])) ?? []
+        
         var id = 0
         for url in urls {
             guard var bot = try? ChatBot(url: url) else { continue }
@@ -71,8 +80,8 @@ public final class ChatBotsManager {
             bots.append(bot)
             id += 1
         }
-        queue = OperationQueue()
-        queue.maxConcurrentOperationCount = 1
+        
+        print("\(botsInStore())")
     }
     
     public func handleMessages(_ messages: [String], completion: @escaping ([ChatBotResult]) -> Void) {
@@ -104,6 +113,21 @@ public final class ChatBotsManager {
         }
     }
     
+    public func botsInStore() -> [ChatBot] {
+        var result: [ChatBot] = []
+        
+        let bundle = Bundle(for: ChatBotsManager.self)
+        let urls = bundle.urls(forResourcesWithExtension: "chatbot", subdirectory: "bots") ?? []
+        for url in urls {
+            guard let bot = try? ChatBot(url: url) else { continue }
+            result.append(bot)
+        }
+        
+        return result
+    }
+}
+
+extension ChatBotsManager {
     private func words(of message: String) -> [String] {
         let tagger = NSLinguisticTagger(tagSchemes: [.lemma], options: 0)
         tagger.string = message
