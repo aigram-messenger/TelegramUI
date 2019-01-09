@@ -13,8 +13,10 @@ import Postbox
 import TelegramCore
 import SwiftSignalKit
 
-struct ChatSuggestionListItem: ListViewItem {
-    private let response: BotResponse
+struct ChatSuggestionListItem: ListViewItem, ItemListItem {
+    var sectionId: ItemListSectionId = 0
+
+    let response: BotResponse
     let inputNodeInteraction: ChatBotsInputNodeInteraction
     let theme: PresentationTheme
     
@@ -29,11 +31,16 @@ struct ChatSuggestionListItem: ListViewItem {
     func nodeConfiguredForParams(async: @escaping (@escaping () -> Void) -> Void, params: ListViewItemLayoutParams, previousItem: ListViewItem?, nextItem: ListViewItem?, completion: @escaping (ListViewItemNode, @escaping () -> (Signal<Void, NoError>?, () -> Void)) -> Void) {
         async {
             let node = ChatSuggestionItemNode()
-            node.contentSize = CGSize(width: params.width, height: 40)
+            let (layout, apply) = node.asyncLayout()(self, params, itemListNeighbors(item: self, topItem: previousItem as? ItemListItem, bottomItem: nextItem as? ItemListItem))
+
+            node.contentSize = layout.contentSize
+            node.insets = layout.insets
+
             Queue.mainQueue().async {
                 completion(node, {
                     return (nil, {
                         node.update(response: self.response, theme: self.theme, params: params)
+                        apply()
                     })
                 })
             }
@@ -42,9 +49,22 @@ struct ChatSuggestionListItem: ListViewItem {
     
     func updateNode(async: @escaping (@escaping () -> Void) -> Void, node: @escaping () -> ListViewItemNode, params: ListViewItemLayoutParams, previousItem: ListViewItem?, nextItem: ListViewItem?, animation: ListViewItemUpdateAnimation, completion: @escaping (ListViewItemNodeLayout, @escaping () -> Void) -> Void) {
         Queue.mainQueue().async {
-            completion(ListViewItemNodeLayout(contentSize: node().contentSize, insets: ChatSuggestionsInputNode.setupPanelIconInsets(item: self, previousItem: previousItem, nextItem: nextItem)), {
-                (node() as? ChatSuggestionItemNode)?.update(response: self.response, theme: self.theme, params: params)
-            })
+            guard let nodeValue = node() as? ChatSuggestionItemNode else {
+                assertionFailure()
+                return
+            }
+            
+            let makeLayout = nodeValue.asyncLayout()
+            
+            async {
+                let (layout, apply) = makeLayout(self, params, itemListNeighbors(item: self, topItem: previousItem as? ItemListItem, bottomItem: nextItem as? ItemListItem))
+                Queue.mainQueue().async {
+                    completion(layout, {
+                        nodeValue.update(response: self.response, theme: self.theme, params: params)
+                        apply()
+                    })
+                }
+            }
         }
     }
     
@@ -54,10 +74,17 @@ struct ChatSuggestionListItem: ListViewItem {
     }
 }
 
+private let titleFont = Font.regular(17.0)
+private let titleBoldFont = Font.medium(17.0)
+private let titleItalicFont = Font.italic(17.0)
+private let titleFixedFont = Font.regular(17.0)
+
 private class ChatSuggestionItemNode: ListViewItemNode {
     private var response: BotResponse
     private var theme: PresentationTheme?
     private let textNode: TextNode
+
+    private var item: ChatSuggestionListItem?
     
     init() {
         self.response = BotResponse()
@@ -66,12 +93,11 @@ private class ChatSuggestionItemNode: ListViewItemNode {
         self.textNode.isUserInteractionEnabled = false
         self.textNode.contentMode = .left
         self.textNode.contentsScale = UIScreen.main.scale
-//        self.textNode = ASTextNode()
-//        self.textNode.maximumNumberOfLines = 0
-//        self.textNode.truncationMode = .byTruncatingTail
-        
-        super.init(layerBacked: true)
-        
+
+        super.init(layerBacked: false)
+
+        self.textNode.backgroundColor = UIColor(argb: arc4random())
+
         self.addSubnode(self.textNode)
     }
     
@@ -80,14 +106,6 @@ private class ChatSuggestionItemNode: ListViewItemNode {
         if theme != self.theme {
             self.theme = theme
         }
-        
-        let attributes: [NSAttributedStringKey: Any] = [
-            .font: UIFont.systemFont(ofSize: 16),
-            .foregroundColor: UIColor.black
-        ]
-        self.textNode.attributedText = NSAttributedString(string: self.response["response"] ?? "", attributes: attributes)
-        let size = self.textNode.calculateSizeThatFits(CGSize(width: params.width, height: .infinity))
-        self.contentSize = size//CGSize(width: params.width, height: 40)
     }
     
     override func animateAdded(_ currentTimestamp: Double, duration: Double) {
@@ -96,6 +114,37 @@ private class ChatSuggestionItemNode: ListViewItemNode {
     
     override func animateRemoved(_ currentTimestamp: Double, duration: Double) {
         self.layer.animateAlpha(from: 1.0, to: 0.0, duration: 0.15, removeOnCompletion: false)
+    }
+
+    func asyncLayout() -> (_ item: ChatSuggestionListItem, _ params: ListViewItemLayoutParams, _ neighbors: ItemListNeighbors) -> (ListViewItemNodeLayout, () -> Void) {
+        let makeTextLayout = TextNode.asyncLayout(self.textNode)
+        return { item, params, neighbors in
+            let textColor: UIColor = item.theme.list.itemPrimaryTextColor
+
+            let leftInset = 16.0 + params.leftInset
+
+            let text = item.response["response"] ?? ""
+            let entities = generateTextEntities(text, enabledTypes: [])
+            let string = stringWithAppliedEntities(text, entities: entities, baseColor: textColor, linkColor: item.theme.list.itemAccentColor, baseFont: titleFont, linkFont: titleFont, boldFont: titleBoldFont, italicFont: titleItalicFont, fixedFont: titleFixedFont)
+
+            let (titleLayout, titleApply) = makeTextLayout(TextNodeLayoutArguments(attributedString: string, backgroundColor: nil, maximumNumberOfLines: 0, truncationType: .end, constrainedSize: CGSize(width: params.width - params.leftInset - params.rightInset - 20.0, height: CGFloat.greatestFiniteMagnitude), alignment: .natural, cutout: nil, insets: UIEdgeInsets()))
+
+            let contentSize = CGSize(width: params.width, height: titleLayout.size.height + 22.0)
+            let insets = itemListNeighborsPlainInsets(neighbors)
+            let layout = ListViewItemNodeLayout(contentSize: contentSize, insets: insets)
+
+            return (layout, { [weak self] in
+                if let strongSelf = self {
+                    strongSelf.item = item
+
+                    let _ = titleApply()
+
+                    print("==> TITLE SIZE \(titleLayout.size)")
+                    
+                    strongSelf.textNode.frame = CGRect(origin: CGPoint(x: leftInset, y: 11.0), size: titleLayout.size)
+                }
+            })
+        }
     }
 }
 
@@ -133,12 +182,17 @@ final class ChatBotsInputSuggestionsPane: ChatMediaInputPane, UIScrollViewDelega
             index += 1
             return item
         }
-        self.listView.transaction(deleteIndices: [], insertIndicesAndItems: insertItems, updateIndicesAndItems: [], options: [.Synchronous, .LowLatency], updateOpaqueState: nil)
+
+        let updateSizeAndInsets = ListViewUpdateSizeAndInsets(size: self.frame.size, insets: UIEdgeInsets(), duration: 0, curve: .Default(duration: 0))
+        self.listView.transaction(deleteIndices: [], insertIndicesAndItems: insertItems, updateIndicesAndItems: [], options: [.Synchronous, .LowLatency], scrollToItem: nil, updateSizeAndInsets: updateSizeAndInsets, stationaryItemRange: nil, updateOpaqueState: nil, completion: { _ in
+            self.listView.layout()
+        })
     }
     
     override func updateLayout(size: CGSize, topInset: CGFloat, bottomInset: CGFloat, isExpanded: Bool, transition: ContainedViewLayoutTransition) {
         var size = size
         size.height -= topInset + bottomInset
+        print("==> PANE SIZE \(size)")
         transition.updateFrame(node: self.listView, frame: CGRect(origin: CGPoint(x: 0, y: topInset), size: size))
         
         let updateSizeAndInsets = ListViewUpdateSizeAndInsets(size: size, insets: UIEdgeInsets(), duration: 0, curve: .Default(duration: 0))
