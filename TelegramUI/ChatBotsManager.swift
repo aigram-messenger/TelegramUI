@@ -24,6 +24,15 @@ public struct ChatBot {
     public var icon: UIImage = UIImage()
     public let url: URL
     
+    public var isLocal: Bool {
+        let fm = FileManager.default
+        guard var destinationUrl = fm.urls(for: .documentDirectory, in: .userDomainMask).first else { return false }
+        destinationUrl.appendPathComponent("chatbots", isDirectory: true)
+        destinationUrl.appendPathComponent("\(title).chatbot", isDirectory: true)
+        let result = (try? destinationUrl.checkResourceIsReachable()) ?? false
+        return result
+    }
+    
     public init(url: URL) throws {
         self.url = url
         title = url.deletingPathExtension().lastPathComponent
