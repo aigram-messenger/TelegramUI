@@ -15,11 +15,13 @@ import SwiftSignalKit
 
 final class ChatBotsInputNodeInteraction {
     let navigateToCollectionId: (ItemCollectionId) -> Void
+    let sendMessage: (String) -> Void
     
     var highlightedItemCollectionId: ItemCollectionId?
     var appearanceTransition: CGFloat = 1.0
     
-    init(navigateToCollectionId: @escaping (ItemCollectionId) -> Void) {
+    init(navigateToCollectionId: @escaping (ItemCollectionId) -> Void, sendMessage: @escaping (String) -> Void) {
         self.navigateToCollectionId = navigateToCollectionId
+        self.sendMessage = sendMessage
     }
 }

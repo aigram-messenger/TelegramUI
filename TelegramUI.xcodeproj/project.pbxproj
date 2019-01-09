@@ -1074,6 +1074,9 @@
 		F7E0F2E121D2270100974C76 /* ChatBotsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7E0F2E021D2270100974C76 /* ChatBotsManager.swift */; };
 		F7F28FCF21CD1DB3008DC5A4 /* ChatBotsInputStoreGridItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7F28FCE21CD1DB3008DC5A4 /* ChatBotsInputStoreGridItem.swift */; };
 		F7F28FD121CD1E2D008DC5A4 /* ChatBotsInputSuggestionsPane.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7F28FD021CD1E2D008DC5A4 /* ChatBotsInputSuggestionsPane.swift */; };
+		FB31301621D80DF0004870C2 /* ObjC.h in Headers */ = {isa = PBXBuildFile; fileRef = FB31301421D80DF0004870C2 /* ObjC.h */; };
+		FB31301721D80DF0004870C2 /* ObjC.m in Sources */ = {isa = PBXBuildFile; fileRef = FB31301521D80DF0004870C2 /* ObjC.m */; };
+		FB31301921D80E87004870C2 /* TelegramUI-Bridging-Header.h in Headers */ = {isa = PBXBuildFile; fileRef = FB31301821D80E87004870C2 /* TelegramUI-Bridging-Header.h */; };
 		FB32415B21D169C00023532E /* ChatBotsBotItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB32415A21D169C00023532E /* ChatBotsBotItem.swift */; };
 		FB929AD221BFE57C004000E0 /* ChatSuggestionsInputNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB929AD121BFE57C004000E0 /* ChatSuggestionsInputNode.swift */; };
 /* End PBXBuildFile section */
@@ -2229,9 +2232,11 @@
 		F76439B721D747BD005AC13C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "TelegramUI/Resources/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		F76439B921D77A15005AC13C /* bots */ = {isa = PBXFileReference; lastKnownFileType = folder; path = bots; sourceTree = "<group>"; };
 		F7E0F2E021D2270100974C76 /* ChatBotsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotsManager.swift; sourceTree = "<group>"; };
-		F7F28FCC21CD0F4A008DC5A4 /* ChatBotsInputNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotsInputNode.swift; sourceTree = "<group>"; };
 		F7F28FCE21CD1DB3008DC5A4 /* ChatBotsInputStoreGridItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotsInputStoreGridItem.swift; sourceTree = "<group>"; };
 		F7F28FD021CD1E2D008DC5A4 /* ChatBotsInputSuggestionsPane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotsInputSuggestionsPane.swift; sourceTree = "<group>"; };
+		FB31301421D80DF0004870C2 /* ObjC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ObjC.h; sourceTree = "<group>"; };
+		FB31301521D80DF0004870C2 /* ObjC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ObjC.m; sourceTree = "<group>"; };
+		FB31301821D80E87004870C2 /* TelegramUI-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TelegramUI-Bridging-Header.h"; sourceTree = "<group>"; };
 		FB32415A21D169C00023532E /* ChatBotsBotItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotsBotItem.swift; sourceTree = "<group>"; };
 		FB929AD121BFE57C004000E0 /* ChatSuggestionsInputNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatSuggestionsInputNode.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -4614,6 +4619,7 @@
 		D0FC40751D5B8E7400261D9D = {
 			isa = PBXGroup;
 			children = (
+				FB31301821D80E87004870C2 /* TelegramUI-Bridging-Header.h */,
 				D0EB42041F3143AB00838FE6 /* LegacyComponentsResources.bundle */,
 				D0F69DB91D6B88190046BCD6 /* TelegramUI.xcconfig */,
 				D0AB0BBA1D6719B5002C78E7 /* Images.xcassets */,
@@ -4669,6 +4675,8 @@
 			children = (
 				F7E0F2E021D2270100974C76 /* ChatBotsManager.swift */,
 				F731702721D4B34E001850D8 /* BotProcessor.swift */,
+				FB31301421D80DF0004870C2 /* ObjC.h */,
+				FB31301521D80DF0004870C2 /* ObjC.m */,
 			);
 			name = Additions;
 			sourceTree = "<group>";
@@ -4678,7 +4686,6 @@
 			children = (
 				F7E0F2DF21D226F100974C76 /* Additions */,
 				FB32415921D160000023532E /* Panes List Items */,
-				F7F28FCC21CD0F4A008DC5A4 /* ChatBotsInputNode.swift */,
 				FB929AD121BFE57C004000E0 /* ChatSuggestionsInputNode.swift */,
 				F7F28FCE21CD1DB3008DC5A4 /* ChatBotsInputStoreGridItem.swift */,
 				F7F28FD021CD1E2D008DC5A4 /* ChatBotsInputSuggestionsPane.swift */,
@@ -4705,6 +4712,7 @@
 			files = (
 				D0E9BA221F05577700F079A4 /* STPCard.h in Headers */,
 				096C98C021787C6700C211FF /* TGBridgeAudioEncoder.h in Headers */,
+				FB31301621D80DF0004870C2 /* ObjC.h in Headers */,
 				D0E9BA591F055A2200F079A4 /* STPWeakStrongMacros.h in Headers */,
 				D0E9BADE1F0574D800F079A4 /* STPBackendAPIAdapter.h in Headers */,
 				D0E9BAD11F0573C000F079A4 /* STPToken.h in Headers */,
@@ -4746,6 +4754,7 @@
 				D0E9BAC81F05738600F079A4 /* STPAPIClient+ApplePay.h in Headers */,
 				D0E9BA451F0559A500F079A4 /* STPAPIResponseDecodable.h in Headers */,
 				D0E9BA201F05577700F079A4 /* STPCardParams.h in Headers */,
+				FB31301921D80E87004870C2 /* TelegramUI-Bridging-Header.h in Headers */,
 				D0E9BA151F05574500F079A4 /* STPCardValidator.h in Headers */,
 				D0E9BA401F0558FE00F079A4 /* StripeError.h in Headers */,
 				D0E9BA191F05574500F079A4 /* STPPaymentCardTextField.h in Headers */,
@@ -5490,6 +5499,7 @@
 				D079FCD91F05A5550038FADE /* BotCheckoutPasswordEntryController.swift in Sources */,
 				D0EC6DC51EB9F58900EBF1C3 /* SoftwareVideoSource.swift in Sources */,
 				D0EC6DC61EB9F58900EBF1C3 /* MultiplexedSoftwareVideoSourceManager.swift in Sources */,
+				FB31301721D80DF0004870C2 /* ObjC.m in Sources */,
 				D0EC6DC71EB9F58900EBF1C3 /* SampleBufferPool.swift in Sources */,
 				D0EC6DC81EB9F58900EBF1C3 /* MultiplexedVideoNode.swift in Sources */,
 				D0EC6DC91EB9F58900EBF1C3 /* SoftwareVideoLayerFrameManager.swift in Sources */,
@@ -5933,6 +5943,7 @@
 				OTHER_SWIFT_FLAGS = "-Xfrontend -debug-time-function-bodies -driver-show-incremental";
 				PRODUCT_BUNDLE_IDENTIFIER = org.telegram.Telegram.TelegramUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 4.0;
 			};
 			name = "Debug Fork";
@@ -5975,6 +5986,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
 				SWIFT_INSTALL_OBJC_HEADER = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "TelegramUI-Bridging-Header.h";
 				SWIFT_VERSION = 4.0;
 				USER_HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/third-party/FFmpeg-iOS/include";
 			};
@@ -6049,6 +6061,7 @@
 				OTHER_SWIFT_FLAGS = "-Xfrontend -debug-time-function-bodies -driver-show-incremental";
 				PRODUCT_BUNDLE_IDENTIFIER = org.telegram.Telegram.TelegramUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 4.0;
 			};
 			name = "Release AppStore";
@@ -6128,6 +6141,7 @@
 				OTHER_SWIFT_FLAGS = "-Xfrontend -debug-time-function-bodies -driver-show-incremental";
 				PRODUCT_BUNDLE_IDENTIFIER = org.telegram.Telegram.TelegramUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 4.0;
 			};
 			name = "Debug AppStore";
@@ -6170,6 +6184,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
 				SWIFT_INSTALL_OBJC_HEADER = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "TelegramUI-Bridging-Header.h";
 				SWIFT_VERSION = 4.0;
 				USER_HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/third-party/FFmpeg-iOS/include";
 			};
@@ -6244,6 +6259,7 @@
 				OTHER_SWIFT_FLAGS = "-Xfrontend -debug-time-function-bodies -driver-show-incremental";
 				PRODUCT_BUNDLE_IDENTIFIER = org.telegram.Telegram.TelegramUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 4.0;
 			};
 			name = "Release Hockeyapp Internal";
@@ -6286,6 +6302,7 @@
 				SKIP_INSTALL = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_INSTALL_OBJC_HEADER = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "TelegramUI-Bridging-Header.h";
 				SWIFT_VERSION = 4.0;
 				USER_HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/third-party/FFmpeg-iOS/include";
 			};
@@ -6366,6 +6383,7 @@
 				OTHER_SWIFT_FLAGS = "-Xfrontend -debug-time-function-bodies -driver-show-incremental";
 				PRODUCT_BUNDLE_IDENTIFIER = org.telegram.Telegram.TelegramUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 4.0;
 			};
 			name = "Debug AppStore LLC";
@@ -6408,6 +6426,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
 				SWIFT_INSTALL_OBJC_HEADER = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "TelegramUI-Bridging-Header.h";
 				SWIFT_VERSION = 4.0;
 				USER_HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/third-party/FFmpeg-iOS/include";
 			};
@@ -6482,6 +6501,7 @@
 				OTHER_SWIFT_FLAGS = "-Xfrontend -debug-time-function-bodies -driver-show-incremental";
 				PRODUCT_BUNDLE_IDENTIFIER = org.telegram.Telegram.TelegramUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 4.0;
 			};
 			name = "Release AppStore LLC";
@@ -6521,6 +6541,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
 				SWIFT_INSTALL_OBJC_HEADER = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "TelegramUI-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 4.0;
 				USER_HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/third-party/FFmpeg-iOS/include";
@@ -6565,6 +6586,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
 				SWIFT_INSTALL_OBJC_HEADER = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "TelegramUI-Bridging-Header.h";
 				SWIFT_VERSION = 4.0;
 				USER_HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/third-party/FFmpeg-iOS/include";
 			};
@@ -6608,6 +6630,7 @@
 				SKIP_INSTALL = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_INSTALL_OBJC_HEADER = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "TelegramUI-Bridging-Header.h";
 				SWIFT_VERSION = 4.0;
 				USER_HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/third-party/FFmpeg-iOS/include";
 			};
@@ -6649,6 +6672,7 @@
 				SKIP_INSTALL = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_INSTALL_OBJC_HEADER = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "TelegramUI-Bridging-Header.h";
 				SWIFT_VERSION = 4.0;
 				USER_HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/third-party/FFmpeg-iOS/include";
 			};
@@ -6785,6 +6809,7 @@
 				OTHER_SWIFT_FLAGS = "-Xfrontend -debug-time-function-bodies -driver-show-incremental";
 				PRODUCT_BUNDLE_IDENTIFIER = org.telegram.Telegram.TelegramUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 4.0;
 			};
 			name = "Debug Hockeyapp";
@@ -6802,6 +6827,7 @@
 				OTHER_SWIFT_FLAGS = "-Xfrontend -debug-time-function-bodies -driver-show-incremental";
 				PRODUCT_BUNDLE_IDENTIFIER = org.telegram.Telegram.TelegramUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 4.0;
 			};
 			name = "Release Hockeyapp";
