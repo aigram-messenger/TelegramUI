@@ -74,7 +74,6 @@ public final class ChatBotsManager {
         }
         
         let urls = (try? fm.contentsOfDirectory(at: chatBotsUrl, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles])) ?? []
-        
         var id = 0
         for url in urls {
             guard var bot = try? ChatBot(url: url) else { continue }
@@ -152,6 +151,14 @@ public final class ChatBotsManager {
         }
         
         return true
+    }
+    
+    public func deleteBot(_ bot: ChatBot) {
+        let fm = FileManager.default
+        guard var botUrl = fm.urls(for: .documentDirectory, in: .userDomainMask).first else { return }
+        botUrl.appendPathComponent("chatbots", isDirectory: true)
+        botUrl.appendPathComponent("\(bot.title).chatbot", isDirectory: true)
+        try? fm.removeItem(at: botUrl)
     }
 }
 
