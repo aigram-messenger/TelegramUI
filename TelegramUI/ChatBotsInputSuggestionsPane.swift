@@ -33,7 +33,9 @@ struct ChatSuggestionListItem: ListViewItem, ItemListItem {
             let node = ChatSuggestionItemNode()
             let (layout, apply) = node.asyncLayout()(self, params, itemListNeighbors(item: self, topItem: previousItem as? ItemListItem, bottomItem: nextItem as? ItemListItem))
 
-            node.contentSize = layout.contentSize
+            var size = layout.contentSize
+            size.height = 10
+            node.contentSize = size
             node.insets = layout.insets
 
             Queue.mainQueue().async {
@@ -96,7 +98,7 @@ private class ChatSuggestionItemNode: ListViewItemNode {
 
         super.init(layerBacked: false)
 
-        self.textNode.backgroundColor = UIColor(argb: arc4random())
+        self.backgroundColor = UIColor(argb: arc4random())
 
         self.addSubnode(self.textNode)
     }
@@ -119,11 +121,11 @@ private class ChatSuggestionItemNode: ListViewItemNode {
     func asyncLayout() -> (_ item: ChatSuggestionListItem, _ params: ListViewItemLayoutParams, _ neighbors: ItemListNeighbors) -> (ListViewItemNodeLayout, () -> Void) {
         let makeTextLayout = TextNode.asyncLayout(self.textNode)
         return { item, params, neighbors in
+            let text = item.response["response"] ?? ""
             let textColor: UIColor = item.theme.list.itemPrimaryTextColor
 
             let leftInset = 16.0 + params.leftInset
 
-            let text = item.response["response"] ?? ""
             let entities = generateTextEntities(text, enabledTypes: [])
             let string = stringWithAppliedEntities(text, entities: entities, baseColor: textColor, linkColor: item.theme.list.itemAccentColor, baseFont: titleFont, linkFont: titleFont, boldFont: titleBoldFont, italicFont: titleItalicFont, fixedFont: titleFixedFont)
 
@@ -132,14 +134,12 @@ private class ChatSuggestionItemNode: ListViewItemNode {
             let contentSize = CGSize(width: params.width, height: titleLayout.size.height + 22.0)
             let insets = itemListNeighborsPlainInsets(neighbors)
             let layout = ListViewItemNodeLayout(contentSize: contentSize, insets: insets)
-
+            
             return (layout, { [weak self] in
                 if let strongSelf = self {
                     strongSelf.item = item
 
                     let _ = titleApply()
-
-                    print("==> TITLE SIZE \(titleLayout.size)")
                     
                     strongSelf.textNode.frame = CGRect(origin: CGPoint(x: leftInset, y: 11.0), size: titleLayout.size)
                 }
@@ -183,16 +183,13 @@ final class ChatBotsInputSuggestionsPane: ChatMediaInputPane, UIScrollViewDelega
             return item
         }
 
-        let updateSizeAndInsets = ListViewUpdateSizeAndInsets(size: self.frame.size, insets: UIEdgeInsets(), duration: 0, curve: .Default(duration: 0))
-        self.listView.transaction(deleteIndices: [], insertIndicesAndItems: insertItems, updateIndicesAndItems: [], options: [.Synchronous, .LowLatency], scrollToItem: nil, updateSizeAndInsets: updateSizeAndInsets, stationaryItemRange: nil, updateOpaqueState: nil, completion: { _ in
-            self.listView.layout()
-        })
+        self.listView.transaction(deleteIndices: [], insertIndicesAndItems: insertItems, updateIndicesAndItems: [], options: [.Synchronous, .LowLatency], scrollToItem: nil, updateSizeAndInsets: nil, stationaryItemRange: nil, updateOpaqueState: nil, completion: { _ in })
     }
     
     override func updateLayout(size: CGSize, topInset: CGFloat, bottomInset: CGFloat, isExpanded: Bool, transition: ContainedViewLayoutTransition) {
         var size = size
         size.height -= topInset + bottomInset
-        print("==> PANE SIZE \(size)")
+        
         transition.updateFrame(node: self.listView, frame: CGRect(origin: CGPoint(x: 0, y: topInset), size: size))
         
         let updateSizeAndInsets = ListViewUpdateSizeAndInsets(size: size, insets: UIEdgeInsets(), duration: 0, curve: .Default(duration: 0))
