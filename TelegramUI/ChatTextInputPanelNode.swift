@@ -222,11 +222,6 @@ class ChatTextInputPanelNode: ChatInputPanelNode, ASEditableTextNodeDelegate {
         }
     }
 
-    var lastMessages: [String] {
-        guard let controllerNode = supernode as? ChatControllerNode else { return [] }
-        return controllerNode.lastMessages.map { $0.text }
-    }
-
     override var account: Account? {
         didSet {
             self.actionButtons.micButton.account = self.account
@@ -1455,9 +1450,11 @@ class ChatTextInputPanelNode: ChatInputPanelNode, ASEditableTextNodeDelegate {
                     case .messageAutoremoveTimeout:
                         self.interfaceInteraction?.setupMessageAutoremoveTimeout()
                 case .suggestions:
-                    self.interfaceInteraction?.updateInputModeAndDismissedButtonKeyboardMessageId({ state in
-                        return (.suggestions(messages: self.lastMessages), nil)
-                    })
+//                    if let controllerNode = supernode as? ChatControllerNode {
+                        self.interfaceInteraction?.updateInputModeAndDismissedButtonKeyboardMessageId({ state in
+                            return (.suggestions(responses: nil), nil)
+                        })
+//                    }
                 }
                 break
             }

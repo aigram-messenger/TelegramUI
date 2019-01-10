@@ -65,6 +65,13 @@ public struct ChatBotResult {
     public let responses: [BotResponse]
 }
 
+extension ChatBotResult: Equatable {
+    public static func == (lhs: ChatBotResult, rhs: ChatBotResult) -> Bool {
+        return lhs.bot == rhs.bot
+            && lhs.responses == rhs.responses
+    }
+}
+
 public final class ChatBotsManager {
     static let shared: ChatBotsManager = .init()
     private(set) public var bots: [ChatBot] = []

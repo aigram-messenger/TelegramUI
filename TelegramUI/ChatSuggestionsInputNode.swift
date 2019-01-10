@@ -127,7 +127,8 @@ final class ChatSuggestionsInputNode: ChatInputNode {
         }, buyBot: { [weak self] bot in
             BotsStoreManager.shared.buyBot(bot) { (bought) in
                 print("BOT \(bot.title) BOUGHT \(bought)")
-                self?.handleMessages(self?.currentMessages ?? [])
+                //TODO: not implemented
+//                self?.handleMessages(self?.currentMessages ?? [])
             }
         })
 
@@ -160,17 +161,9 @@ final class ChatSuggestionsInputNode: ChatInputNode {
         super.didLoad()
         self.view.disablesInteractiveTransitionGestureRecognizer = true
     }
-
-    func set(messages: [String]) {
-        guard currentMessages != messages else { return }
-        handleMessages(messages)
-    }
     
-    private func handleMessages(_ messages: [String]) {
-        currentMessages = messages
-        ChatBotsManager.shared.handleMessages(messages) { [weak self] (results) in
-            self?.updateBotsResults(results)
-        }
+    func set(botResponses: [ChatBotResult]) {
+        self.updateBotsResults(botResponses)
     }
     
     private func insertListItems(with inserts: ([(Int, ChatBotsInputPaneType, Int?)]), botsResults: [ChatBotResult]) -> [ListViewInsertItem] {

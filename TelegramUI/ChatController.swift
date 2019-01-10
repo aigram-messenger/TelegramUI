@@ -192,6 +192,8 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
     
     var purposefulAction: (() -> Void)?
     
+    private var currentMessages: [String]?
+    
     public init(account: Account, chatLocation: ChatLocation, messageId: MessageId? = nil, botStart: ChatControllerInitialBotStart? = nil, mode: ChatControllerPresentationMode = .standard(previewing: false)) {
         let _ = ChatControllerCount.modify { value in
             return value + 1
@@ -1033,7 +1035,25 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
         }, cancelInteractiveKeyboardGestures: { [weak self] in
             (self?.view.window as? WindowHost)?.cancelInteractiveKeyboardGestures()
             self?.chatDisplayNode.cancelInteractiveKeyboardGestures()
-        }, automaticMediaDownloadSettings: self.automaticMediaDownloadSettings)
+        }, automaticMediaDownloadSettings: self.automaticMediaDownloadSettings, handleMessagesWithBots: { [weak self] messages in
+            print("HANDLE \(messages)")
+            self?.currentMessages = messages
+            ChatBotsManager.shared.handleMessages(messages, completion: { (responses) in
+                guard let self = self, self.currentMessages == messages else { return }
+                self.updateChatPresentationInterfaceState(animated: true, interactive: true, {
+                    $0.updatedInputMode { current in
+                        if responses.isEmpty {
+                            if case ChatInputMode.suggestions = current {
+                                return ChatInputMode.text
+                            }
+                        } else {
+                            return ChatInputMode.suggestions(responses: responses)
+                        }
+                        return current
+                    }
+                })
+            })
+        })
         
         self.controllerInteraction = controllerInteraction
         
@@ -1482,11 +1502,7 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
 
     public func updateWithReceivedMessages(_ messages: [Message]) {
         let mapped = messages.map { $0.text }
-        self.updateChatPresentationInterfaceState(animated: true, interactive: true, {
-            $0.updatedInputMode { current in
-                return ChatInputMode.suggestions(messages: mapped)
-            }
-        })
+        self.controllerInteraction?.handleMessagesWithBots(mapped)
     }
     
     var chatDisplayNode: ChatControllerNode {
