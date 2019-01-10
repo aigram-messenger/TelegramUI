@@ -90,6 +90,11 @@ public final class ChatBotsManager {
             bots.append(bot)
             id += 1
         }
+        
+//        let temp = bots
+//        for bot in temp {
+//            deleteBot(bot)
+//        }
     }
     
     public func handleMessages(_ messages: [String], completion: @escaping ([ChatBotResult]) -> Void) {
@@ -172,18 +177,18 @@ public final class ChatBotsManager {
 }
 
 extension ChatBotsManager {
-    private func words(of message: String) -> [String] {
-        let tagger = NSLinguisticTagger(tagSchemes: [.lemma], options: 0)
-        tagger.string = message
-        let range = NSRange(location: 0, length: message.count)
-        let options: NSLinguisticTagger.Options = [.omitPunctuation, .omitWhitespace]
-        var words: [String] = []
-        tagger.enumerateTags(in: range, scheme: .lemma, options: options) { (tag, tokenRange, sentenceRange, stop) in
-            let word = (message as NSString).substring(with: tokenRange)
-            words.append(word.lowercased())
-        }
-        return words
-    }
+//    private func words(of message: String) -> [String] {
+//        let tagger = NSLinguisticTagger(tagSchemes: [.lemma], options: 0)
+//        tagger.string = message
+//        let range = NSRange(location: 0, length: message.count)
+//        let options: NSLinguisticTagger.Options = [.omitPunctuation, .omitWhitespace]
+//        var words: [String] = []
+//        tagger.enumerateTags(in: range, scheme: .lemma, options: options) { (tag, tokenRange, sentenceRange, stop) in
+//            let word = (message as NSString).substring(with: tokenRange)
+//            words.append(word.lowercased())
+//        }
+//        return words
+//    }
     
     private var nextBotId: Int {
         var result = 0

@@ -124,6 +124,11 @@ final class ChatSuggestionsInputNode: ChatInputNode {
             self?.navigateToCollection(withId: id)
         }, sendMessage: { [weak self] in
             self?.controllerInteraction.sendMessage($0)
+        }, buyBot: { [weak self] bot in
+            BotsStoreManager.shared.buyBot(bot) { (bought) in
+                print("BOT \(bot.title) BOUGHT \(bought)")
+                self?.handleMessages(self?.currentMessages ?? [])
+            }
         })
 
         backgroundColor = UIColor.brown
@@ -158,6 +163,10 @@ final class ChatSuggestionsInputNode: ChatInputNode {
 
     func set(messages: [String]) {
         guard currentMessages != messages else { return }
+        handleMessages(messages)
+    }
+    
+    private func handleMessages(_ messages: [String]) {
         currentMessages = messages
         ChatBotsManager.shared.handleMessages(messages) { [weak self] (results) in
             self?.updateBotsResults(results)
