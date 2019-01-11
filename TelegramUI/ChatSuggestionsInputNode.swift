@@ -91,7 +91,7 @@ final class ChatSuggestionsInputNode: ChatInputNode {
     
     private var panesAndAnimatingOut: [(ChatMediaInputPane, Bool)]
     private var panRecognizer: UIPanGestureRecognizer?
-    private var currentMessages: [String]?
+    private var currentResponses: [ChatBotResult]?
 
     init(account: Account, controllerInteraction: ChatControllerInteraction, theme: PresentationTheme) {
         self.account = account
@@ -163,6 +163,8 @@ final class ChatSuggestionsInputNode: ChatInputNode {
     }
     
     func set(botResponses: [ChatBotResult]) {
+        guard self.currentResponses != botResponses else { return }
+        self.currentResponses = botResponses
         self.updateBotsResults(botResponses)
     }
     

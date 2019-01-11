@@ -46,18 +46,14 @@ func inputNodeForChatPresentationIntefaceState(_ chatPresentationInterfaceState:
             }
         case .suggestions(let responses):
             if let currentNode = currentNode as? ChatSuggestionsInputNode {
-                if let responses = responses {
-                    currentNode.set(botResponses: responses)
-                }
+                currentNode.set(botResponses: responses)
                 return currentNode
             } else {
                 let inputNode = ChatSuggestionsInputNode(account: account, controllerInteraction: controllerInteraction, theme: chatPresentationInterfaceState.theme)
                 inputNode.interfaceInteraction = interfaceInteraction
-                if let responses = responses {
-                    inputNode.set(botResponses: responses)
-                }
+                inputNode.set(botResponses: responses)
                 return inputNode
-        }
+            }
         case .none, .text:
             return nil
     }

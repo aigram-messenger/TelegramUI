@@ -260,6 +260,10 @@ class ChatControllerNode: ASDisplayNode, UIScrollViewDelegate {
                 strongSelf.requestLayout(.animated(duration: 0.1, curve: .easeInOut))
             }
         }
+        self.textInputPanelNode?.updateBotsResponses = { [weak self] in
+            let mapped = (self?.lastMessages ?? []).map { $0.text }
+            self?.controller?.requestHandlingLastMessages(mapped, handleEmpty: false)
+        }
         self.textInputPanelNode?.sendMessage = { [weak self] in
             if let strongSelf = self, let textInputPanelNode = strongSelf.inputPanelNode as? ChatTextInputPanelNode {
                 if textInputPanelNode.textInputNode?.isFirstResponder() ?? false {

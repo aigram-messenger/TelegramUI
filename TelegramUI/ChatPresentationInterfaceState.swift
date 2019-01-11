@@ -162,7 +162,7 @@ enum ChatInputMode: Equatable {
     case text
     case media(mode: ChatMediaInputMode, expanded: ChatMediaInputExpanded?)
     case inputButtons
-    case suggestions(responses: [ChatBotResult]?)
+    case suggestions(responses: [ChatBotResult])
 }
 
 enum ChatTitlePanelContext: Comparable {

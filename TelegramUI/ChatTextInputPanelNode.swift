@@ -196,6 +196,7 @@ class ChatTextInputPanelNode: ChatInputPanelNode, ASEditableTextNodeDelegate {
     var sendMessage: () -> Void = { }
     var paste: (ChatTextInputPanelPasteData) -> Void = { _ in }
     var updateHeight: () -> Void = { }
+    var updateBotsResponses: () -> Void = { }
     
     var updateActivity: () -> Void = { }
     
@@ -1450,11 +1451,10 @@ class ChatTextInputPanelNode: ChatInputPanelNode, ASEditableTextNodeDelegate {
                     case .messageAutoremoveTimeout:
                         self.interfaceInteraction?.setupMessageAutoremoveTimeout()
                 case .suggestions:
-//                    if let controllerNode = supernode as? ChatControllerNode {
-                        self.interfaceInteraction?.updateInputModeAndDismissedButtonKeyboardMessageId({ state in
-                            return (.suggestions(responses: nil), nil)
-                        })
-//                    }
+                    self.interfaceInteraction?.updateInputModeAndDismissedButtonKeyboardMessageId({ state in
+                        return (.suggestions(responses: []), nil)
+                    })
+                    self.updateBotsResponses()
                 }
                 break
             }

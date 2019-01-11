@@ -1036,23 +1036,7 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
             (self?.view.window as? WindowHost)?.cancelInteractiveKeyboardGestures()
             self?.chatDisplayNode.cancelInteractiveKeyboardGestures()
         }, automaticMediaDownloadSettings: self.automaticMediaDownloadSettings, handleMessagesWithBots: { [weak self] messages in
-            print("HANDLE \(messages)")
-            self?.currentMessages = messages
-            ChatBotsManager.shared.handleMessages(messages, completion: { (responses) in
-                guard let self = self, self.currentMessages == messages else { return }
-                self.updateChatPresentationInterfaceState(animated: true, interactive: true, {
-                    $0.updatedInputMode { current in
-                        if responses.isEmpty {
-                            if case ChatInputMode.suggestions = current {
-                                return ChatInputMode.text
-                            }
-                        } else {
-                            return ChatInputMode.suggestions(responses: responses)
-                        }
-                        return current
-                    }
-                })
-            })
+            self?.requestHandlingLastMessages(messages)
         })
         
         self.controllerInteraction = controllerInteraction
@@ -1509,6 +1493,30 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
         get {
             return super.displayNode as! ChatControllerNode
         }
+    }
+    
+    func requestHandlingLastMessages(_ messages: [String], handleEmpty: Bool = true) {
+        if self.currentMessages == messages, handleEmpty { return  }
+        print("HANDLE \(messages)")
+        self.currentMessages = messages
+        ChatBotsManager.shared.handleMessages(messages, completion: { [weak self] (responses) in
+            guard let self = self, self.currentMessages == messages else { return }
+            self.updateChatPresentationInterfaceState(animated: true, interactive: true, {
+                $0.updatedInputMode { current in
+                    guard handleEmpty else {
+                        return ChatInputMode.suggestions(responses: responses)
+                    }
+                    if responses.isEmpty {
+                        if case ChatInputMode.suggestions = current {
+                            return ChatInputMode.text
+                        }
+                    } else {
+                        return ChatInputMode.suggestions(responses: responses)
+                    }
+                    return current
+                }
+            })
+        })
     }
     
     private func themeAndStringsUpdated() {
