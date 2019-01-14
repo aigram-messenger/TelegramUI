@@ -85,6 +85,7 @@ private class ChatSuggestionItemNode: ListViewItemNode {
     private var response: BotResponse
     private var theme: PresentationTheme?
     private let textNode: TextNode
+    private let backgroundNode: ChatMessageBackground
 
     private var item: ChatSuggestionListItem?
     
@@ -95,11 +96,14 @@ private class ChatSuggestionItemNode: ListViewItemNode {
         self.textNode.isUserInteractionEnabled = false
         self.textNode.contentMode = .left
         self.textNode.contentsScale = UIScreen.main.scale
+        
+        self.backgroundNode = ChatMessageBackground()
 
         super.init(layerBacked: false)
 
-        self.backgroundColor = UIColor(argb: arc4random())
+//        self.backgroundColor = UIColor(argb: arc4random())
 
+        self.addSubnode(self.backgroundNode)
         self.addSubnode(self.textNode)
     }
     
@@ -107,6 +111,9 @@ private class ChatSuggestionItemNode: ListViewItemNode {
         self.response = response
         if theme != self.theme {
             self.theme = theme
+            let graphics = PresentationResourcesChat.principalGraphics(theme, wallpaper: false)
+            
+            self.backgroundNode.setType(type: .outgoing(.None), highlighted: false, graphics: graphics, transition: .immediate)
         }
     }
     
@@ -123,16 +130,19 @@ private class ChatSuggestionItemNode: ListViewItemNode {
         return { item, params, neighbors in
             let text = item.response["response"] ?? ""
             let textColor: UIColor = item.theme.list.itemPrimaryTextColor
-
-            let leftInset = 16.0 + params.leftInset
+            
+            let textInsets = UIEdgeInsetsMake(5, 8, 5, 14)
 
             let entities = generateTextEntities(text, enabledTypes: [])
             let string = stringWithAppliedEntities(text, entities: entities, baseColor: textColor, linkColor: item.theme.list.itemAccentColor, baseFont: titleFont, linkFont: titleFont, boldFont: titleBoldFont, italicFont: titleItalicFont, fixedFont: titleFixedFont)
 
-            let (titleLayout, titleApply) = makeTextLayout(TextNodeLayoutArguments(attributedString: string, backgroundColor: nil, maximumNumberOfLines: 0, truncationType: .end, constrainedSize: CGSize(width: params.width - params.leftInset - params.rightInset - 20.0, height: CGFloat.greatestFiniteMagnitude), alignment: .natural, cutout: nil, insets: UIEdgeInsets()))
+            let textConstrainedSize = CGSize(width: params.width - params.leftInset - params.rightInset, height: CGFloat.greatestFiniteMagnitude)
+            let (titleLayout, titleApply) = makeTextLayout(TextNodeLayoutArguments(attributedString: string, backgroundColor: nil, maximumNumberOfLines: 0, truncationType: .end, constrainedSize: textConstrainedSize, alignment: .right, cutout: nil, insets: .init()))
 
-            let contentSize = CGSize(width: params.width, height: titleLayout.size.height + 22.0)
-            let insets = itemListNeighborsPlainInsets(neighbors)
+            let contentSize = CGSize(width: params.width, height: titleLayout.size.height + textInsets.top + textInsets.bottom)
+            var insets = itemListNeighborsPlainInsets(neighbors)
+            insets.top = 3
+            insets.bottom = 3
             let layout = ListViewItemNodeLayout(contentSize: contentSize, insets: insets)
             
             return (layout, { [weak self] in
@@ -140,8 +150,17 @@ private class ChatSuggestionItemNode: ListViewItemNode {
                     strongSelf.item = item
 
                     let _ = titleApply()
-                    
-                    strongSelf.textNode.frame = CGRect(origin: CGPoint(x: leftInset, y: 11.0), size: titleLayout.size)
+
+                    let bubbleWidth = titleLayout.size.width + textInsets.left + textInsets.right
+                    let x = strongSelf.bounds.maxX - params.rightInset - bubbleWidth
+                    let bubbleFrame = CGRect(origin: CGPoint(x: x, y: 0), size: CGSize(width: bubbleWidth, height: contentSize.height))
+                    strongSelf.backgroundNode.frame = bubbleFrame
+                    var textNodeFrame = bubbleFrame
+                    textNodeFrame.origin.x += textInsets.left
+                    textNodeFrame.origin.y += textInsets.top
+                    textNodeFrame.size.width -= textInsets.left + textInsets.right
+                    textNodeFrame.size.height -= textInsets.top + textInsets.bottom
+                    strongSelf.textNode.frame = textNodeFrame
                 }
             })
         }
@@ -163,19 +182,10 @@ final class ChatBotsInputSuggestionsPane: ChatMediaInputPane, UIScrollViewDelega
         self.listView = ListView()
         
         super.init()
-        let colors = [
-            UIColor.green,
-            UIColor.brown,
-            UIColor.magenta,
-            UIColor.blue
-        ]
-        var index = Int(arc4random_uniform(UInt32(colors.count)))
-        
-        self.listView.backgroundColor = colors[index]
         
         self.addSubnode(self.listView)
         
-        index = 0
+        var index = 0
         let insertItems: [ListViewInsertItem] = self.responses.map {
             let itemNode = ChatSuggestionListItem(response: $0, inputNodeInteraction: self.inputNodeInteraction, theme: self.theme)
             let item = ListViewInsertItem(index: index, previousIndex: nil, item: itemNode, directionHint: nil)
@@ -192,7 +202,8 @@ final class ChatBotsInputSuggestionsPane: ChatMediaInputPane, UIScrollViewDelega
         
         transition.updateFrame(node: self.listView, frame: CGRect(origin: CGPoint(x: 0, y: topInset), size: size))
         
-        let updateSizeAndInsets = ListViewUpdateSizeAndInsets(size: size, insets: UIEdgeInsets(), duration: 0, curve: .Default(duration: 0))
+        let insets = UIEdgeInsetsMake(0, 60, 0, 9)
+        let updateSizeAndInsets = ListViewUpdateSizeAndInsets(size: size, insets: insets, duration: 0, curve: .Default(duration: 0))
         self.listView.transaction(deleteIndices: [], insertIndicesAndItems: [], updateIndicesAndItems: [], options: [.Synchronous, .LowLatency], scrollToItem: nil, updateSizeAndInsets: updateSizeAndInsets, stationaryItemRange: nil, updateOpaqueState: nil, completion: { _ in })
     }
 }

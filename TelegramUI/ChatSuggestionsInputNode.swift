@@ -112,7 +112,6 @@ final class ChatSuggestionsInputNode: ChatInputNode {
         
         self.botsListView = ListView()
         self.botsListView.transform = CATransform3DMakeRotation(-CGFloat(Double.pi / 2.0), 0.0, 0.0, 1.0)
-        self.botsListView.backgroundColor = UIColor.green
         
         self.paneArrangement = ChatBotsInputPaneArrangement(panes: [], currentIndex: -1, indexTransition: 0.0)
         
@@ -132,7 +131,7 @@ final class ChatSuggestionsInputNode: ChatInputNode {
             }
         })
 
-        backgroundColor = UIColor.brown
+        self.backgroundColor = theme.chat.inputMediaPanel.stickersBackgroundColor
         
         self.botsListPanel.addSubnode(self.botsListView)
         self.botsListContainer.addSubnode(self.topSeparator)
