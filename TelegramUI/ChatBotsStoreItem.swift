@@ -65,7 +65,7 @@ private let verticalOffset: CGFloat = 3.0 + UIScreenPixel
 
 final class ChatBotsStoreItemNode: ListViewItemNode {
     private let imageNode: ASImageNode
-    private let highlightNode: ASImageNode
+    private let highlightNode: ASDisplayNode
     
     var currentCollectionId: ItemCollectionId?
     var inputNodeInteraction: ChatBotsInputNodeInteraction?
@@ -73,8 +73,11 @@ final class ChatBotsStoreItemNode: ListViewItemNode {
     var theme: PresentationTheme?
     
     init() {
-        self.highlightNode = ASImageNode()
+        self.highlightNode = ASDisplayNode()
         self.highlightNode.isLayerBacked = true
+        self.highlightNode.clipsToBounds = true
+        self.highlightNode.borderColor = UIColor.blue.cgColor
+        self.highlightNode.borderWidth = 3
         self.highlightNode.isHidden = true
         
         self.imageNode = ASImageNode()
@@ -104,7 +107,7 @@ final class ChatBotsStoreItemNode: ListViewItemNode {
         if self.theme !== theme {
             self.theme = theme
             
-            self.highlightNode.image = PresentationResourcesChat.chatMediaInputPanelHighlightedIconImage(theme)
+//            self.highlightNode.image = PresentationResourcesChat.chatMediaInputPanelHighlightedIconImage(theme)
             self.imageNode.image = PresentationResourcesChat.chatInputMediaPanelRecentGifsIconImage(theme)
         }
     }
