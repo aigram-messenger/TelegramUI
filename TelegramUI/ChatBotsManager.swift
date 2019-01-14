@@ -41,7 +41,7 @@ public struct ChatBot {
             throw ChatBotError.modelFileNotExists
         }
         
-        if let data = try? Data(contentsOf: url.appendingPathComponent("icon.png")), let image = UIImage(data: data) {
+        if let image = UIImage(in: url, name: "icon", ext: "png") {
             icon = image
         }
         
@@ -69,6 +69,30 @@ extension ChatBotResult: Equatable {
     public static func == (lhs: ChatBotResult, rhs: ChatBotResult) -> Bool {
         return lhs.bot == rhs.bot
             && lhs.responses == rhs.responses
+    }
+}
+
+extension UIImage {
+    convenience init?(in folder: URL, name: String, ext: String) {
+        var nameWithScale = name
+        let name = "\(name).\(ext)"
+        let scale = UIScreen.main.scale
+        if scale != 1 {
+            nameWithScale = "\(nameWithScale)@\(Int(scale))x"
+        }
+        nameWithScale = "\(nameWithScale).\(ext)"
+        var url = folder.appendingPathComponent(nameWithScale)
+        if !((try? url.checkResourceIsReachable()) ?? false) {
+            url = folder.appendingPathComponent(name)
+        }
+        if !((try? url.checkResourceIsReachable()) ?? false) {
+            return nil
+        }
+        if let data = try? Data(contentsOf: url) {
+            self.init(data: data)
+            return
+        }
+        return nil
     }
 }
 
