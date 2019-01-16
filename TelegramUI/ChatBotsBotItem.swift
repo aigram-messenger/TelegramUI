@@ -109,8 +109,6 @@ final class ChatBotsBotItemNode: ListViewItemNode {
         
         if self.theme !== theme {
             self.theme = theme
-
-//            self.highlightNode.image = PresentationResourcesChat.chatMediaInputPanelHighlightedIconImage(theme)
         }
 
         if self.currentItem != item {
