@@ -9,93 +9,6 @@
 import Foundation
 import UIKit
 
-public typealias BotResponse = [String: String]
-
-public enum ChatBotError: Error {
-    case modelFileNotExists
-}
-
-public struct ChatBot {
-    public var id: Int = 0
-    public var title: String = ""
-    public var words: [String] = []
-    public var responses: [BotResponse] = []
-    public var modelURL: URL
-    public var icon: UIImage = UIImage()
-    public let url: URL
-    
-    public var isLocal: Bool {
-        let fm = FileManager.default
-        guard var destinationUrl = fm.urls(for: .documentDirectory, in: .userDomainMask).first else { return false }
-        destinationUrl.appendPathComponent("chatbots", isDirectory: true)
-        destinationUrl.appendPathComponent("\(title).chatbot", isDirectory: true)
-        let result = (try? destinationUrl.checkResourceIsReachable()) ?? false
-        return result
-    }
-    
-    public init(url: URL) throws {
-        self.url = url
-        title = url.deletingPathExtension().lastPathComponent
-        modelURL = url.appendingPathComponent("\(title)converted_model.tflite")
-        if !(try modelURL.checkResourceIsReachable()) {
-            throw ChatBotError.modelFileNotExists
-        }
-        
-        if let image = UIImage(in: url, name: "icon", ext: "png") {
-            icon = image
-        }
-        
-        let decoder = JSONDecoder()
-        var data = try Data(contentsOf: url.appendingPathComponent("words_\(title).json"))
-        words = try decoder.decode(type(of: words), from: data)
-        
-        data = try Data(contentsOf: url.appendingPathComponent("response_\(title).json"))
-        responses = try decoder.decode(type(of: responses), from: data)
-    }
-}
-
-extension ChatBot: Equatable {
-    public static func == (lhs: ChatBot, rhs: ChatBot) -> Bool {
-        return lhs.title.lowercased() == rhs.title.lowercased()
-    }
-}
-
-public struct ChatBotResult {
-    public let bot: ChatBot
-    public let responses: [BotResponse]
-}
-
-extension ChatBotResult: Equatable {
-    public static func == (lhs: ChatBotResult, rhs: ChatBotResult) -> Bool {
-        return lhs.bot == rhs.bot
-            && lhs.responses == rhs.responses
-    }
-}
-
-extension UIImage {
-    convenience init?(in folder: URL, name: String, ext: String) {
-        var nameWithScale = name
-        let name = "\(name).\(ext)"
-        let scale = UIScreen.main.scale
-        if scale != 1 {
-            nameWithScale = "\(nameWithScale)@\(Int(scale))x"
-        }
-        nameWithScale = "\(nameWithScale).\(ext)"
-        var url = folder.appendingPathComponent(nameWithScale)
-        if !((try? url.checkResourceIsReachable()) ?? false) {
-            url = folder.appendingPathComponent(name)
-        }
-        if !((try? url.checkResourceIsReachable()) ?? false) {
-            return nil
-        }
-        if let data = try? Data(contentsOf: url) {
-            self.init(data: data)
-            return
-        }
-        return nil
-    }
-}
-
 public final class ChatBotsManager {
     static let shared: ChatBotsManager = .init()
     private(set) public var bots: [ChatBot] = []
@@ -115,7 +28,8 @@ public final class ChatBotsManager {
         
         print("BOTS LOCAL URL \(chatBotsUrl)")
         let urls = (try? fm.contentsOfDirectory(at: chatBotsUrl, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles])) ?? []
-        var id = 0
+        if let tb = self.targetBot { bots = [tb] }
+        var id = nextBotId
         for url in urls {
             guard var bot = try? ChatBot(url: url) else { continue }
             bot.id = id
@@ -164,7 +78,7 @@ public final class ChatBotsManager {
         let bundle = Bundle(for: ChatBotsManager.self)
         let urls = bundle.urls(forResourcesWithExtension: "chatbot", subdirectory: "bots") ?? []
         for url in urls {
-            guard let bot = try? ChatBot(url: url) else { continue }
+            guard let bot = try? ChatBot(url: url), !bot.isTarget else { continue }
             result.append(bot)
         }
         
@@ -218,5 +132,13 @@ extension ChatBotsManager {
         result += 1
         
         return result
+    }
+    
+    private var targetBot: ChatBot? {
+        let bundle = Bundle(for: ChatBotsManager.self)
+        guard let url = bundle.url(forResource: TargetBotName, withExtension: "chatbot", subdirectory: "bots") else { return nil }
+        var bot = try? ChatBot(url: url)
+        bot?.id = 1
+        return bot
     }
 }

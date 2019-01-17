@@ -1067,6 +1067,7 @@
 		F75D3FE421EF6D7D00003189 /* ChatBotSuggestionsItems.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75D3FE321EF6D7D00003189 /* ChatBotSuggestionsItems.swift */; };
 		F75D3FE621F068CC00003189 /* ChatMessageAdsBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75D3FE521F068CC00003189 /* ChatMessageAdsBackground.swift */; };
 		F75D3FE821F06BAE00003189 /* ChatBotsAdsListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75D3FE721F06BAE00003189 /* ChatBotsAdsListItem.swift */; };
+		F75D3FEA21F091E300003189 /* Entities.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75D3FE921F091E300003189 /* Entities.swift */; };
 		F76439AF21D66453005AC13C /* nanopb.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F76439A921D66452005AC13C /* nanopb.framework */; };
 		F76439B021D66453005AC13C /* FirebaseMLModelInterpreter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F76439AA21D66452005AC13C /* FirebaseMLModelInterpreter.framework */; };
 		F76439B121D66453005AC13C /* FirebaseCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F76439AB21D66452005AC13C /* FirebaseCore.framework */; };
@@ -2232,6 +2233,7 @@
 		F75D3FE321EF6D7D00003189 /* ChatBotSuggestionsItems.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotSuggestionsItems.swift; sourceTree = "<group>"; };
 		F75D3FE521F068CC00003189 /* ChatMessageAdsBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessageAdsBackground.swift; sourceTree = "<group>"; };
 		F75D3FE721F06BAE00003189 /* ChatBotsAdsListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotsAdsListItem.swift; sourceTree = "<group>"; };
+		F75D3FE921F091E300003189 /* Entities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Entities.swift; sourceTree = "<group>"; };
 		F76439A921D66452005AC13C /* nanopb.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = nanopb.framework; path = "third-party/nanopb.framework"; sourceTree = "<group>"; };
 		F76439AA21D66452005AC13C /* FirebaseMLModelInterpreter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FirebaseMLModelInterpreter.framework; path = "third-party/FirebaseMLModelInterpreter.framework"; sourceTree = "<group>"; };
 		F76439AB21D66452005AC13C /* FirebaseCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FirebaseCore.framework; path = "third-party/FirebaseCore.framework"; sourceTree = "<group>"; };
@@ -4709,6 +4711,7 @@
 				FB31301421D80DF0004870C2 /* ObjC.h */,
 				FB31301521D80DF0004870C2 /* ObjC.m */,
 				F74BA4A121E6246100DD7CAB /* BotsStoreManager.swift */,
+				F75D3FE921F091E300003189 /* Entities.swift */,
 			);
 			name = Additions;
 			sourceTree = "<group>";
@@ -5042,6 +5045,7 @@
 				D0EC6CCC1EB9F58800EBF1C3 /* ServiceSoundManager.swift in Sources */,
 				D0EC6CCD1EB9F58800EBF1C3 /* DeclareEncodables.swift in Sources */,
 				0958FBBD218B03CA00E0CBD8 /* InstantPageDetailsNode.swift in Sources */,
+				F75D3FEA21F091E300003189 /* Entities.swift in Sources */,
 				D02D60B1206C189900FEFE1E /* SecureIdPlaintextFormController.swift in Sources */,
 				F73095DF21D0F06900343BD5 /* ChatBotsStoreItem.swift in Sources */,
 				D0CFBB951FD8B05000B65C0D /* OverlayInstantVideoDecoration.swift in Sources */,
