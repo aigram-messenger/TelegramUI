@@ -31,13 +31,16 @@ final class ChatBotsInputSuggestionsPane: ChatMediaInputPane, UIScrollViewDelega
         
         self.addSubnode(self.listView)
         
-        var index = 0
-        let insertItems: [ListViewInsertItem] = self.responses.map {
+        var index = 1
+        var insertItems: [ListViewInsertItem] = self.responses.map {
             let itemNode = ChatSuggestionListItem(bot: bot, response: $0, inputNodeInteraction: self.inputNodeInteraction, theme: self.theme)
             let item = ListViewInsertItem(index: index, previousIndex: nil, item: itemNode, directionHint: nil)
             index += 1
             return item
         }
+        let itemNode = ChatBotsAdsListItem(bot: bot, inputNodeInteraction: self.inputNodeInteraction, theme: self.theme)
+        let item = ListViewInsertItem(index: 0, previousIndex: nil, item: itemNode, directionHint: nil)
+        insertItems.insert(item, at: 0)
 
         self.listView.transaction(deleteIndices: [], insertIndicesAndItems: insertItems, updateIndicesAndItems: [], options: [.Synchronous, .LowLatency], scrollToItem: nil, updateSizeAndInsets: nil, stationaryItemRange: nil, updateOpaqueState: nil, completion: { _ in })
     }
