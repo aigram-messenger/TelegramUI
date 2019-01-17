@@ -28,7 +28,7 @@ public final class ChatBotsManager {
         
         print("BOTS LOCAL URL \(chatBotsUrl)")
         let urls = (try? fm.contentsOfDirectory(at: chatBotsUrl, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles])) ?? []
-        if let tb = self.targetBot { bots = [tb] }
+//        if let tb = self.targetBot { bots = [tb] }
         var id = nextBotId
         for url in urls {
             guard var bot = try? ChatBot(url: url) else { continue }
