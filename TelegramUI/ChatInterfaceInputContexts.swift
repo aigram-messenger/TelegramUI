@@ -280,7 +280,7 @@ func inputTextPanelStateForChatPresentationInterfaceState(_ chatPresentationInte
                     if let message = chatPresentationInterfaceState.keyboardButtonsMessage, let _ = message.visibleButtonKeyboardMarkup {
                         accessoryItems.append(.inputButtons)
                     }
-                    accessoryItems.append(.suggestions)
+                    accessoryItems.insert(.suggestions, at: 0)
                 }
                 return ChatTextInputPanelState(accessoryItems: accessoryItems, contextPlaceholder: contextPlaceholder, mediaRecordingState: chatPresentationInterfaceState.inputTextPanelState.mediaRecordingState)
             }
