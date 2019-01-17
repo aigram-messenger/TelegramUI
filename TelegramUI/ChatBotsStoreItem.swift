@@ -65,7 +65,7 @@ private let verticalOffset: CGFloat = 3.0 + UIScreenPixel
 
 final class ChatBotsStoreItemNode: ListViewItemNode {
     private let imageNode: ASImageNode
-    private let highlightNode: ASDisplayNode
+    private let highlightNode: ASImageNode
     
     var currentCollectionId: ItemCollectionId?
     var inputNodeInteraction: ChatBotsInputNodeInteraction?
@@ -73,11 +73,8 @@ final class ChatBotsStoreItemNode: ListViewItemNode {
     var theme: PresentationTheme?
     
     init() {
-        self.highlightNode = ASDisplayNode()
+        self.highlightNode = ASImageNode()
         self.highlightNode.isLayerBacked = true
-        self.highlightNode.clipsToBounds = true
-        self.highlightNode.borderColor = UIColor(argb: 0xff4da6ea).cgColor
-        self.highlightNode.borderWidth = 2
         self.highlightNode.isHidden = true
         
         self.imageNode = ASImageNode()
@@ -98,7 +95,6 @@ final class ChatBotsStoreItemNode: ListViewItemNode {
         
         let imageSize = CGSize(width: 26.0, height: 26.0)
         self.highlightNode.frame = CGRect(origin: CGPoint(x: floor((boundingSize.width - highlightSize.width) / 2.0) + verticalOffset, y: floor((boundingSize.height - highlightSize.height) / 2.0) + UIScreenPixel), size: highlightSize)
-        self.highlightNode.cornerRadius = 0.5 * min(highlightSize.width, highlightSize.height)
         
         self.imageNode.frame = CGRect(origin: CGPoint(x: floor((boundingSize.width - imageSize.width) / 2.0) + verticalOffset, y: floor((boundingSize.height - imageSize.height) / 2.0) + UIScreenPixel), size: imageSize)
     }
@@ -110,7 +106,8 @@ final class ChatBotsStoreItemNode: ListViewItemNode {
         if self.theme !== theme {
             self.theme = theme
             
-            self.imageNode.image = PresentationResourcesChat.chatInputMediaPanelRecentGifsIconImage(theme)
+            self.imageNode.image = PresentationResourcesChat.chatInputTextFieldSuggestionsImage(theme)
+            self.highlightNode.image = PresentationResourcesChat.chatMediaInputPanelHighlightedIconImage(theme)
         }
     }
     
