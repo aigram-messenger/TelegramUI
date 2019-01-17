@@ -24,6 +24,7 @@ public struct ChatBot {
     public var responses: [BotResponse] = []
     public var modelURL: URL
     public var icon: UIImage = UIImage()
+    public var preview: UIImage = UIImage()
     public let url: URL
     public var isTarget: Bool {
         return title == TargetBotName
@@ -48,6 +49,9 @@ public struct ChatBot {
         
         if let image = UIImage(in: url, name: "icon", ext: "png") {
             icon = image
+        }
+        if let image = UIImage(in: url, name: "preview", ext: "png") {
+            preview = image
         }
         
         let decoder = JSONDecoder()
@@ -74,29 +78,5 @@ extension ChatBotResult: Equatable {
     public static func == (lhs: ChatBotResult, rhs: ChatBotResult) -> Bool {
         return lhs.bot == rhs.bot
             && lhs.responses == rhs.responses
-    }
-}
-
-extension UIImage {
-    convenience init?(in folder: URL, name: String, ext: String) {
-        var nameWithScale = name
-        let name = "\(name).\(ext)"
-        let scale = UIScreen.main.scale
-        if scale != 1 {
-            nameWithScale = "\(nameWithScale)@\(Int(scale))x"
-        }
-        nameWithScale = "\(nameWithScale).\(ext)"
-        var url = folder.appendingPathComponent(nameWithScale)
-        if !((try? url.checkResourceIsReachable()) ?? false) {
-            url = folder.appendingPathComponent(name)
-        }
-        if !((try? url.checkResourceIsReachable()) ?? false) {
-            return nil
-        }
-        if let data = try? Data(contentsOf: url) {
-            self.init(data: data)
-            return
-        }
-        return nil
     }
 }

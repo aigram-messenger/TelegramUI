@@ -1068,6 +1068,9 @@
 		F75D3FE621F068CC00003189 /* ChatMessageAdsBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75D3FE521F068CC00003189 /* ChatMessageAdsBackground.swift */; };
 		F75D3FE821F06BAE00003189 /* ChatBotsAdsListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75D3FE721F06BAE00003189 /* ChatBotsAdsListItem.swift */; };
 		F75D3FEA21F091E300003189 /* Entities.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75D3FE921F091E300003189 /* Entities.swift */; };
+		F75D3FED21F0B30500003189 /* ChatBotsStoreListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75D3FEC21F0B30500003189 /* ChatBotsStoreListItem.swift */; };
+		F75D3FEF21F0B51000003189 /* ChatBotsStoreItemNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75D3FEE21F0B51000003189 /* ChatBotsStoreItemNode.swift */; };
+		F75D3FF121F0B66400003189 /* UIImage+Sizes.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75D3FF021F0B66400003189 /* UIImage+Sizes.swift */; };
 		F76439AF21D66453005AC13C /* nanopb.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F76439A921D66452005AC13C /* nanopb.framework */; };
 		F76439B021D66453005AC13C /* FirebaseMLModelInterpreter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F76439AA21D66452005AC13C /* FirebaseMLModelInterpreter.framework */; };
 		F76439B121D66453005AC13C /* FirebaseCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F76439AB21D66452005AC13C /* FirebaseCore.framework */; };
@@ -2234,6 +2237,9 @@
 		F75D3FE521F068CC00003189 /* ChatMessageAdsBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessageAdsBackground.swift; sourceTree = "<group>"; };
 		F75D3FE721F06BAE00003189 /* ChatBotsAdsListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotsAdsListItem.swift; sourceTree = "<group>"; };
 		F75D3FE921F091E300003189 /* Entities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Entities.swift; sourceTree = "<group>"; };
+		F75D3FEC21F0B30500003189 /* ChatBotsStoreListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotsStoreListItem.swift; sourceTree = "<group>"; };
+		F75D3FEE21F0B51000003189 /* ChatBotsStoreItemNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotsStoreItemNode.swift; sourceTree = "<group>"; };
+		F75D3FF021F0B66400003189 /* UIImage+Sizes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Sizes.swift"; sourceTree = "<group>"; };
 		F76439A921D66452005AC13C /* nanopb.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = nanopb.framework; path = "third-party/nanopb.framework"; sourceTree = "<group>"; };
 		F76439AA21D66452005AC13C /* FirebaseMLModelInterpreter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FirebaseMLModelInterpreter.framework; path = "third-party/FirebaseMLModelInterpreter.framework"; sourceTree = "<group>"; };
 		F76439AB21D66452005AC13C /* FirebaseCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FirebaseCore.framework; path = "third-party/FirebaseCore.framework"; sourceTree = "<group>"; };
@@ -4685,8 +4691,8 @@
 		F75D3FDF21EF679A00003189 /* Panes */ = {
 			isa = PBXGroup;
 			children = (
+				F75D3FEB21F0B21800003189 /* Store */,
 				F75D3FE021EF67A400003189 /* Suggestions */,
-				F7F28FCE21CD1DB3008DC5A4 /* ChatBotsInputStorePane.swift */,
 			);
 			name = Panes;
 			sourceTree = "<group>";
@@ -4703,6 +4709,16 @@
 			name = Suggestions;
 			sourceTree = "<group>";
 		};
+		F75D3FEB21F0B21800003189 /* Store */ = {
+			isa = PBXGroup;
+			children = (
+				F7F28FCE21CD1DB3008DC5A4 /* ChatBotsInputStorePane.swift */,
+				F75D3FEC21F0B30500003189 /* ChatBotsStoreListItem.swift */,
+				F75D3FEE21F0B51000003189 /* ChatBotsStoreItemNode.swift */,
+			);
+			name = Store;
+			sourceTree = "<group>";
+		};
 		F7E0F2DF21D226F100974C76 /* Additions */ = {
 			isa = PBXGroup;
 			children = (
@@ -4712,6 +4728,7 @@
 				FB31301521D80DF0004870C2 /* ObjC.m */,
 				F74BA4A121E6246100DD7CAB /* BotsStoreManager.swift */,
 				F75D3FE921F091E300003189 /* Entities.swift */,
+				F75D3FF021F0B66400003189 /* UIImage+Sizes.swift */,
 			);
 			name = Additions;
 			sourceTree = "<group>";
@@ -5357,6 +5374,7 @@
 				D0C26D5E1FDF49E7004ABF18 /* DateFormat.swift in Sources */,
 				D0068FA821760FA300D1B315 /* StoreDownloadedMedia.swift in Sources */,
 				D0EC6D701EB9F58800EBF1C3 /* AuthorizationSequenceCodeEntryControllerNode.swift in Sources */,
+				F75D3FF121F0B66400003189 /* UIImage+Sizes.swift in Sources */,
 				D0E9BA4D1F0559C700F079A4 /* NSString+Stripe_CardBrands.m in Sources */,
 				D099D7511EEFF91E00A3128C /* GameControllerTitleView.swift in Sources */,
 				D0EC6D711EB9F58800EBF1C3 /* AuthorizationSequencePasswordEntryController.swift in Sources */,
@@ -5535,6 +5553,7 @@
 				D0C0B59F1EE082F5000F4D2C /* ChatSearchInputPanelNode.swift in Sources */,
 				D079FCD91F05A5550038FADE /* BotCheckoutPasswordEntryController.swift in Sources */,
 				D0EC6DC51EB9F58900EBF1C3 /* SoftwareVideoSource.swift in Sources */,
+				F75D3FEF21F0B51000003189 /* ChatBotsStoreItemNode.swift in Sources */,
 				D0EC6DC61EB9F58900EBF1C3 /* MultiplexedSoftwareVideoSourceManager.swift in Sources */,
 				FB31301721D80DF0004870C2 /* ObjC.m in Sources */,
 				F74BA4A221E6246100DD7CAB /* BotsStoreManager.swift in Sources */,
@@ -5599,6 +5618,7 @@
 				D0CAD90120AEECAC00ACD96E /* ChatEditInterfaceMessageState.swift in Sources */,
 				D0EC6DE51EB9F58900EBF1C3 /* SecretChatHandshakeStatusInputPanelNode.swift in Sources */,
 				D06BEC771F62F68B0035A545 /* OverlayUniversalVideoNode.swift in Sources */,
+				F75D3FED21F0B30500003189 /* ChatBotsStoreListItem.swift in Sources */,
 				D0EC6DE61EB9F58900EBF1C3 /* DeleteChatInputPanelNode.swift in Sources */,
 				D01BAA241ECE173200295217 /* PresentationResourcesCallList.swift in Sources */,
 				D0428200200E6A00009DDE36 /* ChatRecentActionsHistoryTransition.swift in Sources */,
