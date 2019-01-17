@@ -70,7 +70,8 @@ final class OverlayPlayerControllerNode: ViewControllerTracingNode, UIGestureRec
         }, addContact: { _ in   
         }, requestMessageUpdate: { _ in
         }, cancelInteractiveKeyboardGestures: {
-        }, automaticMediaDownloadSettings: AutomaticMediaDownloadSettings.defaultSettings)
+        }, automaticMediaDownloadSettings: AutomaticMediaDownloadSettings.defaultSettings,
+           handleMessagesWithBots: { _ in })
         
         self.dimNode = ASDisplayNode()
         self.dimNode.backgroundColor = UIColor(white: 0.0, alpha: 0.5)

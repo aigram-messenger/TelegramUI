@@ -59,8 +59,8 @@ final class ChatBotsStoreItem: ListViewItem {
 }
 
 private let boundingSize = CGSize(width: 41.0, height: 41.0)
-private let boundingImageSize = CGSize(width: 30.0, height: 30.0)
-private let highlightSize = CGSize(width: 35.0, height: 35.0)
+private let boundingImageSize = CGSize(width: 28, height: 28)
+private let highlightSize = CGSize(width: 34.0, height: 34.0)
 private let verticalOffset: CGFloat = 3.0 + UIScreenPixel
 
 final class ChatBotsStoreItemNode: ListViewItemNode {
@@ -94,6 +94,8 @@ final class ChatBotsStoreItemNode: ListViewItemNode {
         self.currentCollectionId = ItemCollectionId(namespace: ChatBotsInputPanelAuxiliaryNamespace.store.rawValue, id: 0)
         
         let imageSize = CGSize(width: 26.0, height: 26.0)
+        self.highlightNode.frame = CGRect(origin: CGPoint(x: floor((boundingSize.width - highlightSize.width) / 2.0) + verticalOffset, y: floor((boundingSize.height - highlightSize.height) / 2.0) + UIScreenPixel), size: highlightSize)
+        
         self.imageNode.frame = CGRect(origin: CGPoint(x: floor((boundingSize.width - imageSize.width) / 2.0) + verticalOffset, y: floor((boundingSize.height - imageSize.height) / 2.0) + UIScreenPixel), size: imageSize)
     }
     
@@ -104,8 +106,8 @@ final class ChatBotsStoreItemNode: ListViewItemNode {
         if self.theme !== theme {
             self.theme = theme
             
+            self.imageNode.image = PresentationResourcesChat.chatInputTextFieldSuggestionsImage(theme)
             self.highlightNode.image = PresentationResourcesChat.chatMediaInputPanelHighlightedIconImage(theme)
-            self.imageNode.image = PresentationResourcesChat.chatInputMediaPanelRecentGifsIconImage(theme)
         }
     }
     

@@ -102,7 +102,8 @@ class ThemeSettingsChatPreviewItemNode: ListViewItemNode {
         }, addContact: { _ in   
         }, requestMessageUpdate: { _ in
         }, cancelInteractiveKeyboardGestures: {
-        }, automaticMediaDownloadSettings: AutomaticMediaDownloadSettings.defaultSettings)
+        }, automaticMediaDownloadSettings: AutomaticMediaDownloadSettings.defaultSettings,
+           handleMessagesWithBots: { _ in })
         
         super.init(layerBacked: false, dynamicBounce: false)
         

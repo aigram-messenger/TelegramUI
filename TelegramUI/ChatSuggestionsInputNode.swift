@@ -91,7 +91,7 @@ final class ChatSuggestionsInputNode: ChatInputNode {
     
     private var panesAndAnimatingOut: [(ChatMediaInputPane, Bool)]
     private var panRecognizer: UIPanGestureRecognizer?
-    private var currentMessages: [String]?
+    private var currentResponses: [ChatBotResult]?
 
     init(account: Account, controllerInteraction: ChatControllerInteraction, theme: PresentationTheme) {
         self.account = account
@@ -112,7 +112,6 @@ final class ChatSuggestionsInputNode: ChatInputNode {
         
         self.botsListView = ListView()
         self.botsListView.transform = CATransform3DMakeRotation(-CGFloat(Double.pi / 2.0), 0.0, 0.0, 1.0)
-        self.botsListView.backgroundColor = UIColor.green
         
         self.paneArrangement = ChatBotsInputPaneArrangement(panes: [], currentIndex: -1, indexTransition: 0.0)
         
@@ -124,9 +123,15 @@ final class ChatSuggestionsInputNode: ChatInputNode {
             self?.navigateToCollection(withId: id)
         }, sendMessage: { [weak self] in
             self?.controllerInteraction.sendMessage($0)
+        }, buyBot: { [weak self] bot in
+            BotsStoreManager.shared.buyBot(bot) { (bought) in
+                print("BOT \(bot.title) BOUGHT \(bought)")
+                self?.controllerInteraction.handleMessagesWithBots(nil)
+                self?.updateStorePane(boughtBot: bot)
+            }
         })
 
-        backgroundColor = UIColor.brown
+        self.backgroundColor = theme.chat.inputMediaPanel.stickersBackgroundColor
         
         self.botsListPanel.addSubnode(self.botsListView)
         self.botsListContainer.addSubnode(self.topSeparator)
@@ -155,13 +160,16 @@ final class ChatSuggestionsInputNode: ChatInputNode {
         super.didLoad()
         self.view.disablesInteractiveTransitionGestureRecognizer = true
     }
-
-    func set(messages: [String]) {
-        guard currentMessages != messages else { return }
-        currentMessages = messages
-        ChatBotsManager.shared.handleMessages(messages) { [weak self] (results) in
-            self?.updateBotsResults(results)
-        }
+    
+    func set(botResponses: [ChatBotResult]) {
+        guard self.currentResponses != botResponses else { return }
+        self.currentResponses = botResponses
+        self.updateBotsResults(botResponses)
+    }
+    
+    func updateStorePane(boughtBot bot: ChatBot) {
+        guard let pane = self.panesAndAnimatingOut.first?.0 as? ChatBotsInputStorePane else { return }
+        pane.reloadData(boughtBot: bot)
     }
     
     private func insertListItems(with inserts: ([(Int, ChatBotsInputPaneType, Int?)]), botsResults: [ChatBotResult]) -> [ListViewInsertItem] {
@@ -226,9 +234,10 @@ final class ChatSuggestionsInputNode: ChatInputNode {
         for paneType in toArrangements {
             switch paneType {
             case .store:
-                self.panesAndAnimatingOut.append((ChatBotsInputStorePane(), false))
-            case .bot:
-                self.panesAndAnimatingOut.append((ChatBotsInputSuggestionsPane(responses: results[resultIndex].responses, inputNodeInteraction: self.inputNodeInteraction, theme: self.theme!), false))
+                self.panesAndAnimatingOut.append((ChatBotsInputStorePane(inputNodeInteraction: self.inputNodeInteraction, theme: self.theme!), false))
+            case .bot(let botId):
+                let bot = results.first(where: { $0.bot.id == botId })!.bot
+                self.panesAndAnimatingOut.append((ChatBotsInputSuggestionsPane(bot: bot, responses: results[resultIndex].responses, inputNodeInteraction: self.inputNodeInteraction, theme: self.theme!), false))
                 resultIndex += 1
             }
         }
@@ -399,6 +408,12 @@ final class ChatSuggestionsInputNode: ChatInputNode {
         } else {
             if let (width, leftInset, rightInset, bottomInset, standardInputHeight, inputHeight, maximumHeight, inputPanelHeight, interfaceState) = self.validLayout {
                 let _ = self.updateLayout(width: width, leftInset: leftInset, rightInset: rightInset, bottomInset: bottomInset, standardInputHeight: standardInputHeight, inputHeight: inputHeight, maximumHeight: maximumHeight, inputPanelHeight: inputPanelHeight, transition: .animated(duration: 0.25, curve: .spring), interfaceState: interfaceState)
+            }
+            switch pane {
+            case .store:
+                self.setHighlightedItemCollectionId(ItemCollectionId(namespace: ChatBotsInputPanelAuxiliaryNamespace.store.rawValue, id: 0))
+            case .bot(let id):
+                self.setHighlightedItemCollectionId(ItemCollectionId(namespace: ChatBotsInputPanelAuxiliaryNamespace.bots.rawValue, id: ItemCollectionId.Id(id)))
             }
         }
     }

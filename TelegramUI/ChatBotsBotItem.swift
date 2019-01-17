@@ -62,12 +62,12 @@ final class ChatBotsBotItem: ListViewItem {
 
 private let boundingSize = CGSize(width: 41.0, height: 41.0)
 private let boundingImageSize = CGSize(width: 28.0, height: 28.0)
-private let highlightSize = CGSize(width: 35.0, height: 35.0)
+private let highlightSize = CGSize(width: 34.0, height: 34.0)
 private let verticalOffset: CGFloat = 3.0
 
 final class ChatBotsBotItemNode: ListViewItemNode {
     private let imageNode: ASImageNode
-    private let highlightNode: ASImageNode
+    private let highlightNode: ASDisplayNode
 
     var inputNodeInteraction: ChatBotsInputNodeInteraction?
     var currentCollectionId: ItemCollectionId?
@@ -75,8 +75,11 @@ final class ChatBotsBotItemNode: ListViewItemNode {
     private var theme: PresentationTheme?
 
     init() {
-        self.highlightNode = ASImageNode()
+        self.highlightNode = ASDisplayNode()
         self.highlightNode.isLayerBacked = true
+        self.highlightNode.clipsToBounds = true
+        self.highlightNode.borderColor = UIColor(argb: 0xff4da6ea).cgColor
+        self.highlightNode.borderWidth = 2
         self.highlightNode.isHidden = true
         
         self.imageNode = ASImageNode()
@@ -84,7 +87,9 @@ final class ChatBotsBotItemNode: ListViewItemNode {
         self.imageNode.contentMode = .scaleAspectFit
         self.imageNode.contentsScale = UIScreenScale
 
-        self.highlightNode.frame = CGRect(origin: CGPoint(x: floor((boundingSize.width - highlightSize.width) / 2.0) + verticalOffset, y: floor((boundingSize.height - highlightSize.height) / 2.0)), size: highlightSize)
+        let imageSize = CGSize(width: 26.0, height: 26.0)
+        self.highlightNode.frame = CGRect(origin: CGPoint(x: floor((boundingSize.width - highlightSize.width) / 2.0) + verticalOffset, y: floor((boundingSize.height - highlightSize.height) / 2.0) + UIScreenPixel), size: highlightSize)
+        self.highlightNode.cornerRadius = 0.5 * min(highlightSize.width, highlightSize.height)
 
         self.imageNode.transform = CATransform3DMakeRotation(CGFloat.pi / 2.0, 0.0, 0.0, 1.0)
 
@@ -93,7 +98,6 @@ final class ChatBotsBotItemNode: ListViewItemNode {
         self.addSubnode(self.highlightNode)
         self.addSubnode(self.imageNode)
         
-        let imageSize = CGSize(width: 26.0, height: 26.0)
         self.imageNode.frame = CGRect(origin: CGPoint(x: floor((boundingSize.width - imageSize.width) / 2.0) + verticalOffset, y: floor((boundingSize.height - imageSize.height) / 2.0) + UIScreenPixel), size: imageSize)
     }
 
@@ -105,8 +109,6 @@ final class ChatBotsBotItemNode: ListViewItemNode {
         
         if self.theme !== theme {
             self.theme = theme
-
-            self.highlightNode.image = PresentationResourcesChat.chatMediaInputPanelHighlightedIconImage(theme)
         }
 
         if self.currentItem != item {
