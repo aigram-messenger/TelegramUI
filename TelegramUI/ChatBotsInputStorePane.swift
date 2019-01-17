@@ -41,7 +41,7 @@ struct ChatBotsStoreListItem: ListViewItem, ItemListItem {
             Queue.mainQueue().async {
                 completion(node, {
                     return (nil, {
-                        node.update(bot: self.bot, theme: self.theme, params: params)
+                        node.update(bot: self.bot, theme: self.theme)
                         apply()
                     })
                 })
@@ -62,7 +62,7 @@ struct ChatBotsStoreListItem: ListViewItem, ItemListItem {
                 let (layout, apply) = makeLayout(self, params, itemListNeighbors(item: self, topItem: previousItem as? ItemListItem, bottomItem: nextItem as? ItemListItem))
                 Queue.mainQueue().async {
                     completion(layout, {
-                        nodeValue.update(bot: self.bot, theme: self.theme, params: params)
+                        nodeValue.update(bot: self.bot, theme: self.theme)
                         apply()
                     })
                 }
@@ -80,7 +80,7 @@ private let titleItalicFont = Font.italic(17.0)
 private let titleFixedFont = Font.regular(17.0)
 
 private class ChatStoreBotItemNode: ListViewItemNode {
-    private var bot: ChatBot
+    private(set) var bot: ChatBot
     private var theme: PresentationTheme?
     private let titleNode: TextNode
     private let separatorNode: ASDisplayNode
@@ -133,7 +133,7 @@ private class ChatStoreBotItemNode: ListViewItemNode {
         }
     }
     
-    func update(bot: ChatBot, theme: PresentationTheme, params: ListViewItemLayoutParams) {
+    func update(bot: ChatBot, theme: PresentationTheme) {
         self.bot = bot
         if theme != self.theme {
             self.theme = theme
@@ -141,8 +141,13 @@ private class ChatStoreBotItemNode: ListViewItemNode {
         self.separatorNode.backgroundColor = theme.chatList.itemSeparatorColor
         if BotsStoreManager.shared.isBotBought(bot) {
             self.backgroundNode.backgroundColor = UIColor.green
+            self.installationActionNode.isHidden = true
+            self.installationActionImageNode.isHidden = true
+
         } else {
             self.backgroundNode.backgroundColor = UIColor(argb: arc4random())
+            self.installationActionImageNode.isHidden = false
+            self.installationActionNode.isHidden = false
         }
     }
     
@@ -244,5 +249,12 @@ final class ChatBotsInputStorePane: ChatMediaInputPane, UIScrollViewDelegate {
         
         let updateSizeAndInsets = ListViewUpdateSizeAndInsets(size: size, insets: UIEdgeInsets(), duration: 0, curve: .Spring(duration: 0))
         self.listView.transaction(deleteIndices: [], insertIndicesAndItems: [], updateIndicesAndItems: [], options: [.Synchronous, .LowLatency], scrollToItem: nil, updateSizeAndInsets: updateSizeAndInsets, stationaryItemRange: nil, updateOpaqueState: nil, completion: { _ in })
+    }
+    
+    func reloadData(boughtBot bot: ChatBot) {
+        self.listView.forEachItemNode { node in
+            guard let node = node as? ChatStoreBotItemNode, node.bot.title.lowercased() == bot.title.lowercased() else { return }
+            node.update(bot: bot, theme: self.theme)
+        }
     }
 }

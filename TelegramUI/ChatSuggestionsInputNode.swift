@@ -126,8 +126,8 @@ final class ChatSuggestionsInputNode: ChatInputNode {
         }, buyBot: { [weak self] bot in
             BotsStoreManager.shared.buyBot(bot) { (bought) in
                 print("BOT \(bot.title) BOUGHT \(bought)")
-                //TODO: not implemented
-//                self?.handleMessages(self?.currentMessages ?? [])
+                self?.controllerInteraction.handleMessagesWithBots(nil)
+                self?.updateStorePane(boughtBot: bot)
             }
         })
 
@@ -165,6 +165,11 @@ final class ChatSuggestionsInputNode: ChatInputNode {
         guard self.currentResponses != botResponses else { return }
         self.currentResponses = botResponses
         self.updateBotsResults(botResponses)
+    }
+    
+    func updateStorePane(boughtBot bot: ChatBot) {
+        guard let pane = self.panesAndAnimatingOut.first?.0 as? ChatBotsInputStorePane else { return }
+        pane.reloadData(boughtBot: bot)
     }
     
     private func insertListItems(with inserts: ([(Int, ChatBotsInputPaneType, Int?)]), botsResults: [ChatBotResult]) -> [ListViewInsertItem] {

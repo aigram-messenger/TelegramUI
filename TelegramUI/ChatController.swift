@@ -1036,7 +1036,8 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
             (self?.view.window as? WindowHost)?.cancelInteractiveKeyboardGestures()
             self?.chatDisplayNode.cancelInteractiveKeyboardGestures()
         }, automaticMediaDownloadSettings: self.automaticMediaDownloadSettings, handleMessagesWithBots: { [weak self] messages in
-            self?.requestHandlingLastMessages(messages)
+            let handleEmpty = messages == nil ? false : true
+            self?.requestHandlingLastMessages(messages, handleEmpty: handleEmpty)
         })
         
         self.controllerInteraction = controllerInteraction
@@ -1495,7 +1496,9 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
         }
     }
     
-    func requestHandlingLastMessages(_ messages: [String], handleEmpty: Bool = true) {
+    func requestHandlingLastMessages(_ messages: [String]?, handleEmpty: Bool = true) {
+        let messages: [String] = messages ?? self.chatDisplayNode.lastMessages.map { $0.text }
+        
         if self.currentMessages == messages, handleEmpty { return  }
         print("HANDLE \(messages)")
         self.currentMessages = messages

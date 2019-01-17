@@ -113,6 +113,7 @@ public final class ChatBotsManager {
             try? fm.createDirectory(at: chatBotsUrl, withIntermediateDirectories: true, attributes: nil)
         }
         
+        print("BOTS LOCAL URL \(chatBotsUrl)")
         let urls = (try? fm.contentsOfDirectory(at: chatBotsUrl, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles])) ?? []
         var id = 0
         for url in urls {
@@ -208,19 +209,6 @@ public final class ChatBotsManager {
 }
 
 extension ChatBotsManager {
-//    private func words(of message: String) -> [String] {
-//        let tagger = NSLinguisticTagger(tagSchemes: [.lemma], options: 0)
-//        tagger.string = message
-//        let range = NSRange(location: 0, length: message.count)
-//        let options: NSLinguisticTagger.Options = [.omitPunctuation, .omitWhitespace]
-//        var words: [String] = []
-//        tagger.enumerateTags(in: range, scheme: .lemma, options: options) { (tag, tokenRange, sentenceRange, stop) in
-//            let word = (message as NSString).substring(with: tokenRange)
-//            words.append(word.lowercased())
-//        }
-//        return words
-//    }
-    
     private var nextBotId: Int {
         var result = 0
         
