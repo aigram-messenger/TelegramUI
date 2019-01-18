@@ -23,8 +23,8 @@ class ChatStoreBotItemNode: ListViewItemNode {
     private let descriptionNode: ASTextNode
     private let previewImageNode: ASImageNode
     
-//    private let installationActionImageNode: ASImageNode
     private let installationActionNode: HighlightableButtonNode
+    private let enablingActionNode: HighlightableButtonNode
     
     private var item: ChatBotsStoreListItem?
     
@@ -39,7 +39,7 @@ class ChatStoreBotItemNode: ListViewItemNode {
         
         self.typeNode = ASTextNode()
         self.typeNode.isLayerBacked = true
-        self.typeNode.attributedText = NSAttributedString(string: "Bot", font: smallFont, textColor: UIColor(argb: 0xff8a8a8a))
+        self.typeNode.attributedText = NSAttributedString(string: bot.type, font: smallFont, textColor: UIColor(argb: 0xff8a8a8a))
         self.typeNode.maximumNumberOfLines = 1
         self.typeNode.truncationMode = .byTruncatingTail
         
@@ -54,6 +54,15 @@ class ChatStoreBotItemNode: ListViewItemNode {
         self.installationActionNode.cornerRadius = 4
         let priceString = BotsStoreManager.shared.botPriceString(bot: bot)
         self.installationActionNode.setAttributedTitle(NSAttributedString(string: priceString, font: buttonTitleFont, textColor: .white), for: .normal)
+        
+        self.enablingActionNode = HighlightableButtonNode()
+        self.enablingActionNode.cornerRadius = 4
+        self.enablingActionNode.borderWidth = 1
+        let botIsEnabled = ChatBotsManager.shared.isBotEnabled(bot)
+        let title = botIsEnabled ? "ОТКЛЮЧИТЬ" : "ВКЛЮЧИТЬ"
+        let color = botIsEnabled ? UIColor(argb: 0xff848d99) : UIColor(argb: 0xff50a8eb)
+        self.enablingActionNode.borderColor = color.cgColor
+        self.enablingActionNode.setAttributedTitle(NSAttributedString(string: title, font: buttonTitleFont, textColor: color), for: .normal)
         
         self.previewImageNode = ASImageNode()
         self.previewImageNode.displaysAsynchronously = false
@@ -70,8 +79,10 @@ class ChatStoreBotItemNode: ListViewItemNode {
         self.addSubnode(self.typeNode)
         self.addSubnode(self.descriptionNode)
         self.addSubnode(self.installationActionNode)
+        self.addSubnode(self.enablingActionNode)
         
         self.installationActionNode.addTarget(self, action: #selector(self.buyBotAction), forControlEvents: .touchUpInside)
+        self.enablingActionNode.addTarget(self, action: #selector(self.enableBotAction), forControlEvents: .touchUpInside)
     }
     
     func update(bot: ChatBot, theme: PresentationTheme) {
@@ -85,11 +96,15 @@ class ChatStoreBotItemNode: ListViewItemNode {
         self.installationActionNode.setAttributedTitle(NSAttributedString(string: priceString, font: buttonTitleFont, textColor: .white), for: .normal)
         self.previewImageNode.image = bot.preview
         
-        if BotsStoreManager.shared.isBotBought(bot) {
-            self.installationActionNode.isHidden = true
-        } else {
-            self.installationActionNode.isHidden = false
-        }
+        let botIsEnabled = ChatBotsManager.shared.isBotEnabled(bot)
+        let title = botIsEnabled ? "ОТКЛЮЧИТЬ" : "ВКЛЮЧИТЬ"
+        let color = botIsEnabled ? UIColor(argb: 0xff848d99) : UIColor(argb: 0xff50a8eb)
+        self.enablingActionNode.borderColor = color.cgColor
+        self.enablingActionNode.setAttributedTitle(NSAttributedString(string: title, font: buttonTitleFont, textColor: color), for: .normal)
+        
+        let bought = BotsStoreManager.shared.isBotBought(bot)
+        self.installationActionNode.isHidden = bought
+        self.enablingActionNode.isHidden = !bought
     }
     
     override func animateAdded(_ currentTimestamp: Double, duration: Double) {
@@ -137,14 +152,13 @@ class ChatStoreBotItemNode: ListViewItemNode {
                     
                     
                     
-                    if item.bot.isLocal {
-                        strongSelf.installationActionNode.isHidden = true
-                    } else {
-                        strongSelf.installationActionNode.isHidden = false
-                    }
+                    let bought = BotsStoreManager.shared.isBotBought(item.bot)
+                    strongSelf.installationActionNode.isHidden = bought
+                    strongSelf.enablingActionNode.isHidden = !bought
                     
-                    let installationActionFrame = CGRect(x: params.width - params.rightInset - 16 - buttonWidth, y: 16, width: buttonWidth, height: 26)
-                    strongSelf.installationActionNode.frame = installationActionFrame
+                    let actionFrame = CGRect(x: params.width - params.rightInset - 16 - buttonWidth, y: 16, width: buttonWidth, height: 26)
+                    strongSelf.installationActionNode.frame = actionFrame
+                    strongSelf.enablingActionNode.frame = actionFrame
                 }
             })
         }
@@ -153,5 +167,10 @@ class ChatStoreBotItemNode: ListViewItemNode {
     @objc private func buyBotAction() {
         self.installationActionNode.isUserInteractionEnabled = false
         self.item?.inputNodeInteraction.buyBot(self.bot)
+    }
+    
+    @objc private func enableBotAction() {
+        let botIsEnabled = ChatBotsManager.shared.isBotEnabled(bot)
+        self.item?.inputNodeInteraction.enableBot(self.bot, !botIsEnabled)
     }
 }

@@ -127,8 +127,12 @@ final class ChatSuggestionsInputNode: ChatInputNode {
             BotsStoreManager.shared.buyBot(bot) { (bought) in
                 print("BOT \(bot.title) BOUGHT \(bought)")
                 self?.controllerInteraction.handleMessagesWithBots(nil)
-                self?.updateStorePane(boughtBot: bot)
+                self?.updateStorePane(for: bot)
             }
+        }, enableBot: { [weak self] bot, enabled in
+            ChatBotsManager.shared.enableBot(bot, enabled: enabled)
+            self?.updateStorePane(for: bot)
+            self?.controllerInteraction.handleMessagesWithBots(nil)
         })
 
         self.backgroundColor = theme.chat.inputMediaPanel.stickersBackgroundColor
@@ -167,9 +171,9 @@ final class ChatSuggestionsInputNode: ChatInputNode {
         self.updateBotsResults(botResponses)
     }
     
-    func updateStorePane(boughtBot bot: ChatBot) {
+    func updateStorePane(for bot: ChatBot) {
         guard let pane = self.panesAndAnimatingOut.first?.0 as? ChatBotsInputStorePane else { return }
-        pane.reloadData(boughtBot: bot)
+        pane.reloadData(for: bot)
     }
     
     private func insertListItems(with inserts: ([(Int, ChatBotsInputPaneType, Int?)]), botsResults: [ChatBotResult]) -> [ListViewInsertItem] {

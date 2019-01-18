@@ -52,9 +52,9 @@ final class ChatBotsInputStorePane: ChatMediaInputPane, UIScrollViewDelegate {
         self.listView.transaction(deleteIndices: [], insertIndicesAndItems: [], updateIndicesAndItems: [], options: [.Synchronous, .LowLatency], scrollToItem: nil, updateSizeAndInsets: updateSizeAndInsets, stationaryItemRange: nil, updateOpaqueState: nil, completion: { _ in })
     }
     
-    func reloadData(boughtBot bot: ChatBot) {
+    func reloadData(for bot: ChatBot) {
         self.listView.forEachItemNode { node in
-            guard let node = node as? ChatStoreBotItemNode, node.bot.title.lowercased() == bot.title.lowercased() else { return }
+            guard let node = node as? ChatStoreBotItemNode, node.bot == bot else { return }
             node.update(bot: bot, theme: self.theme)
         }
     }

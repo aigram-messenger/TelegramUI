@@ -15,60 +15,79 @@ public enum ChatBotError: Error {
     case modelFileNotExists
 }
 
-let TargetBotName: String = "binbank"
+let TargetBotName: String = "target"
+
+public enum ChatBotType: String, Codable, CustomStringConvertible {
+    case bot
+    
+    public var description: String { return self.rawValue.capitalized }
+}
+
+private struct ChatBotInfo: Codable {
+    let id: ChatBot.ChatBotId
+    let title: String
+    let name: String
+    let shortDescription: String
+    let type: ChatBotType
+}
 
 public struct ChatBot {
-    public var id: Int = 0
-    public var title: String = ""
-    public var words: [String] = []
-    public var responses: [BotResponse] = []
-    public var modelURL: URL
-    public var icon: UIImage = UIImage()
-    public var preview: UIImage = UIImage()
+    public typealias ChatBotId = Int
+    static let botExtension: String = "chatbot"
+    
+    private let info: ChatBotInfo
+    
     public let url: URL
-    public var isTarget: Bool {
-        return title == TargetBotName
-    }
-    public var shortDescription: String {
-        return "композиционная форма, которую используют в литературоведении и лингвистике для подробной характеристики предметов или явлений в целях создания художественного образа"
-    }
+    public let fileNameComponents: (String, String)
+    
+    public var id: ChatBotId { return info.id }
+    public var title: String { return info.title }
+    public var name: String { return info.name }
+    public var shortDescription: String { return info.shortDescription }
+    public var type: String { return String(describing: info.type) }
+    public var isTarget: Bool { return name == TargetBotName }
+    
+    public let words: [String]
+    public let responses: [BotResponse]
+    
+    public let modelURL: URL
+    public let icon: UIImage
+    public let preview: UIImage
     
     public var isLocal: Bool {
         let fm = FileManager.default
         guard var destinationUrl = fm.urls(for: .documentDirectory, in: .userDomainMask).first else { return false }
         destinationUrl.appendPathComponent("chatbots", isDirectory: true)
-        destinationUrl.appendPathComponent("\(title).chatbot", isDirectory: true)
+        destinationUrl.appendPathComponent("\(fileNameComponents.0).\(fileNameComponents.1)", isDirectory: true)
         let result = (try? destinationUrl.checkResourceIsReachable()) ?? false
         return result
     }
     
     public init(url: URL) throws {
         self.url = url
-        title = url.deletingPathExtension().lastPathComponent
-        modelURL = url.appendingPathComponent("\(title)converted_model.tflite")
-        if !(try modelURL.checkResourceIsReachable()) {
-            throw ChatBotError.modelFileNotExists
-        }
-        
-        if let image = UIImage(in: url, name: "icon", ext: "png") {
-            icon = image
-        }
-        if let image = UIImage(in: url, name: "preview", ext: "png") {
-            preview = image
-        }
+        fileNameComponents = (url.deletingPathExtension().lastPathComponent, url.pathExtension)
         
         let decoder = JSONDecoder()
-        var data = try Data(contentsOf: url.appendingPathComponent("words_\(title).json"))
-        words = try decoder.decode(type(of: words), from: data)
+        var data = try Data(contentsOf: url.appendingPathComponent("info.json"))
+        info = try decoder.decode(Swift.type(of: info), from: data)
         
-        data = try Data(contentsOf: url.appendingPathComponent("response_\(title).json"))
-        responses = try decoder.decode(type(of: responses), from: data)
+        modelURL = url.appendingPathComponent("\(fileNameComponents.0)converted_model.tflite")
+        if !(try modelURL.checkResourceIsReachable()) { throw ChatBotError.modelFileNotExists }
+        
+        data = try Data(contentsOf: url.appendingPathComponent("words_\(fileNameComponents.0).json"))
+        words = try decoder.decode(Swift.type(of: words), from: data)
+        
+        data = try Data(contentsOf: url.appendingPathComponent("response_\(fileNameComponents.0).json"))
+        responses = try decoder.decode(Swift.type(of: responses), from: data)
+        
+        icon = UIImage(in: url, name: "icon", ext: "png") ?? UIImage()
+        preview = UIImage(in: url, name: "preview", ext: "png") ?? UIImage()
     }
 }
 
 extension ChatBot: Equatable {
     public static func == (lhs: ChatBot, rhs: ChatBot) -> Bool {
-        return lhs.title.lowercased() == rhs.title.lowercased()
+        return lhs.id == rhs.id
     }
 }
 
@@ -79,7 +98,6 @@ public struct ChatBotResult {
 
 extension ChatBotResult: Equatable {
     public static func == (lhs: ChatBotResult, rhs: ChatBotResult) -> Bool {
-        return lhs.bot == rhs.bot
-            && lhs.responses == rhs.responses
+        return lhs.bot == rhs.bot && lhs.responses == rhs.responses
     }
 }
