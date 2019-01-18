@@ -29,6 +29,9 @@ public struct ChatBot {
     public var isTarget: Bool {
         return title == TargetBotName
     }
+    public var shortDescription: String {
+        return "композиционная форма, которую используют в литературоведении и лингвистике для подробной характеристики предметов или явлений в целях создания художественного образа"
+    }
     
     public var isLocal: Bool {
         let fm = FileManager.default

@@ -71,6 +71,7 @@ final class ChatBotsBotItemNode: ListViewItemNode {
 
     var inputNodeInteraction: ChatBotsInputNodeInteraction?
     var currentCollectionId: ItemCollectionId?
+    
     private var currentItem: ChatBot?
     private var theme: PresentationTheme?
 

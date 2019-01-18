@@ -27,7 +27,7 @@ final class ChatBotsInputStorePane: ChatMediaInputPane, UIScrollViewDelegate {
         self.listView = ListView()
         
         super.init()
-        self.backgroundColor = UIColor.yellow
+        self.backgroundColor = UIColor(argb: 0xffe7ebef)
         
         self.addSubnode(self.listView)
         

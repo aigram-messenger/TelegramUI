@@ -23,12 +23,22 @@ public final class BotsStoreManager: NSObject {
         }
         DispatchQueue.global().async {
             let copied = ChatBotsManager.shared.copyBot(bot)
-            completion(copied)
+            DispatchQueue.main.async {
+                completion(copied)
+            }
         }
     }
     
     public func isBotBought(_ bot: ChatBot) -> Bool {
         return bot.isLocal
+    }
+    
+    public func botPriceString(bot: ChatBot) -> String {
+        let price = arc4random_uniform(50)
+        if price % 2 == 1 {
+            return "\(price + 50) ₽"
+        }
+        return "ПОЛУЧИТЬ"
     }
 }
 
