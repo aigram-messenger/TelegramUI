@@ -31,7 +31,7 @@ final class ChatBotsInputSuggestionsPane: ChatMediaInputPane, UIScrollViewDelega
         
         self.addSubnode(self.listView)
         
-        var index = 1
+        var index = 0//1
         let insertItems: [ListViewInsertItem] = self.responses.map {
             let itemNode = ChatSuggestionListItem(bot: bot, response: $0, inputNodeInteraction: self.inputNodeInteraction, theme: self.theme)
             let item = ListViewInsertItem(index: index, previousIndex: nil, item: itemNode, directionHint: nil)

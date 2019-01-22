@@ -14,6 +14,7 @@ public final class ChatBotsManager {
     private(set) public var bots: [ChatBot] = []
     private var queue: OperationQueue
     private var lastMessages: [String]?
+    private var botEnableStates: [ChatBot.ChatBotId: Bool] = [:]
     
     private init() {
         queue = OperationQueue()
@@ -29,12 +30,9 @@ public final class ChatBotsManager {
         print("BOTS LOCAL URL \(chatBotsUrl)")
         let urls = (try? fm.contentsOfDirectory(at: chatBotsUrl, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles])) ?? []
 //        if let tb = self.targetBot { bots = [tb] }
-        var id = nextBotId
         for url in urls {
-            guard var bot = try? ChatBot(url: url) else { continue }
-            bot.id = id
+            guard let bot = try? ChatBot(url: url) else { continue }
             bots.append(bot)
-            id += 1
         }
         
 //        let temp = bots
@@ -51,6 +49,7 @@ public final class ChatBotsManager {
             var results: [ChatBotResult] = []
             
             for bot in self.bots {
+                guard self.isBotEnabled(bot) else { continue }
                 localQueue.addOperation {
                     let processor = BotProcessor(bot: bot)
                     let result = processor.process(messages: messages)
@@ -76,7 +75,7 @@ public final class ChatBotsManager {
         var result: [ChatBot] = []
         
         let bundle = Bundle(for: ChatBotsManager.self)
-        let urls = bundle.urls(forResourcesWithExtension: "chatbot", subdirectory: "bots") ?? []
+        let urls = bundle.urls(forResourcesWithExtension: ChatBot.botExtension, subdirectory: "bots") ?? []
         for url in urls {
             guard let bot = try? ChatBot(url: url), !bot.isTarget else { continue }
             result.append(bot)
@@ -88,6 +87,7 @@ public final class ChatBotsManager {
     public func copyBot(_ bot: ChatBot) -> Bool {
         let fm = FileManager.default
         guard var destinationUrl = fm.urls(for: .documentDirectory, in: .userDomainMask).first else { return false }
+        
         destinationUrl.appendPathComponent("chatbots", isDirectory: true)
         if !((try? destinationUrl.checkResourceIsReachable()) ?? false) {
             do {
@@ -96,15 +96,14 @@ public final class ChatBotsManager {
                 return false
             }
         }
-        destinationUrl.appendPathComponent("\(bot.title).chatbot", isDirectory: true)
+        destinationUrl.appendPathComponent("\(bot.fileNameComponents.0).\(bot.fileNameComponents.1)", isDirectory: true)
         if ((try? destinationUrl.checkResourceIsReachable()) ?? false) {
             try? fm.removeItem(at: destinationUrl)
         }
         
         do {
             try fm.copyItem(at: bot.url, to: destinationUrl)
-            var newBot = try ChatBot(url: destinationUrl)
-            newBot.id = nextBotId
+            let newBot = try ChatBot(url: destinationUrl)
             bots.append(newBot)
         } catch {
             return false
@@ -117,28 +116,22 @@ public final class ChatBotsManager {
         let fm = FileManager.default
         guard var botUrl = fm.urls(for: .documentDirectory, in: .userDomainMask).first else { return }
         botUrl.appendPathComponent("chatbots", isDirectory: true)
-        botUrl.appendPathComponent("\(bot.title).chatbot", isDirectory: true)
+        botUrl.appendPathComponent("\(bot.fileNameComponents.0).\(bot.fileNameComponents.1)", isDirectory: true)
         try? fm.removeItem(at: botUrl)
+    }
+    
+    public func enableBot(_ bot: ChatBot, enabled: Bool) {
+        botEnableStates[bot.id] = enabled
+    }
+    
+    public func isBotEnabled(_ bot: ChatBot) -> Bool {
+        return botEnableStates[bot.id] ?? true
     }
 }
 
 extension ChatBotsManager {
-    private var nextBotId: Int {
-        var result = 0
-        
-        for bot in bots {
-            result = max(result, bot.id)
-        }
-        result += 1
-        
-        return result
-    }
-    
     private var targetBot: ChatBot? {
-        let bundle = Bundle(for: ChatBotsManager.self)
-        guard let url = bundle.url(forResource: TargetBotName, withExtension: "chatbot", subdirectory: "bots") else { return nil }
-        var bot = try? ChatBot(url: url)
-        bot?.id = 1
-        return bot
+        //TODO: not implemented
+        return nil
     }
 }

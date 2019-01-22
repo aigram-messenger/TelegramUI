@@ -106,7 +106,7 @@ final class ChatBotsStoreItemNode: ListViewItemNode {
         if self.theme !== theme {
             self.theme = theme
             
-            self.imageNode.image = PresentationResourcesChat.chatInputTextFieldSuggestionsImage(theme)
+            self.imageNode.image = UIImage(bundleImageName: "Chat/Input/Media/BotsShopTabIcon")
             self.highlightNode.image = PresentationResourcesChat.chatMediaInputPanelHighlightedIconImage(theme)
         }
     }
