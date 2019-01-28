@@ -46,7 +46,7 @@ public struct ChatBot {
     public var shortDescription: String { return info.shortDescription }
     public var type: String { return String(describing: info.type) }
     public var isTarget: Bool { return name == TargetBotName }
-    public var fullDescription: String { return "Адаптация, следовательно, очевидна не для всех.\nЗакон исключённого третьего, как принято считать, транспонирует закон исключённого третьего." }
+    public var fullDescription: String { return shortDescription }
     
     public let words: [String]
     public let responses: [BotResponse]
