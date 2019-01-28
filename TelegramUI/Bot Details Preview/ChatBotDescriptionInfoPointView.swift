@@ -27,8 +27,8 @@ private extension ChatBotDescriptionInfoPointView {
             let view = UIImageView(image: image)
             view.sizeToFit()
             var rect = view.frame
-            rect.size.width = min(rect.size.width, 18)
-            rect.size.height = min(rect.size.height, 18)
+            rect.size.width = min(rect.size.width, 14)
+            rect.size.height = min(rect.size.height, 14)
             addSubview(view)
             return view
         }()
@@ -88,9 +88,9 @@ private extension ChatBotDescriptionInfoPointView {
                 markX = 4
                 markWidth = bounds.width - 4 - 4
             }
-            markLabel.frame = CGRect(x: markX, y: bounds.midY - 2 - markLabel.frame.height, width: markWidth, height: markLabel.frame.height)
+            markLabel.frame = CGRect(x: markX + 2, y: bounds.midY - 2 - markLabel.frame.height, width: markWidth, height: markLabel.frame.height)
             var rect = imageView.frame
-            rect.origin.x = markX - rect.width
+            rect.origin.x = markX - rect.width - 2
             rect.origin.y = markLabel.frame.midY - 0.5 * rect.height
             imageView.frame = rect
         }
