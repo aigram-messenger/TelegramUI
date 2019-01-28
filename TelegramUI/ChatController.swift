@@ -1038,6 +1038,18 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
         }, automaticMediaDownloadSettings: self.automaticMediaDownloadSettings, handleMessagesWithBots: { [weak self] messages in
             let handleEmpty = messages == nil ? false : true
             self?.requestHandlingLastMessages(messages, handleEmpty: handleEmpty)
+        }, showBotDetails: { [weak self] bot in
+            self?.showBotDetailsAlert(bot)
+
+//            let alert = UIAlertController(title: nil,
+//                                          customView: customView,
+//                                          fallbackMessage: "Motherfucker",
+//                                          preferredStyle: .actionSheet)
+//
+//            alert.addAction(UIAlertAction(title: "Yay!", style: .default, handler: nil))
+//            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { _ in
+//                print("CANCEL")
+//            }))
         })
         
         self.controllerInteraction = controllerInteraction
@@ -1494,6 +1506,47 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
         get {
             return super.displayNode as! ChatControllerNode
         }
+    }
+    
+    func showBotDetailsAlert(_ bot: ChatBot) {
+        print("BOT DETAILS")
+//        let customView = ChatBotDescriptionView()
+//        var dismissImpl: (() -> Void)?
+//
+        let theme = AlertControllerTheme(presentationTheme: self.presentationData.theme)
+        let actions = [TextAlertAction(type: .defaultAction, title: self.presentationData.strings.Common_OK, action: {})]
+//        let contentNode: AlertContentNode = TextAlertContentNode(theme: theme,
+//                                                                 title: NSAttributedString(string: "TITLE", font: Font.medium(17.0), textColor: theme.primaryColor, paragraphAlignment: .center),
+//                                                                 text: NSAttributedString(string: "This is\ntext", font: Font.semibold(17.0), textColor: theme.primaryColor, paragraphAlignment: .center),
+//                                                                 actions: actions.map { action in
+//            return TextAlertAction(type: action.type, title: action.title, action: {
+//                dismissImpl?()
+//                action.action()
+//            })
+//        }, actionLayout: .horizontal)
+//        let controller = AlertController(theme: theme,
+//                                         contentNode: contentNode)
+//        dismissImpl = { [weak controller] in
+//            controller?.dismissAnimated()
+//        }
+        
+//        let controller = standardTextAlertController(theme: theme, title: "TITLE", text: "Fuckin \nmessage", actions: actions)
+//        self.present(controller, in: .window(.root))
+        
+        let actionSheet = ActionSheetController(presentationTheme: self.presentationData.theme)
+        var items: [ActionSheetItem] = []
+        items.append(ChatBotDetailsItem(bot: bot))
+        items.append(ActionSheetButtonItem(title: "Получить", color: .accent, action: { [weak actionSheet] in
+            actionSheet?.dismissAnimated()
+        }))
+        
+        let cancel: [ActionSheetItem] = [
+            ActionSheetButtonItem(title: self.presentationData.strings.Common_Cancel, color: .accent, action: { [weak actionSheet] in
+                actionSheet?.dismissAnimated()
+            })
+        ]
+        actionSheet.setItemGroups([ActionSheetItemGroup(items:items), ActionSheetItemGroup(items: cancel)])
+        self.present(actionSheet, in: .window(.root))
     }
     
     func requestHandlingLastMessages(_ messages: [String]?, handleEmpty: Bool = true) {

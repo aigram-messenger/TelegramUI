@@ -133,6 +133,8 @@ final class ChatSuggestionsInputNode: ChatInputNode {
             ChatBotsManager.shared.enableBot(bot, enabled: enabled)
             self?.updateStorePane(for: bot)
             self?.controllerInteraction.handleMessagesWithBots(nil)
+        }, botDetails: { [weak self] bot in
+            self?.controllerInteraction.showBotDetails(bot)
         })
 
         self.backgroundColor = theme.chat.inputMediaPanel.stickersBackgroundColor

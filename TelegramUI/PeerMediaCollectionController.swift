@@ -236,7 +236,8 @@ public class PeerMediaCollectionController: TelegramController {
         }, requestMessageUpdate: { _ in
         }, cancelInteractiveKeyboardGestures: {
         }, automaticMediaDownloadSettings: AutomaticMediaDownloadSettings.defaultSettings,
-           handleMessagesWithBots: { _ in })
+           handleMessagesWithBots: { _ in },
+           showBotDetails: { _ in })
         
         self.controllerInteraction = controllerInteraction
         

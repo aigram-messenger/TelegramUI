@@ -18,7 +18,7 @@ struct ChatBotsStoreListItem: ListViewItem, ItemListItem {
     let inputNodeInteraction: ChatBotsInputNodeInteraction
     let theme: PresentationTheme
     
-    var selectable: Bool { return false }
+    var selectable: Bool { return true }
     
     init(bot: ChatBot, inputNodeInteraction: ChatBotsInputNodeInteraction, theme: PresentationTheme) {
         self.bot = bot
@@ -69,5 +69,7 @@ struct ChatBotsStoreListItem: ListViewItem, ItemListItem {
     }
     
     func selected(listView: ListView) {
+        print("SELECTED")
+        self.inputNodeInteraction.botDetails(self.bot)
     }
 }

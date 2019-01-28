@@ -1080,6 +1080,7 @@
 		F76439B621D6687A005AC13C /* FirebaseInstanceID.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F76439B521D66879005AC13C /* FirebaseInstanceID.framework */; };
 		F76439B821D747BD005AC13C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F76439B721D747BD005AC13C /* GoogleService-Info.plist */; };
 		F76439BA21D77A16005AC13C /* bots in Resources */ = {isa = PBXBuildFile; fileRef = F76439B921D77A15005AC13C /* bots */; };
+		F7C2BF7421FB17BA005DA6C9 /* ChatBotDetailsItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7C2BF7321FB17BA005DA6C9 /* ChatBotDetailsItem.swift */; };
 		F7E0F2E121D2270100974C76 /* ChatBotsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7E0F2E021D2270100974C76 /* ChatBotsManager.swift */; };
 		F7F28FCF21CD1DB3008DC5A4 /* ChatBotsInputStorePane.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7F28FCE21CD1DB3008DC5A4 /* ChatBotsInputStorePane.swift */; };
 		F7F28FD121CD1E2D008DC5A4 /* ChatBotsInputSuggestionsPane.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7F28FD021CD1E2D008DC5A4 /* ChatBotsInputSuggestionsPane.swift */; };
@@ -1087,6 +1088,11 @@
 		FB31301721D80DF0004870C2 /* ObjC.m in Sources */ = {isa = PBXBuildFile; fileRef = FB31301521D80DF0004870C2 /* ObjC.m */; };
 		FB31301921D80E87004870C2 /* TelegramUI-Bridging-Header.h in Headers */ = {isa = PBXBuildFile; fileRef = FB31301821D80E87004870C2 /* TelegramUI-Bridging-Header.h */; };
 		FB32415B21D169C00023532E /* ChatBotsBotItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB32415A21D169C00023532E /* ChatBotsBotItem.swift */; };
+		FB73A51021FA5B0200032CFF /* ChatBotDescrptionFullDescriptionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB73A50A21FA5B0200032CFF /* ChatBotDescrptionFullDescriptionView.swift */; };
+		FB73A51121FA5B0200032CFF /* ChatBotDescriptionMetaInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB73A50B21FA5B0200032CFF /* ChatBotDescriptionMetaInfoView.swift */; };
+		FB73A51321FA5B0200032CFF /* ChatBotDescriptionHeadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB73A50D21FA5B0200032CFF /* ChatBotDescriptionHeadView.swift */; };
+		FB73A51421FA5B0200032CFF /* ChatBotDescriptionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB73A50E21FA5B0200032CFF /* ChatBotDescriptionView.swift */; };
+		FB73A51521FA5B0200032CFF /* ChatBotDescriptionInfoPointView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB73A50F21FA5B0200032CFF /* ChatBotDescriptionInfoPointView.swift */; };
 		FB929AD221BFE57C004000E0 /* ChatSuggestionsInputNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB929AD121BFE57C004000E0 /* ChatSuggestionsInputNode.swift */; };
 /* End PBXBuildFile section */
 
@@ -2249,6 +2255,7 @@
 		F76439B521D66879005AC13C /* FirebaseInstanceID.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FirebaseInstanceID.framework; path = "third-party/FirebaseInstanceID.framework"; sourceTree = "<group>"; };
 		F76439B721D747BD005AC13C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "TelegramUI/Resources/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		F76439B921D77A15005AC13C /* bots */ = {isa = PBXFileReference; lastKnownFileType = folder; path = bots; sourceTree = "<group>"; };
+		F7C2BF7321FB17BA005DA6C9 /* ChatBotDetailsItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotDetailsItem.swift; sourceTree = "<group>"; };
 		F7E0F2E021D2270100974C76 /* ChatBotsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotsManager.swift; sourceTree = "<group>"; };
 		F7F28FCE21CD1DB3008DC5A4 /* ChatBotsInputStorePane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotsInputStorePane.swift; sourceTree = "<group>"; };
 		F7F28FD021CD1E2D008DC5A4 /* ChatBotsInputSuggestionsPane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotsInputSuggestionsPane.swift; sourceTree = "<group>"; };
@@ -2256,6 +2263,11 @@
 		FB31301521D80DF0004870C2 /* ObjC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ObjC.m; sourceTree = "<group>"; };
 		FB31301821D80E87004870C2 /* TelegramUI-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TelegramUI-Bridging-Header.h"; sourceTree = "<group>"; };
 		FB32415A21D169C00023532E /* ChatBotsBotItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotsBotItem.swift; sourceTree = "<group>"; };
+		FB73A50A21FA5B0200032CFF /* ChatBotDescrptionFullDescriptionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatBotDescrptionFullDescriptionView.swift; sourceTree = "<group>"; };
+		FB73A50B21FA5B0200032CFF /* ChatBotDescriptionMetaInfoView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatBotDescriptionMetaInfoView.swift; sourceTree = "<group>"; };
+		FB73A50D21FA5B0200032CFF /* ChatBotDescriptionHeadView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatBotDescriptionHeadView.swift; sourceTree = "<group>"; };
+		FB73A50E21FA5B0200032CFF /* ChatBotDescriptionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatBotDescriptionView.swift; sourceTree = "<group>"; };
+		FB73A50F21FA5B0200032CFF /* ChatBotDescriptionInfoPointView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatBotDescriptionInfoPointView.swift; sourceTree = "<group>"; };
 		FB929AD121BFE57C004000E0 /* ChatSuggestionsInputNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatSuggestionsInputNode.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -4256,6 +4268,7 @@
 		D0F69E0D1D6B8AB90046BCD6 /* Chat */ = {
 			isa = PBXGroup;
 			children = (
+				FB73A50921FA5B0200032CFF /* Bot Details Preview */,
 				D0F69E0E1D6B8ACF0046BCD6 /* ChatController.swift */,
 				D0F69E0F1D6B8ACF0046BCD6 /* ChatControllerInteraction.swift */,
 				D0F69E101D6B8ACF0046BCD6 /* ChatControllerNode.swift */,
@@ -4719,6 +4732,14 @@
 			name = Store;
 			sourceTree = "<group>";
 		};
+		F7C2BF7521FB1F1F005DA6C9 /* Additional */ = {
+			isa = PBXGroup;
+			children = (
+				F7C2BF7321FB17BA005DA6C9 /* ChatBotDetailsItem.swift */,
+			);
+			path = Additional;
+			sourceTree = "<group>";
+		};
 		F7E0F2DF21D226F100974C76 /* Additions */ = {
 			isa = PBXGroup;
 			children = (
@@ -4752,6 +4773,19 @@
 				FB32415A21D169C00023532E /* ChatBotsBotItem.swift */,
 			);
 			name = "Panes List Items";
+			sourceTree = "<group>";
+		};
+		FB73A50921FA5B0200032CFF /* Bot Details Preview */ = {
+			isa = PBXGroup;
+			children = (
+				F7C2BF7521FB1F1F005DA6C9 /* Additional */,
+				FB73A50E21FA5B0200032CFF /* ChatBotDescriptionView.swift */,
+				FB73A50D21FA5B0200032CFF /* ChatBotDescriptionHeadView.swift */,
+				FB73A50F21FA5B0200032CFF /* ChatBotDescriptionInfoPointView.swift */,
+				FB73A50A21FA5B0200032CFF /* ChatBotDescrptionFullDescriptionView.swift */,
+				FB73A50B21FA5B0200032CFF /* ChatBotDescriptionMetaInfoView.swift */,
+			);
+			path = "Bot Details Preview";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -5074,6 +5108,7 @@
 				D0FC4FBB1F751E8900B7443F /* SelectablePeerNode.swift in Sources */,
 				D0E9BAD21F0573C000F079A4 /* STPToken.m in Sources */,
 				D0EC6CD31EB9F58800EBF1C3 /* GenerateTextEntities.swift in Sources */,
+				FB73A51521FA5B0200032CFF /* ChatBotDescriptionInfoPointView.swift in Sources */,
 				0913469A218528D200846E49 /* InstantPageTableItem.swift in Sources */,
 				D0EC6CD41EB9F58800EBF1C3 /* StringWithAppliedEntities.swift in Sources */,
 				D0192D46210F4F950005FA10 /* FixSearchableListNodeScrolling.swift in Sources */,
@@ -5456,6 +5491,7 @@
 				D0383EE4207D292800C45548 /* EmojisChatInputContextPanelNode.swift in Sources */,
 				D0EC6D961EB9F58900EBF1C3 /* ChatMessageInteractiveMediaNode.swift in Sources */,
 				D0B2F7722052D0DD00D3BFB9 /* InviteContactsCountPanelNode.swift in Sources */,
+				FB73A51421FA5B0200032CFF /* ChatBotDescriptionView.swift in Sources */,
 				D0EC6D971EB9F58900EBF1C3 /* ChatMessageItem.swift in Sources */,
 				D044A0F320BDA05800326FAC /* ThrottledValue.swift in Sources */,
 				D08D7E79209FA2930005D80C /* SecureIdValues.swift in Sources */,
@@ -5593,12 +5629,14 @@
 				D020A9DA1FEAE675008C66F7 /* OverlayPlayerController.swift in Sources */,
 				D0E817472010E62F00B82BBB /* MergeLists.swift in Sources */,
 				D0E8174C2011F8A300B82BBB /* ChatMessageEventLogPreviousMessageContentNode.swift in Sources */,
+				F7C2BF7421FB17BA005DA6C9 /* ChatBotDetailsItem.swift in Sources */,
 				D0EC6DD91EB9F58900EBF1C3 /* HorizontalListContextResultsChatInputContextPanelNode.swift in Sources */,
 				D0E9BA161F05574500F079A4 /* STPCardValidator.m in Sources */,
 				D0EC6DDA1EB9F58900EBF1C3 /* HorizontalListContextResultsChatInputPanelItem.swift in Sources */,
 				D0EC6DDB1EB9F58900EBF1C3 /* ChatInputPanelNode.swift in Sources */,
 				D01BAA221ECE076100295217 /* CallListCallItem.swift in Sources */,
 				D0477D1B1F617E5800412B44 /* UniversalVideoNode.swift in Sources */,
+				FB73A51321FA5B0200032CFF /* ChatBotDescriptionHeadView.swift in Sources */,
 				D0E9BA081F0446A300F079A4 /* BotCheckoutPaymentShippingOptionSheetController.swift in Sources */,
 				D0EC6DDC1EB9F58900EBF1C3 /* ChatTextInputPanelNode.swift in Sources */,
 				D0EB41F51F30D26A00838FE6 /* LegacySuggestionContext.swift in Sources */,
@@ -5821,6 +5859,7 @@
 				D0EC6E551EB9F58900EBF1C3 /* GroupAdminsController.swift in Sources */,
 				D0EC6E561EB9F58900EBF1C3 /* UserInfoController.swift in Sources */,
 				D0EC6E571EB9F58900EBF1C3 /* GroupsInCommonController.swift in Sources */,
+				FB73A51021FA5B0200032CFF /* ChatBotDescrptionFullDescriptionView.swift in Sources */,
 				D0EC6E581EB9F58900EBF1C3 /* PeerSelectionController.swift in Sources */,
 				D093D7D92062A9CA00BC3599 /* SecureIdAuthControllerState.swift in Sources */,
 				D0EC6E591EB9F58900EBF1C3 /* PeerSelectionControllerNode.swift in Sources */,
@@ -5859,6 +5898,7 @@
 				D0EC6E6E1EB9F58900EBF1C3 /* ArhivedStickerPacksController.swift in Sources */,
 				D0DE5805205B202500C356A8 /* ScreenCaptureDetection.swift in Sources */,
 				D0EC6E711EB9F58900EBF1C3 /* ThemeGalleryController.swift in Sources */,
+				FB73A51121FA5B0200032CFF /* ChatBotDescriptionMetaInfoView.swift in Sources */,
 				D0C0B5B11EE1C421000F4D2C /* ChatDateSelectionSheet.swift in Sources */,
 				D0EC6E721EB9F58900EBF1C3 /* ThemeGalleryItem.swift in Sources */,
 				D00781052084DFB100369A39 /* UrlEscaping.swift in Sources */,
