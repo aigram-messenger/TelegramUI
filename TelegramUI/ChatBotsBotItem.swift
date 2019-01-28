@@ -68,6 +68,7 @@ private let verticalOffset: CGFloat = 3.0
 final class ChatBotsBotItemNode: ListViewItemNode {
     private let imageNode: ASImageNode
     private let highlightNode: ASDisplayNode
+    private var gesture: UILongPressGestureRecognizer!
 
     var inputNodeInteraction: ChatBotsInputNodeInteraction?
     var currentCollectionId: ItemCollectionId?
@@ -95,6 +96,9 @@ final class ChatBotsBotItemNode: ListViewItemNode {
         self.imageNode.transform = CATransform3DMakeRotation(CGFloat.pi / 2.0, 0.0, 0.0, 1.0)
 
         super.init(layerBacked: false, dynamicBounce: false)
+        
+        self.gesture = UILongPressGestureRecognizer(target: self, action: #selector(longTapGestureHandler(_:)))
+        self.view.addGestureRecognizer(self.gesture)
 
         self.addSubnode(self.highlightNode)
         self.addSubnode(self.imageNode)
@@ -143,6 +147,16 @@ final class ChatBotsBotItemNode: ListViewItemNode {
 
     override func animateRemoved(_ currentTimestamp: Double, duration: Double) {
         self.layer.animateAlpha(from: 1.0, to: 0.0, duration: 0.15, removeOnCompletion: false)
+    }
+    
+    @objc private func longTapGestureHandler(_ gesture: UIGestureRecognizer) {
+        guard let bot = self.currentItem else { return }
+        switch gesture.state {
+        case .began:
+            self.inputNodeInteraction?.botDetails(bot)
+        default:
+            break
+        }
     }
 }
 
