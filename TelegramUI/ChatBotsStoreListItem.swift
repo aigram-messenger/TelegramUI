@@ -32,7 +32,7 @@ struct ChatBotsStoreListItem: ListViewItem, ItemListItem {
             let (layout, apply) = node.asyncLayout()(self, params, itemListNeighbors(item: self, topItem: previousItem as? ItemListItem, bottomItem: nextItem as? ItemListItem))
             
             var size = layout.contentSize
-            size.height = 10
+            size.height = 96
             node.contentSize = size
             node.insets = layout.insets
             

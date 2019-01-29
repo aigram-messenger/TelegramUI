@@ -9,6 +9,11 @@
 import Foundation
 import UIKit
 
+public enum Result<T> {
+    case success(T)
+    case fail(Error)
+}
+
 public final class ChatBotsManager {
     static let shared: ChatBotsManager = .init()
     private(set) public var bots: [ChatBot] = []
@@ -71,17 +76,18 @@ public final class ChatBotsManager {
         }
     }
     
-    public func botsInStore() -> [ChatBot] {
-        var result: [ChatBot] = []
-        
-        let bundle = Bundle(for: ChatBotsManager.self)
-        let urls = bundle.urls(forResourcesWithExtension: ChatBot.botExtension, subdirectory: "bots") ?? []
-        for url in urls {
-            guard let bot = try? ChatBot(url: url), !bot.isTarget else { continue }
-            result.append(bot)
+    public func botsInStore(completion: @escaping (Result<[ChatBot]>) -> Void) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            var result: [ChatBot] = []
+            
+            let bundle = Bundle(for: ChatBotsManager.self)
+            let urls = bundle.urls(forResourcesWithExtension: ChatBot.botExtension, subdirectory: "bots") ?? []
+            for url in urls {
+                guard let bot = try? ChatBot(url: url), !bot.isTarget else { continue }
+                result.append(bot)
+            }
+            completion(.success(result))
         }
-        
-        return result
     }
     
     public func copyBot(_ bot: ChatBot) -> Bool {

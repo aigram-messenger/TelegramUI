@@ -16,7 +16,7 @@ import SwiftSignalKit
 final class ChatBotsInputStorePane: ChatMediaInputPane, UIScrollViewDelegate {
     private let inputNodeInteraction: ChatBotsInputNodeInteraction
     private let listView: ListView
-    private let bots: [ChatBot] = ChatBotsManager.shared.botsInStore()
+    private var bots: [ChatBot] = []
     
     var theme: PresentationTheme
     
@@ -30,16 +30,15 @@ final class ChatBotsInputStorePane: ChatMediaInputPane, UIScrollViewDelegate {
         self.backgroundColor = UIColor(argb: 0xffe7ebef)
         
         self.addSubnode(self.listView)
+        self.listView.transaction(deleteIndices: [], insertIndicesAndItems: [], updateIndicesAndItems: [], options: [.Synchronous, .LowLatency], scrollToItem: nil, updateSizeAndInsets: nil, stationaryItemRange: nil, updateOpaqueState: nil, completion: { _ in })
         
-        var index = 0
-        let insertItems: [ListViewInsertItem] = bots.map {
-            let itemNode = ChatBotsStoreListItem(bot: $0, inputNodeInteraction: self.inputNodeInteraction, theme: self.theme)
-            let item = ListViewInsertItem(index: index, previousIndex: nil, item: itemNode, directionHint: nil)
-            index += 1
-            return item
+        ChatBotsManager.shared.botsInStore { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case let .success(bots): self.updateBots(bots)
+            case .fail: self.updateBots(self.bots)
+            }
         }
-        
-        self.listView.transaction(deleteIndices: [], insertIndicesAndItems: insertItems, updateIndicesAndItems: [], options: [.Synchronous, .LowLatency], scrollToItem: nil, updateSizeAndInsets: nil, stationaryItemRange: nil, updateOpaqueState: nil, completion: { _ in })
     }
     
     override func updateLayout(size: CGSize, topInset: CGFloat, bottomInset: CGFloat, isExpanded: Bool, transition: ContainedViewLayoutTransition) {
@@ -57,5 +56,20 @@ final class ChatBotsInputStorePane: ChatMediaInputPane, UIScrollViewDelegate {
             guard let node = node as? ChatStoreBotItemNode, node.bot == bot else { return }
             node.update(bot: bot, theme: self.theme)
         }
+    }
+    
+    private func updateBots(_ bots: [ChatBot]) {
+        self.bots = bots
+        
+        var index = 0
+        let insertItems: [ListViewInsertItem] = bots.map {
+            let itemNode = ChatBotsStoreListItem(bot: $0, inputNodeInteraction: self.inputNodeInteraction, theme: self.theme)
+            let item = ListViewInsertItem(index: index, previousIndex: nil, item: itemNode, directionHint: nil)
+            index += 1
+            return item
+        }
+        
+        let updateSizeAndInsets = ListViewUpdateSizeAndInsets(size: self.bounds.size, insets: UIEdgeInsets(), duration: 0, curve: .Spring(duration: 0))
+        self.listView.transaction(deleteIndices: [], insertIndicesAndItems: insertItems, updateIndicesAndItems: [], options: [.Synchronous, .AnimateInsertion], scrollToItem: nil, updateSizeAndInsets: updateSizeAndInsets, stationaryItemRange: nil, updateOpaqueState: nil, completion: { _ in })
     }
 }
