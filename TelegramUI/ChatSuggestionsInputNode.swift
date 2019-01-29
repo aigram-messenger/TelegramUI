@@ -258,9 +258,23 @@ final class ChatSuggestionsInputNode: ChatInputNode {
         self.validLayout = (width, leftInset, rightInset, bottomInset, standardInputHeight, inputHeight, maximumHeight, inputPanelHeight, interfaceState)
         
         let separatorHeight = UIScreenPixel
-        let panelHeight = standardInputHeight
+        let panelHeight: CGFloat
         let contentVerticalOffset: CGFloat = 0.0
         let containerOffset: CGFloat = 0
+        
+        var isExpanded: Bool = false
+        if case let .suggestions(_, maybeExpanded) = interfaceState.inputMode, let expanded = maybeExpanded {
+            isExpanded = true
+            switch expanded {
+            case .content:
+                panelHeight = maximumHeight
+            case .search:
+                panelHeight = maximumHeight
+//                displaySearch = true
+            }
+        } else {
+            panelHeight = standardInputHeight
+        }
 
         transition.updateFrame(node: self.botsListContainer, frame: CGRect(origin: CGPoint(x: 0.0, y: contentVerticalOffset), size: CGSize(width: width, height: max(0.0, 41.0 + UIScreenPixel))))
         transition.updateFrame(node: self.botsListPanel, frame: CGRect(origin: CGPoint(x: 0.0, y: containerOffset), size: CGSize(width: width, height: 41.0)))

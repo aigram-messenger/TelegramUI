@@ -1536,14 +1536,14 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
             self.updateChatPresentationInterfaceState(animated: true, interactive: true, {
                 $0.updatedInputMode { current in
                     guard handleEmpty else {
-                        return ChatInputMode.suggestions(responses: responses)
+                        return ChatInputMode.suggestions(responses: responses, expanded: nil)
                     }
                     if responses.isEmpty {
                         if case ChatInputMode.suggestions = current {
                             return ChatInputMode.text
                         }
                     } else {
-                        return ChatInputMode.suggestions(responses: responses)
+                        return ChatInputMode.suggestions(responses: responses, expanded: nil)
                     }
                     return current
                 }

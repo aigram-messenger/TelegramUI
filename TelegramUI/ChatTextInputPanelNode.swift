@@ -1076,6 +1076,8 @@ class ChatTextInputPanelNode: ChatInputPanelNode, ASEditableTextNodeDelegate {
             }
             if case .media = presentationInterfaceState.inputMode {
                 mediaInputIsActive = true
+            } else if case .suggestions = presentationInterfaceState.inputMode {
+                mediaInputIsActive = true
             }
         }
         
@@ -1416,6 +1418,12 @@ class ChatTextInputPanelNode: ChatInputPanelNode, ASEditableTextNodeDelegate {
                 } else {
                     return (.media(mode: mode, expanded: .content), state.interfaceState.messageActionsState.closedButtonKeyboardMessageId)
                 }
+            } else if case let .suggestions(responses, expanded) = state.inputMode {
+                if let _ = expanded {
+                    return (.suggestions(responses: responses, expanded: nil), state.interfaceState.messageActionsState.closedButtonKeyboardMessageId)
+                } else {
+                    return (.suggestions(responses: responses, expanded: .content), state.interfaceState.messageActionsState.closedButtonKeyboardMessageId)
+                }
             } else {
                 return (state.inputMode, state.interfaceState.messageActionsState.closedButtonKeyboardMessageId)
             }
@@ -1450,11 +1458,11 @@ class ChatTextInputPanelNode: ChatInputPanelNode, ASEditableTextNodeDelegate {
                         self.interfaceInteraction?.toggleSilentPost()
                     case .messageAutoremoveTimeout:
                         self.interfaceInteraction?.setupMessageAutoremoveTimeout()
-                case .suggestions:
-                    self.interfaceInteraction?.updateInputModeAndDismissedButtonKeyboardMessageId({ state in
-                        return (.suggestions(responses: []), nil)
-                    })
-                    self.updateBotsResponses()
+                    case .suggestions:
+                        self.interfaceInteraction?.updateInputModeAndDismissedButtonKeyboardMessageId({ state in
+                            return (.suggestions(responses: [], expanded: nil), nil)
+                        })
+                        self.updateBotsResponses()
                 }
                 break
             }

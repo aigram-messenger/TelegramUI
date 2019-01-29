@@ -34,6 +34,8 @@ final class ChatTextInputActionButtonsNode: ASDisplayNode {
         var expanded = false
         if case let .media(_, maybeExpanded) = interfaceState.inputMode, maybeExpanded != nil {
             expanded = true
+        } else if case let .suggestions(_, maybeExpanded) = interfaceState.inputMode, maybeExpanded != nil {
+            expanded = true
         }
         transition.updateSublayerTransformScale(node: self.expandMediaInputButton, scale: CGPoint(x: 1.0, y: expanded ? 1.0 : -1.0))
     }

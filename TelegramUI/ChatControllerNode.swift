@@ -930,6 +930,9 @@ class ChatControllerNode: ASDisplayNode, UIScrollViewDelegate {
         if case let .media(_, expanded) = self.chatPresentationInterfaceState.inputMode, expanded != nil {
             displayTopDimNode = true
             expandTopDimNode = true
+        } else if case let .suggestions(_, expanded) = self.chatPresentationInterfaceState.inputMode, expanded != nil {
+            displayTopDimNode = true
+            expandTopDimNode = true
         }
         
         if displayTopDimNode {
@@ -1024,6 +1027,7 @@ class ChatControllerNode: ASDisplayNode, UIScrollViewDelegate {
         var apparentInputBackgroundFrame = inputBackgroundFrame
         var apparentNavigateButtonsFrame = navigateButtonsFrame
         if case let .media(_, maybeExpanded) = self.chatPresentationInterfaceState.inputMode, let expanded = maybeExpanded, case .search = expanded, let inputPanelFrame = inputPanelFrame {
+            print("::::>>> let expanded = maybeExpanded")
             let verticalOffset = -inputPanelFrame.height - 41.0
             apparentInputPanelFrame = inputPanelFrame.offsetBy(dx: 0.0, dy: verticalOffset)
             apparentInputBackgroundFrame.size.height -= verticalOffset
