@@ -117,9 +117,9 @@ class ChatBotDescriptionInfoPointView: UIView {
     }()
 
     private lazy var installsView: PointView = {
-        var mark = "\(model.numberOfFeedbacks)"
-        if model.numberOfFeedbacks >= 1000 {
-            mark = "\(model.numberOfFeedbacks / 1000)к"
+        var mark = "\(model.numberOfInstalls)"
+        if model.numberOfInstalls >= 1000 {
+            mark = "\(model.numberOfInstalls / 1000)к"
         }
         let view = PointView(caption: "Установок", mark:mark, image: nil)
         addSubview(view)
@@ -127,9 +127,9 @@ class ChatBotDescriptionInfoPointView: UIView {
     }()
 
     private lazy var themesView: PointView = {
-        var mark = "\(model.numberOfFeedbacks)"
-        if model.numberOfFeedbacks >= 1000 {
-            mark = "\(model.numberOfFeedbacks / 1000)к"
+        var mark = "\(model.numberOfThemes)"
+        if model.numberOfThemes >= 1000 {
+            mark = "\(model.numberOfThemes / 1000)к"
         }
         let view = PointView(caption: "Тем", mark:mark, image: nil)
         addSubview(view)
@@ -137,9 +137,9 @@ class ChatBotDescriptionInfoPointView: UIView {
     }()
 
     private lazy var sentencesView: PointView = {
-        var mark = "\(model.numberOfFeedbacks)"
-        if model.numberOfFeedbacks >= 1000 {
-            mark = "\(model.numberOfFeedbacks / 1000)к"
+        var mark = "\(model.numberOfSentences)"
+        if model.numberOfSentences >= 1000 {
+            mark = "\(model.numberOfSentences / 1000)к"
         }
         let view = PointView(caption: "Фраз", mark:mark, image: nil)
         addSubview(view)

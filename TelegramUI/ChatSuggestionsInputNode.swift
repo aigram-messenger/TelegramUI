@@ -124,9 +124,7 @@ final class ChatSuggestionsInputNode: ChatInputNode {
         }, sendMessage: { [weak self] in
             self?.controllerInteraction.sendMessage($0)
         }, buyBot: { [weak self] bot in
-            BotsStoreManager.shared.buyBot(bot) { (bought) in
-                print("BOT \(bot.title) BOUGHT \(bought)")
-                self?.controllerInteraction.handleMessagesWithBots(nil)
+            self?.controllerInteraction.buyBot(bot) { (bought) in
                 self?.updateStorePane(for: bot)
             }
         }, enableBot: { [weak self] bot, enabled in

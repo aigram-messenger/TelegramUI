@@ -1040,16 +1040,12 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
             self?.requestHandlingLastMessages(messages, handleEmpty: handleEmpty)
         }, showBotDetails: { [weak self] bot in
             self?.showBotDetailsAlert(bot)
-
-//            let alert = UIAlertController(title: nil,
-//                                          customView: customView,
-//                                          fallbackMessage: "Motherfucker",
-//                                          preferredStyle: .actionSheet)
-//
-//            alert.addAction(UIAlertAction(title: "Yay!", style: .default, handler: nil))
-//            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { _ in
-//                print("CANCEL")
-//            }))
+        }, buyBot: { [weak self] bot, completion in
+            BotsStoreManager.shared.buyBot(bot) { [weak self] (bought) in
+                print("BOT \(bot.title) BOUGHT \(bought)")
+                self?.controllerInteraction?.handleMessagesWithBots(nil)
+                completion(bought)
+            }
         })
         
         self.controllerInteraction = controllerInteraction
@@ -1509,36 +1505,17 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
     }
     
     func showBotDetailsAlert(_ bot: ChatBot) {
-        print("BOT DETAILS")
-//        let customView = ChatBotDescriptionView()
-//        var dismissImpl: (() -> Void)?
-//
-        let theme = AlertControllerTheme(presentationTheme: self.presentationData.theme)
-        let actions = [TextAlertAction(type: .defaultAction, title: self.presentationData.strings.Common_OK, action: {})]
-//        let contentNode: AlertContentNode = TextAlertContentNode(theme: theme,
-//                                                                 title: NSAttributedString(string: "TITLE", font: Font.medium(17.0), textColor: theme.primaryColor, paragraphAlignment: .center),
-//                                                                 text: NSAttributedString(string: "This is\ntext", font: Font.semibold(17.0), textColor: theme.primaryColor, paragraphAlignment: .center),
-//                                                                 actions: actions.map { action in
-//            return TextAlertAction(type: action.type, title: action.title, action: {
-//                dismissImpl?()
-//                action.action()
-//            })
-//        }, actionLayout: .horizontal)
-//        let controller = AlertController(theme: theme,
-//                                         contentNode: contentNode)
-//        dismissImpl = { [weak controller] in
-//            controller?.dismissAnimated()
-//        }
-        
-//        let controller = standardTextAlertController(theme: theme, title: "TITLE", text: "Fuckin \nmessage", actions: actions)
-//        self.present(controller, in: .window(.root))
-        
         let actionSheet = ActionSheetController(presentationTheme: self.presentationData.theme)
         var items: [ActionSheetItem] = []
         items.append(ChatBotDetailsItem(bot: bot))
-        items.append(ActionSheetButtonItem(title: "Получить", color: .accent, action: { [weak actionSheet] in
-            actionSheet?.dismissAnimated()
-        }))
+        if !BotsStoreManager.shared.isBotBought(bot) {
+            items.append(ActionSheetButtonItem(title: "Получить", color: .accent, action: { [weak self] in
+                self?.controllerInteraction?.buyBot(bot) { [weak actionSheet] bought in
+                    guard bought else { return }
+                    actionSheet?.dismissAnimated()
+                }
+            }))
+        }
         
         let cancel: [ActionSheetItem] = [
             ActionSheetButtonItem(title: self.presentationData.strings.Common_Cancel, color: .accent, action: { [weak actionSheet] in
@@ -1553,7 +1530,6 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
         let messages: [String] = messages ?? self.chatDisplayNode.lastMessages.map { $0.text }
         
         if self.currentMessages == messages, handleEmpty { return  }
-        print("HANDLE \(messages)")
         self.currentMessages = messages
         ChatBotsManager.shared.handleMessages(messages, completion: { [weak self] (responses) in
             guard let self = self, self.currentMessages == messages else { return }
