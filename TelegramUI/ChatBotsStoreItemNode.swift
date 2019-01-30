@@ -120,6 +120,7 @@ class ChatStoreBotItemNode: ListViewItemNode {
             let contentSize = CGSize(width: params.width, height: 96)
             var insets = itemListNeighborsPlainInsets(neighbors)
             insets.bottom = 0
+            insets.top = 0
             let layout = ListViewItemNodeLayout(contentSize: contentSize, insets: insets)
             
             return (layout, { [weak self] in

@@ -44,7 +44,7 @@ private final class ChatBotDetailsItemNode: ActionSheetItemNode {
     }
     
     override func calculateSizeThatFits(_ constrainedSize: CGSize) -> CGSize {
-        var size = self.descriptionView.sizeThatFits(constrainedSize)
+        let size = self.descriptionView.sizeThatFits(constrainedSize)
         
         return size
     }

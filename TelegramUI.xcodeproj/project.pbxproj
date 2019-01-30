@@ -1062,6 +1062,8 @@
 		F73095DF21D0F06900343BD5 /* ChatBotsStoreItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F73095DE21D0F06900343BD5 /* ChatBotsStoreItem.swift */; };
 		F73095E121D11AE900343BD5 /* ChatBotsInputNodeInteraction.swift in Sources */ = {isa = PBXBuildFile; fileRef = F73095E021D11AE900343BD5 /* ChatBotsInputNodeInteraction.swift */; };
 		F731702821D4B34E001850D8 /* BotProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F731702721D4B34E001850D8 /* BotProcessor.swift */; };
+		F74912A72201A5E30052A600 /* ChatBotStoreSearchPlaceholderListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F74912A62201A5E30052A600 /* ChatBotStoreSearchPlaceholderListItem.swift */; };
+		F74912A92201A5EB0052A600 /* ChatBotStoreSearchPlaceholderListItemNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = F74912A82201A5EB0052A600 /* ChatBotStoreSearchPlaceholderListItemNode.swift */; };
 		F74BA4A221E6246100DD7CAB /* BotsStoreManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F74BA4A121E6246100DD7CAB /* BotsStoreManager.swift */; };
 		F75D3FE221EF6C7600003189 /* ChatBotsSuggestionsHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75D3FE121EF6C7600003189 /* ChatBotsSuggestionsHeader.swift */; };
 		F75D3FE421EF6D7D00003189 /* ChatBotSuggestionsItems.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75D3FE321EF6D7D00003189 /* ChatBotSuggestionsItems.swift */; };
@@ -2237,6 +2239,8 @@
 		F73095DE21D0F06900343BD5 /* ChatBotsStoreItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotsStoreItem.swift; sourceTree = "<group>"; };
 		F73095E021D11AE900343BD5 /* ChatBotsInputNodeInteraction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotsInputNodeInteraction.swift; sourceTree = "<group>"; };
 		F731702721D4B34E001850D8 /* BotProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BotProcessor.swift; sourceTree = "<group>"; };
+		F74912A62201A5E30052A600 /* ChatBotStoreSearchPlaceholderListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotStoreSearchPlaceholderListItem.swift; sourceTree = "<group>"; };
+		F74912A82201A5EB0052A600 /* ChatBotStoreSearchPlaceholderListItemNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotStoreSearchPlaceholderListItemNode.swift; sourceTree = "<group>"; };
 		F74BA4A121E6246100DD7CAB /* BotsStoreManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BotsStoreManager.swift; sourceTree = "<group>"; };
 		F75D3FE121EF6C7600003189 /* ChatBotsSuggestionsHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotsSuggestionsHeader.swift; sourceTree = "<group>"; };
 		F75D3FE321EF6D7D00003189 /* ChatBotSuggestionsItems.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotSuggestionsItems.swift; sourceTree = "<group>"; };
@@ -4728,6 +4732,8 @@
 				F7F28FCE21CD1DB3008DC5A4 /* ChatBotsInputStorePane.swift */,
 				F75D3FEC21F0B30500003189 /* ChatBotsStoreListItem.swift */,
 				F75D3FEE21F0B51000003189 /* ChatBotsStoreItemNode.swift */,
+				F74912A62201A5E30052A600 /* ChatBotStoreSearchPlaceholderListItem.swift */,
+				F74912A82201A5EB0052A600 /* ChatBotStoreSearchPlaceholderListItemNode.swift */,
 			);
 			name = Store;
 			sourceTree = "<group>";
@@ -5312,6 +5318,7 @@
 				D08D7E8420A0F6020005D80C /* ExperimentalUISettings.swift in Sources */,
 				D0EC6D351EB9F58800EBF1C3 /* SearchBarNode.swift in Sources */,
 				D0EC6D361EB9F58800EBF1C3 /* SearchBarPlaceholderNode.swift in Sources */,
+				F74912A72201A5E30052A600 /* ChatBotStoreSearchPlaceholderListItem.swift in Sources */,
 				D0E8B8B9204477B600605593 /* SecretChatKeyVisualization.swift in Sources */,
 				D0EC6D371EB9F58800EBF1C3 /* SearchDisplayController.swift in Sources */,
 				D0185E8C208A025A005E1A6C /* ProxySettingsServerItem.swift in Sources */,
@@ -5817,6 +5824,7 @@
 				D01776B31F1D69A80044446D /* RadialStatusNode.swift in Sources */,
 				D084023420E295F000065674 /* GroupStickerPackSetupController.swift in Sources */,
 				D01C06BE1FBCAF06001561AB /* ChatMessageBubbleMosaicLayout.swift in Sources */,
+				F74912A92201A5EB0052A600 /* ChatBotStoreSearchPlaceholderListItemNode.swift in Sources */,
 				D0EC6E451EB9F58900EBF1C3 /* ItemListMultilineTextItem.swift in Sources */,
 				D02F4AE91FCF370B004DFBAE /* ChatMessageInteractiveMediaBadge.swift in Sources */,
 				D0EC6E461EB9F58900EBF1C3 /* ItemListLoadingIndicatorEmptyStateItem.swift in Sources */,

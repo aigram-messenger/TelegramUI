@@ -92,11 +92,13 @@ final class ChatSuggestionsInputNode: ChatInputNode {
     private var panesAndAnimatingOut: [(ChatMediaInputPane, Bool)]
     private var panRecognizer: UIPanGestureRecognizer?
     private var currentResponses: [ChatBotResult]?
+    private var strings: PresentationStrings
 
-    init(account: Account, controllerInteraction: ChatControllerInteraction, theme: PresentationTheme) {
+    init(account: Account, controllerInteraction: ChatControllerInteraction, theme: PresentationTheme, strings: PresentationStrings) {
         self.account = account
         self.controllerInteraction = controllerInteraction
         self.theme = theme
+        self.strings = strings
         
         self.botsListContainer = ASDisplayNode()
         self.botsListContainer.clipsToBounds = true
@@ -238,7 +240,7 @@ final class ChatSuggestionsInputNode: ChatInputNode {
         for paneType in toArrangements {
             switch paneType {
             case .store:
-                self.panesAndAnimatingOut.append((ChatBotsInputStorePane(inputNodeInteraction: self.inputNodeInteraction, theme: self.theme!), false))
+                self.panesAndAnimatingOut.append((ChatBotsInputStorePane(inputNodeInteraction: self.inputNodeInteraction, theme: self.theme!, strings: self.strings), false))
             case .bot(let botId):
                 let bot = results.first(where: { $0.bot.id == botId })!.bot
                 self.panesAndAnimatingOut.append((ChatBotsInputSuggestionsPane(bot: bot, responses: results[resultIndex].responses, inputNodeInteraction: self.inputNodeInteraction, theme: self.theme!), false))
