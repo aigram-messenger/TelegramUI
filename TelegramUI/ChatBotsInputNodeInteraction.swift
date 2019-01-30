@@ -19,16 +19,18 @@ final class ChatBotsInputNodeInteraction {
     let buyBot: (ChatBot) -> Void
     let enableBot: (ChatBot, Bool) -> Void
     let botDetails: (ChatBot) -> Void
+    let toggleSearch: (Bool) -> Void
     
     var highlightedItemCollectionId: ItemCollectionId?
     var appearanceTransition: CGFloat = 1.0
     
     init(navigateToCollectionId: @escaping (ItemCollectionId) -> Void, sendMessage: @escaping (String) -> Void, buyBot: @escaping (ChatBot) -> Void,
-         enableBot: @escaping (ChatBot, Bool) -> Void, botDetails: @escaping (ChatBot) -> Void) {
+         enableBot: @escaping (ChatBot, Bool) -> Void, botDetails: @escaping (ChatBot) -> Void, toggleSearch: @escaping (Bool) -> Void) {
         self.navigateToCollectionId = navigateToCollectionId
         self.sendMessage = sendMessage
         self.buyBot = buyBot
         self.enableBot = enableBot
         self.botDetails = botDetails
+        self.toggleSearch = toggleSearch
     }
 }

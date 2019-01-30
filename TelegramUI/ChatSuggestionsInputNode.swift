@@ -135,6 +135,21 @@ final class ChatSuggestionsInputNode: ChatInputNode {
             self?.controllerInteraction.handleMessagesWithBots(nil)
         }, botDetails: { [weak self] bot in
             self?.controllerInteraction.showBotDetails(bot)
+        }, toggleSearch: { [weak self] value in
+            if let strongSelf = self {
+                strongSelf.controllerInteraction.updateInputMode { current in
+                    switch current {
+                    case let .suggestions(responses, _):
+                        if value {
+                            return .suggestions(responses: responses, expanded: .search)
+                        } else {
+                            return .suggestions(responses: responses, expanded: nil)
+                        }
+                    default:
+                        return current
+                    }
+                }
+            }
         })
 
         self.backgroundColor = theme.chat.inputMediaPanel.stickersBackgroundColor

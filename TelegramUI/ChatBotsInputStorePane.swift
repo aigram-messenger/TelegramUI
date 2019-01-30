@@ -71,7 +71,7 @@ final class ChatBotsInputStorePane: ChatMediaInputPane, UIScrollViewDelegate {
             return item
         }
         let searchPlaceholderNode = ChatBotStoreSearchPlaceholderListItem(theme: self.theme, strings: self.strings) {
-            print("ACTIVATE SEARCH")
+            self.inputNodeInteraction.toggleSearch(true)
         }
         let searchPlaceholderItem = ListViewInsertItem(index: 0, previousIndex: nil, item: searchPlaceholderNode, directionHint: nil)
         insertItems.insert(searchPlaceholderItem, at: 0)
