@@ -316,7 +316,7 @@ final class ChatSuggestionsInputNode: ChatInputNode {
         }
         
         for i in 0..<self.panesAndAnimatingOut.count {
-            self.panesAndAnimatingOut[i].0.updateLayout(size: CGSize(width: width - leftInset - rightInset, height: panelHeight), topInset: 41.0, bottomInset: bottomInset, isExpanded: false, transition: transition)
+            self.panesAndAnimatingOut[i].0.updateLayout(size: CGSize(width: width - leftInset - rightInset, height: panelHeight), topInset: 41.0, bottomInset: bottomInset, isExpanded: isExpanded, transition: transition)
             
             let paneType = self.paneArrangement.panes[i]
             let contains = visiblePanes.contains(where: { $0.0 == paneType })
