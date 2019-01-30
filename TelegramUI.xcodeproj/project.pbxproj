@@ -1064,6 +1064,7 @@
 		F731702821D4B34E001850D8 /* BotProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F731702721D4B34E001850D8 /* BotProcessor.swift */; };
 		F74912A72201A5E30052A600 /* ChatBotStoreSearchPlaceholderListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F74912A62201A5E30052A600 /* ChatBotStoreSearchPlaceholderListItem.swift */; };
 		F74912A92201A5EB0052A600 /* ChatBotStoreSearchPlaceholderListItemNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = F74912A82201A5EB0052A600 /* ChatBotStoreSearchPlaceholderListItemNode.swift */; };
+		F74912AB2201CDD70052A600 /* ChatBotsSearchContainerNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = F74912AA2201CDD70052A600 /* ChatBotsSearchContainerNode.swift */; };
 		F74BA4A221E6246100DD7CAB /* BotsStoreManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F74BA4A121E6246100DD7CAB /* BotsStoreManager.swift */; };
 		F75D3FE221EF6C7600003189 /* ChatBotsSuggestionsHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75D3FE121EF6C7600003189 /* ChatBotsSuggestionsHeader.swift */; };
 		F75D3FE421EF6D7D00003189 /* ChatBotSuggestionsItems.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75D3FE321EF6D7D00003189 /* ChatBotSuggestionsItems.swift */; };
@@ -2241,6 +2242,7 @@
 		F731702721D4B34E001850D8 /* BotProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BotProcessor.swift; sourceTree = "<group>"; };
 		F74912A62201A5E30052A600 /* ChatBotStoreSearchPlaceholderListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotStoreSearchPlaceholderListItem.swift; sourceTree = "<group>"; };
 		F74912A82201A5EB0052A600 /* ChatBotStoreSearchPlaceholderListItemNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotStoreSearchPlaceholderListItemNode.swift; sourceTree = "<group>"; };
+		F74912AA2201CDD70052A600 /* ChatBotsSearchContainerNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotsSearchContainerNode.swift; sourceTree = "<group>"; };
 		F74BA4A121E6246100DD7CAB /* BotsStoreManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BotsStoreManager.swift; sourceTree = "<group>"; };
 		F75D3FE121EF6C7600003189 /* ChatBotsSuggestionsHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotsSuggestionsHeader.swift; sourceTree = "<group>"; };
 		F75D3FE321EF6D7D00003189 /* ChatBotSuggestionsItems.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotSuggestionsItems.swift; sourceTree = "<group>"; };
@@ -4734,6 +4736,7 @@
 				F75D3FEE21F0B51000003189 /* ChatBotsStoreItemNode.swift */,
 				F74912A62201A5E30052A600 /* ChatBotStoreSearchPlaceholderListItem.swift */,
 				F74912A82201A5EB0052A600 /* ChatBotStoreSearchPlaceholderListItemNode.swift */,
+				F74912AA2201CDD70052A600 /* ChatBotsSearchContainerNode.swift */,
 			);
 			name = Store;
 			sourceTree = "<group>";
@@ -5652,6 +5655,7 @@
 				D0EC6DDE1EB9F58900EBF1C3 /* ChatTextInputAudioRecordingOverlayButton.swift in Sources */,
 				D0E9BAC91F05738600F079A4 /* STPAPIClient+ApplePay.m in Sources */,
 				D0EC6DDF1EB9F58900EBF1C3 /* ChatTextInputAudioRecordingTimeNode.swift in Sources */,
+				F74912AB2201CDD70052A600 /* ChatBotsSearchContainerNode.swift in Sources */,
 				D0BFAE5B20AB35D200793CF2 /* IconSwitchNode.swift in Sources */,
 				D0EC6DE01EB9F58900EBF1C3 /* ChatTextInputAudioRecordingCancelIndicator.swift in Sources */,
 				D09D88711F86D36700BEB4C9 /* CountryList.swift in Sources */,
