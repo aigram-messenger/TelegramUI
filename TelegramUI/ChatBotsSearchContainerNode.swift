@@ -25,7 +25,7 @@ final class ChatBotsPaneSearchContainerNode: ASDisplayNode {
     
     private var validLayout: CGSize?
     
-    init(theme: PresentationTheme, strings: PresentationStrings) {
+    init(theme: PresentationTheme, strings: PresentationStrings, cancel: @escaping () -> Void) {
         self.theme = theme
         self.strings = strings
         
@@ -59,7 +59,7 @@ final class ChatBotsPaneSearchContainerNode: ASDisplayNode {
         
         self.searchBar.placeholderString = NSAttributedString(string: strings.Bots_Search, font: Font.regular(14.0), textColor: theme.chat.inputMediaPanel.stickersSearchPlaceholderColor)
         self.searchBar.cancel = {
-//            cancel()
+            cancel()
         }
         self.searchBar.activate()
         
@@ -181,8 +181,6 @@ final class ChatBotsPaneSearchContainerNode: ASDisplayNode {
 //                    }
 //                }))
         }
-        
-        self.backgroundColor = .brown
     }
     
     func updateLayout(size: CGSize, leftInset: CGFloat, rightInset: CGFloat, bottomInset: CGFloat, inputHeight: CGFloat, transition: ContainedViewLayoutTransition) {

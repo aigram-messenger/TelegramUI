@@ -300,7 +300,10 @@ final class ChatSuggestionsInputNode: ChatInputNode {
                 transition.updateFrame(node: botsSearchContainerNode, frame: containerFrame)
                 botsSearchContainerNode.updateLayout(size: containerFrame.size, leftInset: leftInset, rightInset: rightInset, bottomInset: bottomInset, inputHeight: inputHeight, transition: transition)
             } else {
-                let botsSearchContainerNode = ChatBotsPaneSearchContainerNode(theme: self.theme!, strings: self.strings)//ChatBotsPaneSearchContainerNode(account: self.account, theme: self.theme, strings: self.strings, controllerInteraction: self.controllerInteraction, inputNodeInteraction: self.inputNodeInteraction, cancel: { [weak self] in
+                let botsSearchContainerNode = ChatBotsPaneSearchContainerNode(theme: self.theme!, strings: self.strings, cancel: { [weak self] in
+                    self?.botsSearchContainerNode?.deactivate()
+                    self?.inputNodeInteraction.toggleSearch(false)
+                })//ChatBotsPaneSearchContainerNode(account: self.account, theme: self.theme, strings: self.strings, controllerInteraction: self.controllerInteraction, inputNodeInteraction: self.inputNodeInteraction, cancel: { [weak self] in
 //                    self?.botsSearchContainerNode?.deactivate()
 //                    self?.inputNodeInteraction.toggleSearch(false)
 //                })
@@ -391,24 +394,24 @@ final class ChatSuggestionsInputNode: ChatInputNode {
             }
         }
         
-//        if !displaySearch, let stickerSearchContainerNode = self.stickerSearchContainerNode {
-//            self.stickerSearchContainerNode = nil
-//
-//            var placeholderNode: StickerPaneSearchBarPlaceholderNode?
-//            self.stickerPane.gridNode.forEachItemNode { itemNode in
-//                if let itemNode = itemNode as? StickerPaneSearchBarPlaceholderNode {
-//                    placeholderNode = itemNode
-//                }
-//            }
-//            if let placeholderNode = placeholderNode {
-//                stickerSearchContainerNode.animateOut(to: placeholderNode, transition: transition, completion: { [weak stickerSearchContainerNode] in
-//                    stickerSearchContainerNode?.removeFromSupernode()
-//                })
-//            } else {
-//                stickerSearchContainerNode.removeFromSupernode()
-//            }
-//        }
-//
+        if !displaySearch, let botsSearchContainerNode = self.botsSearchContainerNode {
+            self.botsSearchContainerNode = nil
+
+            var placeholderNode: ChatBotStoreSearchPlaceholderListItemNode?
+            (self.panesAndAnimatingOut[0].0 as? ChatBotsInputStorePane)?.listView.forEachItemNode { itemNode in
+                if let itemNode = itemNode as? ChatBotStoreSearchPlaceholderListItemNode {
+                    placeholderNode = itemNode
+                }
+            }
+            if let placeholderNode = placeholderNode {
+                botsSearchContainerNode.animateOut(to: placeholderNode, transition: transition, completion: { [weak botsSearchContainerNode] in
+                    botsSearchContainerNode?.removeFromSupernode()
+                })
+            } else {
+                botsSearchContainerNode.removeFromSupernode()
+            }
+        }
+
 //        if let panRecognizer = self.panRecognizer, panRecognizer.isEnabled != !displaySearch {
 //            panRecognizer.isEnabled = !displaySearch
 //        }

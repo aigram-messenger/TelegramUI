@@ -4709,6 +4709,15 @@
 			path = TelegramUITests;
 			sourceTree = "<group>";
 		};
+		F71870972203160100B84678 /* Search */ = {
+			isa = PBXGroup;
+			children = (
+				F74912AA2201CDD70052A600 /* ChatBotsSearchContainerNode.swift */,
+				F74912AC2202E7D90052A600 /* ChatBotsStoreSearchBar.swift */,
+			);
+			name = Search;
+			sourceTree = "<group>";
+		};
 		F75D3FDF21EF679A00003189 /* Panes */ = {
 			isa = PBXGroup;
 			children = (
@@ -4733,13 +4742,12 @@
 		F75D3FEB21F0B21800003189 /* Store */ = {
 			isa = PBXGroup;
 			children = (
+				F71870972203160100B84678 /* Search */,
 				F7F28FCE21CD1DB3008DC5A4 /* ChatBotsInputStorePane.swift */,
 				F75D3FEC21F0B30500003189 /* ChatBotsStoreListItem.swift */,
 				F75D3FEE21F0B51000003189 /* ChatBotsStoreItemNode.swift */,
 				F74912A62201A5E30052A600 /* ChatBotStoreSearchPlaceholderListItem.swift */,
 				F74912A82201A5EB0052A600 /* ChatBotStoreSearchPlaceholderListItemNode.swift */,
-				F74912AA2201CDD70052A600 /* ChatBotsSearchContainerNode.swift */,
-				F74912AC2202E7D90052A600 /* ChatBotsStoreSearchBar.swift */,
 			);
 			name = Store;
 			sourceTree = "<group>";
