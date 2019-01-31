@@ -300,7 +300,7 @@ final class ChatSuggestionsInputNode: ChatInputNode {
                 transition.updateFrame(node: botsSearchContainerNode, frame: containerFrame)
                 botsSearchContainerNode.updateLayout(size: containerFrame.size, leftInset: leftInset, rightInset: rightInset, bottomInset: bottomInset, inputHeight: inputHeight, transition: transition)
             } else {
-                let botsSearchContainerNode = ChatBotsPaneSearchContainerNode(theme: self.theme!, strings: self.strings, cancel: { [weak self] in
+                let botsSearchContainerNode = ChatBotsPaneSearchContainerNode(theme: self.theme!, strings: self.strings, inputNodeInteraction: self.inputNodeInteraction, cancel: { [weak self] in
                     self?.botsSearchContainerNode?.deactivate()
                     self?.inputNodeInteraction.toggleSearch(false)
                 })//ChatBotsPaneSearchContainerNode(account: self.account, theme: self.theme, strings: self.strings, controllerInteraction: self.controllerInteraction, inputNodeInteraction: self.inputNodeInteraction, cancel: { [weak self] in

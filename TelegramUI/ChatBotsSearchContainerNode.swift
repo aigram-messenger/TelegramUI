@@ -15,19 +15,22 @@ import TelegramCore
 final class ChatBotsPaneSearchContainerNode: ASDisplayNode {
     private let theme: PresentationTheme
     private let strings: PresentationStrings
+    private let inputNodeInteraction: ChatBotsInputNodeInteraction
     
     private let backgroundNode: ASDisplayNode
     private let searchBar: ChatBotsStoreSearchBar
-//    private let trendingPane: ChatMediaInputTrendingPane
-//    private let gridNode: GridNode
+    private let listView: ListView
     private let notFoundNode: ASImageNode
     private let notFoundLabel: ImmediateTextNode
     
+    private var bots: [ChatBot] = []
+    
     private var validLayout: CGSize?
     
-    init(theme: PresentationTheme, strings: PresentationStrings, cancel: @escaping () -> Void) {
+    init(theme: PresentationTheme, strings: PresentationStrings, inputNodeInteraction: ChatBotsInputNodeInteraction, cancel: @escaping () -> Void) {
         self.theme = theme
         self.strings = strings
+        self.inputNodeInteraction = inputNodeInteraction
         
         self.backgroundNode = ASDisplayNode()
         self.backgroundNode.backgroundColor = theme.chat.inputMediaPanel.stickersBackgroundColor
@@ -45,17 +48,19 @@ final class ChatBotsPaneSearchContainerNode: ASDisplayNode {
         self.notFoundLabel.isUserInteractionEnabled = false
         self.notFoundLabel.attributedText = NSAttributedString(string: strings.Bots_NoBotsFound, font: Font.medium(14.0), textColor: theme.list.freeTextColor)
         self.notFoundNode.addSubnode(self.notFoundLabel)
-        
-//        self.trendingPane.isHidden = false
         self.notFoundNode.isHidden = true
+        
+        self.listView = ListView()
+        self.listView.backgroundColor = .brown
         
         super.init()
         
         self.addSubnode(self.backgroundNode)
-//        self.addSubnode(self.trendingPane)
-//        self.addSubnode(self.gridNode)
         self.addSubnode(self.notFoundNode)
+        self.addSubnode(self.listView)
         self.addSubnode(self.searchBar)
+        
+        self.listView.transaction(deleteIndices: [], insertIndicesAndItems: [], updateIndicesAndItems: [], options: [.Synchronous, .LowLatency], scrollToItem: nil, updateSizeAndInsets: nil, stationaryItemRange: nil, updateOpaqueState: nil, completion: { _ in })
         
         self.searchBar.placeholderString = NSAttributedString(string: strings.Bots_Search, font: Font.regular(14.0), textColor: theme.chat.inputMediaPanel.stickersSearchPlaceholderColor)
         self.searchBar.cancel = {
@@ -63,11 +68,17 @@ final class ChatBotsPaneSearchContainerNode: ASDisplayNode {
         }
         self.searchBar.activate()
         
+        ChatBotsManager.shared.search("") { [weak self] bots in
+            guard let self = self else { return }
+            self.updateBots(bots)
+        }
+        
         self.searchBar.textUpdated = { [weak self] text in
-            guard let strongSelf = self else {
-                return
-            }
             print("SEARCH \(text)")
+            ChatBotsManager.shared.search(text) { [weak self] bots in
+                guard let self = self else { return }
+                self.updateBots(bots)
+            }
             
 //            let signal: Signal<([(String?, FoundStickerItem)], FoundStickerSets, Bool, FoundStickerSets?)?, NoError>
 //            if !text.isEmpty {
@@ -203,12 +214,13 @@ final class ChatBotsPaneSearchContainerNode: ASDisplayNode {
         
         let contentFrame = CGRect(origin: CGPoint(x: leftInset, y: searchBarHeight), size: CGSize(width: size.width - leftInset - rightInset, height: size.height - searchBarHeight))
         
-//        self.gridNode.transaction(GridNodeTransaction(deleteItems: [], insertItems: [], updateItems: [], scrollToItem: nil, updateLayout: GridNodeUpdateLayout(layout: GridNodeLayout(size: contentFrame.size, insets: UIEdgeInsets(top: 4.0, left: 0.0, bottom: 4.0 + bottomInset, right: 0.0), preloadSize: 300.0, type: .fixed(itemSize: CGSize(width: 75.0, height: 75.0), lineSpacing: 0.0)), transition: transition), itemTransition: .immediate, stationaryItems: .none, updateFirstIndexInSectionOffset: nil), completion: { _ in })
+        let updateSizeAndInsets = ListViewUpdateSizeAndInsets(size: size, insets: UIEdgeInsets(), duration: 0, curve: .Spring(duration: 0))
+        self.listView.transaction(deleteIndices: [], insertIndicesAndItems: [], updateIndicesAndItems: [], options: [.Synchronous, .LowLatency], scrollToItem: nil, updateSizeAndInsets: updateSizeAndInsets, stationaryItemRange: nil, updateOpaqueState: nil, completion: { _ in })
         
 //        transition.updateFrame(node: self.trendingPane, frame: contentFrame)
 //        self.trendingPane.updateLayout(size: contentFrame.size, topInset: 0.0, bottomInset: bottomInset, isExpanded: false, transition: transition)
-//
-//        transition.updateFrame(node: self.gridNode, frame: contentFrame)
+
+        transition.updateFrame(node: self.listView, frame: contentFrame)
 //        if firstLayout {
 //            while !self.enqueuedTransitions.isEmpty {
 //                self.dequeueTransition()
@@ -221,9 +233,9 @@ final class ChatBotsPaneSearchContainerNode: ASDisplayNode {
     }
     
     func animateIn(from placeholder: ChatBotStoreSearchPlaceholderListItemNode, transition: ContainedViewLayoutTransition) {
-//        self.gridNode.alpha = 0.0
-//        transition.updateAlpha(node: self.gridNode, alpha: 1.0, completion: { _ in
-//        })
+        self.listView.alpha = 0.0
+        transition.updateAlpha(node: self.listView, alpha: 1.0, completion: { _ in
+        })
 //        self.trendingPane.alpha = 0.0
 //        transition.updateAlpha(node: self.trendingPane, alpha: 1.0, completion: { _ in
 //        })
@@ -258,12 +270,78 @@ final class ChatBotsPaneSearchContainerNode: ASDisplayNode {
         })
         transition.updateAlpha(node: self.backgroundNode, alpha: 0.0, completion: { _ in
         })
-//        transition.updateAlpha(node: self.gridNode, alpha: 0.0, completion: { _ in
-//        })
+        transition.updateAlpha(node: self.listView, alpha: 0.0, completion: { _ in
+        })
 //        transition.updateAlpha(node: self.trendingPane, alpha: 0.0, completion: { _ in
 //        })
         transition.updateAlpha(node: self.notFoundNode, alpha: 0.0, completion: { _ in
         })
         self.deactivate()
+    }
+    
+    private func updateBots(_ bots: [ChatBot]) {
+        let srcBots = self.bots
+        self.bots = bots
+        let endBots: [ChatBot] = bots
+        
+        let (deletes, inserts, updates) = mergeListsStableWithUpdates(leftList: srcBots, rightList: endBots)
+
+        let deleteListItems = deletes.map { ListViewDeleteItem(index: $0, directionHint: nil) }
+        let insertListItems = self.insertListItems(with: inserts)
+        let updateListItems = self.updateListItems(with: updates)
+
+//        for (pane, _) in self.panesAndAnimatingOut {
+//            pane.removeFromSupernode()
+//        }
+//        self.panesAndAnimatingOut = []
+//        var resultIndex = 0
+//        for paneType in toArrangements {
+//            switch paneType {
+//            case .store:
+//                self.panesAndAnimatingOut.append((ChatBotsInputStorePane(inputNodeInteraction: self.inputNodeInteraction, theme: self.theme!, strings: self.strings), false))
+//            case .bot(let botId):
+//                let bot = results.first(where: { $0.bot.id == botId })!.bot
+//                self.panesAndAnimatingOut.append((ChatBotsInputSuggestionsPane(bot: bot, responses: results[resultIndex].responses, inputNodeInteraction: self.inputNodeInteraction, theme: self.theme!), false))
+//                resultIndex += 1
+//            }
+//        }
+        
+        
+        
+        
+        
+        
+        
+        
+        
+//        var index = 0
+//        var insertItems: [ListViewInsertItem] = bots.map {
+//            let itemNode = ChatBotsStoreListItem(bot: $0, inputNodeInteraction: self.inputNodeInteraction, theme: self.theme)
+//            let item = ListViewInsertItem(index: index, previousIndex: nil, item: itemNode, directionHint: nil)
+//            index += 1
+//            return item
+//        }
+        
+        let updateSizeAndInsets = ListViewUpdateSizeAndInsets(size: self.bounds.size, insets: UIEdgeInsets(), duration: 0, curve: .Spring(duration: 0))
+        self.listView.transaction(deleteIndices: deleteListItems, insertIndicesAndItems: insertListItems, updateIndicesAndItems: updateListItems, options: [.Synchronous, .AnimateInsertion], scrollToItem: nil, updateSizeAndInsets: updateSizeAndInsets, stationaryItemRange: nil, updateOpaqueState: nil, completion: { _ in })
+    }
+    
+    private func insertListItems(with inserts: ([(Int, ChatBot, Int?)])) -> [ListViewInsertItem] {
+        var result: [ListViewInsertItem] = []
+        var index = 0
+        for insert in inserts {
+            let itemNode = ChatBotsStoreListItem(bot: insert.1, inputNodeInteraction: self.inputNodeInteraction, theme: self.theme)
+            result.append(ListViewInsertItem(index: insert.0, previousIndex: insert.2, item: itemNode, directionHint: nil))
+        }
+        return result
+    }
+    
+    private func updateListItems(with updates: ([(Int, ChatBot, Int)])) -> [ListViewUpdateItem] {
+        var result = [ListViewUpdateItem]()
+        for update in updates {
+            let itemNode = ChatBotsStoreListItem(bot: update.1, inputNodeInteraction: self.inputNodeInteraction, theme: self.theme)
+            result.append(ListViewUpdateItem(index: update.0, previousIndex: update.2, item: itemNode, directionHint: nil))
+        }
+        return result
     }
 }

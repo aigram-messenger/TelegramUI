@@ -84,12 +84,34 @@ public struct ChatBot {
         icon = UIImage(in: url, name: "icon", ext: "png") ?? UIImage()
         preview = UIImage(in: url, name: "preview", ext: "png") ?? UIImage()
     }
+    
+    public func isAcceptedWithText(_ text: String) -> Bool {
+        let text = text.lowercased()
+        guard !text.isEmpty else { return true }
+        var result = false
+        
+        result = result || title.lowercased().contains(text)
+        result = result || shortDescription.lowercased().contains(text)
+        result = result || fullDescription.lowercased().contains(text)
+        
+        return result
+    }
 }
 
 extension ChatBot: Equatable {
     public static func == (lhs: ChatBot, rhs: ChatBot) -> Bool {
         return lhs.id == rhs.id
     }
+}
+
+extension ChatBot: Comparable {
+    public static func < (lhs: ChatBot, rhs: ChatBot) -> Bool {
+        return lhs.id < rhs.id
+    }
+}
+
+extension ChatBot: Identifiable {
+    public var stableId: ChatBotId { return self.id }
 }
 
 public struct ChatBotResult {
