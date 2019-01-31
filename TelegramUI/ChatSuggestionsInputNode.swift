@@ -298,25 +298,25 @@ final class ChatSuggestionsInputNode: ChatInputNode {
             let containerFrame = CGRect(origin: CGPoint(x: 0.0, y: -inputPanelHeight), size: CGSize(width: width, height: panelHeight + inputPanelHeight))
             if let botsSearchContainerNode = self.botsSearchContainerNode {
                 transition.updateFrame(node: botsSearchContainerNode, frame: containerFrame)
-//                botsSearchContainerNode.updateLayout(size: containerFrame.size, leftInset: leftInset, rightInset: rightInset, bottomInset: bottomInset, inputHeight: inputHeight, transition: transition)
+                botsSearchContainerNode.updateLayout(size: containerFrame.size, leftInset: leftInset, rightInset: rightInset, bottomInset: bottomInset, inputHeight: inputHeight, transition: transition)
             } else {
-                let botsSearchContainerNode = ChatBotsPaneSearchContainerNode()//ChatBotsPaneSearchContainerNode(account: self.account, theme: self.theme, strings: self.strings, controllerInteraction: self.controllerInteraction, inputNodeInteraction: self.inputNodeInteraction, cancel: { [weak self] in
+                let botsSearchContainerNode = ChatBotsPaneSearchContainerNode(theme: self.theme!, strings: self.strings)//ChatBotsPaneSearchContainerNode(account: self.account, theme: self.theme, strings: self.strings, controllerInteraction: self.controllerInteraction, inputNodeInteraction: self.inputNodeInteraction, cancel: { [weak self] in
 //                    self?.botsSearchContainerNode?.deactivate()
 //                    self?.inputNodeInteraction.toggleSearch(false)
 //                })
                 self.botsSearchContainerNode = botsSearchContainerNode
                 self.insertSubnode(botsSearchContainerNode, belowSubnode: self.botsListContainer)
                 botsSearchContainerNode.frame = containerFrame
-//                botsSearchContainerNode.updateLayout(size: containerFrame.size, leftInset: leftInset, rightInset: rightInset, bottomInset: bottomInset, inputHeight: inputHeight, transition: .immediate)
-//                var placeholderNode: StickerPaneSearchBarPlaceholderNode?
-//                self.stickerPane.gridNode.forEachItemNode { itemNode in
-//                    if let itemNode = itemNode as? StickerPaneSearchBarPlaceholderNode {
-//                        placeholderNode = itemNode
-//                    }
-//                }
-//                if let placeholderNode = placeholderNode {
-//                    stickerSearchContainerNode.animateIn(from: placeholderNode, transition: transition)
-//                }
+                botsSearchContainerNode.updateLayout(size: containerFrame.size, leftInset: leftInset, rightInset: rightInset, bottomInset: bottomInset, inputHeight: inputHeight, transition: .immediate)
+                var placeholderNode: ChatBotStoreSearchPlaceholderListItemNode?
+                (self.panesAndAnimatingOut[0].0 as? ChatBotsInputStorePane)?.listView.forEachItemNode { itemNode in
+                    if let itemNode = itemNode as? ChatBotStoreSearchPlaceholderListItemNode {
+                        placeholderNode = itemNode
+                    }
+                }
+                if let placeholderNode = placeholderNode {
+                    botsSearchContainerNode.animateIn(from: placeholderNode, transition: transition)
+                }
             }
         }
 

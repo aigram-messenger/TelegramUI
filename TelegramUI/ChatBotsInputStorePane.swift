@@ -15,7 +15,7 @@ import SwiftSignalKit
 
 final class ChatBotsInputStorePane: ChatMediaInputPane, UIScrollViewDelegate {
     private let inputNodeInteraction: ChatBotsInputNodeInteraction
-    private let listView: ListView
+    let listView: ListView
     private var bots: [ChatBot] = []
     private var strings: PresentationStrings
     

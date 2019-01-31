@@ -1065,6 +1065,7 @@
 		F74912A72201A5E30052A600 /* ChatBotStoreSearchPlaceholderListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F74912A62201A5E30052A600 /* ChatBotStoreSearchPlaceholderListItem.swift */; };
 		F74912A92201A5EB0052A600 /* ChatBotStoreSearchPlaceholderListItemNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = F74912A82201A5EB0052A600 /* ChatBotStoreSearchPlaceholderListItemNode.swift */; };
 		F74912AB2201CDD70052A600 /* ChatBotsSearchContainerNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = F74912AA2201CDD70052A600 /* ChatBotsSearchContainerNode.swift */; };
+		F74912AD2202E7D90052A600 /* ChatBotsStoreSearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = F74912AC2202E7D90052A600 /* ChatBotsStoreSearchBar.swift */; };
 		F74BA4A221E6246100DD7CAB /* BotsStoreManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F74BA4A121E6246100DD7CAB /* BotsStoreManager.swift */; };
 		F75D3FE221EF6C7600003189 /* ChatBotsSuggestionsHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75D3FE121EF6C7600003189 /* ChatBotsSuggestionsHeader.swift */; };
 		F75D3FE421EF6D7D00003189 /* ChatBotSuggestionsItems.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75D3FE321EF6D7D00003189 /* ChatBotSuggestionsItems.swift */; };
@@ -2243,6 +2244,7 @@
 		F74912A62201A5E30052A600 /* ChatBotStoreSearchPlaceholderListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotStoreSearchPlaceholderListItem.swift; sourceTree = "<group>"; };
 		F74912A82201A5EB0052A600 /* ChatBotStoreSearchPlaceholderListItemNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotStoreSearchPlaceholderListItemNode.swift; sourceTree = "<group>"; };
 		F74912AA2201CDD70052A600 /* ChatBotsSearchContainerNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotsSearchContainerNode.swift; sourceTree = "<group>"; };
+		F74912AC2202E7D90052A600 /* ChatBotsStoreSearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotsStoreSearchBar.swift; sourceTree = "<group>"; };
 		F74BA4A121E6246100DD7CAB /* BotsStoreManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BotsStoreManager.swift; sourceTree = "<group>"; };
 		F75D3FE121EF6C7600003189 /* ChatBotsSuggestionsHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotsSuggestionsHeader.swift; sourceTree = "<group>"; };
 		F75D3FE321EF6D7D00003189 /* ChatBotSuggestionsItems.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotSuggestionsItems.swift; sourceTree = "<group>"; };
@@ -4737,6 +4739,7 @@
 				F74912A62201A5E30052A600 /* ChatBotStoreSearchPlaceholderListItem.swift */,
 				F74912A82201A5EB0052A600 /* ChatBotStoreSearchPlaceholderListItemNode.swift */,
 				F74912AA2201CDD70052A600 /* ChatBotsSearchContainerNode.swift */,
+				F74912AC2202E7D90052A600 /* ChatBotsStoreSearchBar.swift */,
 			);
 			name = Store;
 			sourceTree = "<group>";
@@ -5266,6 +5269,7 @@
 				D0EC6D201EB9F58800EBF1C3 /* PeerAvatar.swift in Sources */,
 				D0EC6D211EB9F58800EBF1C3 /* FileResources.swift in Sources */,
 				D0461439200514F000EC0EF2 /* LiveLocationSummaryManager.swift in Sources */,
+				F74912AD2202E7D90052A600 /* ChatBotsStoreSearchBar.swift in Sources */,
 				D056CD781FF2A6EE00880D28 /* ChatMessageSwipeToReplyNode.swift in Sources */,
 				D0CE67941F7DB45100FFB557 /* ChatMessageContactBubbleContentNode.swift in Sources */,
 				D0B3AC802142E2E900CD1374 /* ResetPasswordController.swift in Sources */,
