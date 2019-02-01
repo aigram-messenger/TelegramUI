@@ -63,20 +63,20 @@ final class ChatBotsInputStorePane: ChatMediaInputPane, UIScrollViewDelegate {
     private func updateBots(_ bots: [ChatBot]) {
         self.bots = bots
         
-        var index = 1
-        var insertItems: [ListViewInsertItem] = bots.map {
+        var index = 0
+        let insertItems: [ListViewInsertItem] = bots.map {
             let itemNode = ChatBotsStoreListItem(bot: $0, inputNodeInteraction: self.inputNodeInteraction, theme: self.theme)
             let item = ListViewInsertItem(index: index, previousIndex: nil, item: itemNode, directionHint: nil)
             index += 1
             return item
         }
-        let searchPlaceholderNode = ChatBotStoreSearchPlaceholderListItem(theme: self.theme, strings: self.strings) {
-            self.inputNodeInteraction.toggleSearch(true)
-        }
-        let searchPlaceholderItem = ListViewInsertItem(index: 0, previousIndex: nil, item: searchPlaceholderNode, directionHint: nil)
-        insertItems.insert(searchPlaceholderItem, at: 0)
+//        let searchPlaceholderNode = ChatBotStoreSearchPlaceholderListItem(theme: self.theme, strings: self.strings) {
+//            self.inputNodeInteraction.toggleSearch(true)
+//        }
+//        let searchPlaceholderItem = ListViewInsertItem(index: 0, previousIndex: nil, item: searchPlaceholderNode, directionHint: nil)
+//        insertItems.insert(searchPlaceholderItem, at: 0)
         
-        let updateSizeAndInsets = ListViewUpdateSizeAndInsets(size: self.bounds.size, insets: UIEdgeInsets(), duration: 0, curve: .Spring(duration: 0))
+        let updateSizeAndInsets = ListViewUpdateSizeAndInsets(size: self.listView.frame.size, insets: UIEdgeInsets(), duration: 0, curve: .Spring(duration: 0))
         self.listView.transaction(deleteIndices: [], insertIndicesAndItems: insertItems, updateIndicesAndItems: [], options: [.Synchronous, .AnimateInsertion], scrollToItem: nil, updateSizeAndInsets: updateSizeAndInsets, stationaryItemRange: nil, updateOpaqueState: nil, completion: { _ in })
     }
 }

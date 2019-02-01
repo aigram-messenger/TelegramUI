@@ -81,7 +81,7 @@ public final class ChatBotsManager {
     }
     
     public func botsInStore(completion: @escaping (Result<[ChatBot]>) -> Void) {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+        DispatchQueue.main.asyncAfter(deadline: .now()) {
             var result: [ChatBot] = []
             
             let bundle = Bundle(for: ChatBotsManager.self)
