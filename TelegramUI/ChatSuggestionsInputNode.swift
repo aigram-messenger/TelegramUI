@@ -76,6 +76,7 @@ final class ChatSuggestionsInputNode: ChatInputNode {
     private var validLayout: (CGFloat, CGFloat, CGFloat, CGFloat, CGFloat, CGFloat, CGFloat, CGFloat, ChatPresentationInterfaceState)?
     
     private var currentView: ItemCollectionsView?
+    private var botsSearchContainerNode: ChatBotsPaneSearchContainerNode?
 
     private let botsListPanel: ASDisplayNode
     private let topSeparator: ASDisplayNode
@@ -276,10 +277,10 @@ final class ChatSuggestionsInputNode: ChatInputNode {
         
         let separatorHeight = UIScreenPixel
         let panelHeight: CGFloat
-        let contentVerticalOffset: CGFloat = 0.0
         let containerOffset: CGFloat = 0
         
         var isExpanded: Bool = false
+        var displaySearch: Bool = false
         if case let .suggestions(_, maybeExpanded) = interfaceState.inputMode, let expanded = maybeExpanded {
             isExpanded = true
             switch expanded {
@@ -287,12 +288,43 @@ final class ChatSuggestionsInputNode: ChatInputNode {
                 panelHeight = maximumHeight
             case .search:
                 panelHeight = maximumHeight
-//                displaySearch = true
+                displaySearch = true
             }
         } else {
             panelHeight = standardInputHeight
         }
+        
+        if displaySearch {
+            let containerFrame = CGRect(origin: CGPoint(x: 0.0, y: -inputPanelHeight), size: CGSize(width: width, height: panelHeight + inputPanelHeight))
+            if let botsSearchContainerNode = self.botsSearchContainerNode {
+                transition.updateFrame(node: botsSearchContainerNode, frame: containerFrame)
+                botsSearchContainerNode.updateLayout(size: containerFrame.size, leftInset: leftInset, rightInset: rightInset, bottomInset: bottomInset, inputHeight: inputHeight, transition: transition)
+            } else {
+                let botsSearchContainerNode = ChatBotsPaneSearchContainerNode(theme: self.theme!, strings: self.strings, inputNodeInteraction: self.inputNodeInteraction, cancel: { [weak self] in
+                    self?.botsSearchContainerNode?.deactivate()
+                    self?.inputNodeInteraction.toggleSearch(false)
+                })//ChatBotsPaneSearchContainerNode(account: self.account, theme: self.theme, strings: self.strings, controllerInteraction: self.controllerInteraction, inputNodeInteraction: self.inputNodeInteraction, cancel: { [weak self] in
+//                    self?.botsSearchContainerNode?.deactivate()
+//                    self?.inputNodeInteraction.toggleSearch(false)
+//                })
+                self.botsSearchContainerNode = botsSearchContainerNode
+                self.insertSubnode(botsSearchContainerNode, belowSubnode: self.botsListContainer)
+                botsSearchContainerNode.frame = containerFrame
+                botsSearchContainerNode.updateLayout(size: containerFrame.size, leftInset: leftInset, rightInset: rightInset, bottomInset: bottomInset, inputHeight: inputHeight, transition: .immediate)
+                var placeholderNode: ChatBotStoreSearchPlaceholderListItemNode?
+                (self.panesAndAnimatingOut[0].0 as? ChatBotsInputStorePane)?.listView.forEachItemNode { itemNode in
+                    if let itemNode = itemNode as? ChatBotStoreSearchPlaceholderListItemNode {
+                        placeholderNode = itemNode
+                    }
+                }
+                if let placeholderNode = placeholderNode {
+                    botsSearchContainerNode.animateIn(from: placeholderNode, transition: transition)
+                }
+            }
+        }
 
+        let contentVerticalOffset: CGFloat = displaySearch ? -(inputPanelHeight + 41.0) : 0.0
+        
         transition.updateFrame(node: self.botsListContainer, frame: CGRect(origin: CGPoint(x: 0.0, y: contentVerticalOffset), size: CGSize(width: width, height: max(0.0, 41.0 + UIScreenPixel))))
         transition.updateFrame(node: self.botsListPanel, frame: CGRect(origin: CGPoint(x: 0.0, y: containerOffset), size: CGSize(width: width, height: 41.0)))
         transition.updateFrame(node: self.topSeparator, frame: CGRect(origin: CGPoint(x: 0.0, y: 41.0 + containerOffset), size: CGSize(width: width, height: separatorHeight)))
@@ -361,6 +393,28 @@ final class ChatSuggestionsInputNode: ChatInputNode {
                 self.panesAndAnimatingOut[i].0.removeFromSupernode()
             }
         }
+        
+        if !displaySearch, let botsSearchContainerNode = self.botsSearchContainerNode {
+            self.botsSearchContainerNode = nil
+
+            var placeholderNode: ChatBotStoreSearchPlaceholderListItemNode?
+            (self.panesAndAnimatingOut[0].0 as? ChatBotsInputStorePane)?.listView.forEachItemNode { itemNode in
+                if let itemNode = itemNode as? ChatBotStoreSearchPlaceholderListItemNode {
+                    placeholderNode = itemNode
+                }
+            }
+            if let placeholderNode = placeholderNode {
+                botsSearchContainerNode.animateOut(to: placeholderNode, transition: transition, completion: { [weak botsSearchContainerNode] in
+                    botsSearchContainerNode?.removeFromSupernode()
+                })
+            } else {
+                botsSearchContainerNode.removeFromSupernode()
+            }
+        }
+
+//        if let panRecognizer = self.panRecognizer, panRecognizer.isEnabled != !displaySearch {
+//            panRecognizer.isEnabled = !displaySearch
+//        }
         
         return (standardInputHeight, max(0.0, panelHeight - standardInputHeight))
     }

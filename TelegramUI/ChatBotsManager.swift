@@ -18,12 +18,16 @@ public final class ChatBotsManager {
     static let shared: ChatBotsManager = .init()
     private(set) public var bots: [ChatBot] = []
     private var queue: OperationQueue
+    private var searchQueue: OperationQueue
     private var lastMessages: [String]?
     private var botEnableStates: [ChatBot.ChatBotId: Bool] = [:]
+    private var lastSearchText: String?
     
     private init() {
         queue = OperationQueue()
         queue.maxConcurrentOperationCount = 1
+        searchQueue = OperationQueue()
+        searchQueue.maxConcurrentOperationCount = 1
         
         let fm = FileManager.default
         guard var chatBotsUrl = fm.urls(for: .documentDirectory, in: .userDomainMask).first else { return }
@@ -77,7 +81,7 @@ public final class ChatBotsManager {
     }
     
     public func botsInStore(completion: @escaping (Result<[ChatBot]>) -> Void) {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+        DispatchQueue.main.asyncAfter(deadline: .now()) {
             var result: [ChatBot] = []
             
             let bundle = Bundle(for: ChatBotsManager.self)
@@ -88,6 +92,22 @@ public final class ChatBotsManager {
             }
             completion(.success(result))
         }
+    }
+    
+    public func search(_ text: String, completion: @escaping ([ChatBot]) -> Void) {
+        if self.lastSearchText != text {
+            self.lastSearchText = nil
+            self.searchQueue.cancelAllOperations()
+        }
+        self.lastSearchText = text
+        let block = BlockOperation { [unowned self, text] in
+            guard self.lastSearchText == text else { return }
+            let result: [ChatBot] = self.bots.filter { $0.isAcceptedWithText(text) }
+            DispatchQueue.main.async {
+                completion(result)
+            }
+        }
+        self.searchQueue.addOperation(block)
     }
     
     public func copyBot(_ bot: ChatBot) -> Bool {
