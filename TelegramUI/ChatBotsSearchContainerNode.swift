@@ -51,7 +51,6 @@ final class ChatBotsPaneSearchContainerNode: ASDisplayNode {
         self.notFoundNode.isHidden = true
         
         self.listView = ListView()
-        self.listView.backgroundColor = .brown
         
         super.init()
         
@@ -65,6 +64,9 @@ final class ChatBotsPaneSearchContainerNode: ASDisplayNode {
         self.searchBar.placeholderString = NSAttributedString(string: strings.Bots_Search, font: Font.regular(14.0), textColor: theme.chat.inputMediaPanel.stickersSearchPlaceholderColor)
         self.searchBar.cancel = {
             cancel()
+        }
+        self.listView.beganInteractiveDragging = { [weak self] in
+            self?.searchBar.deactivate(clear: false)
         }
         self.searchBar.activate()
         
@@ -214,12 +216,9 @@ final class ChatBotsPaneSearchContainerNode: ASDisplayNode {
         
         let contentFrame = CGRect(origin: CGPoint(x: leftInset, y: searchBarHeight), size: CGSize(width: size.width - leftInset - rightInset, height: size.height - searchBarHeight))
         
-        let updateSizeAndInsets = ListViewUpdateSizeAndInsets(size: size, insets: UIEdgeInsets(), duration: 0, curve: .Spring(duration: 0))
+        let updateSizeAndInsets = ListViewUpdateSizeAndInsets(size: CGSize(width: size.width - leftInset - rightInset, height: size.height - searchBarHeight), insets: UIEdgeInsets(), duration: 0, curve: .Spring(duration: 0))
         self.listView.transaction(deleteIndices: [], insertIndicesAndItems: [], updateIndicesAndItems: [], options: [.Synchronous, .LowLatency], scrollToItem: nil, updateSizeAndInsets: updateSizeAndInsets, stationaryItemRange: nil, updateOpaqueState: nil, completion: { _ in })
         
-//        transition.updateFrame(node: self.trendingPane, frame: contentFrame)
-//        self.trendingPane.updateLayout(size: contentFrame.size, topInset: 0.0, bottomInset: bottomInset, isExpanded: false, transition: transition)
-
         transition.updateFrame(node: self.listView, frame: contentFrame)
 //        if firstLayout {
 //            while !self.enqueuedTransitions.isEmpty {
@@ -236,9 +235,6 @@ final class ChatBotsPaneSearchContainerNode: ASDisplayNode {
         self.listView.alpha = 0.0
         transition.updateAlpha(node: self.listView, alpha: 1.0, completion: { _ in
         })
-//        self.trendingPane.alpha = 0.0
-//        transition.updateAlpha(node: self.trendingPane, alpha: 1.0, completion: { _ in
-//        })
         switch transition {
         case let .animated(duration, curve):
             self.backgroundNode.layer.animateAlpha(from: 0.0, to: 1.0, duration: duration / 2.0)
@@ -248,7 +244,6 @@ final class ChatBotsPaneSearchContainerNode: ASDisplayNode {
                 let verticalOrigin = placeholderFrame.minY - 4.0
                 let initialBackgroundFrame = CGRect(origin: CGPoint(x: 0.0, y: verticalOrigin), size: CGSize(width: size.width, height: max(0.0, size.height - verticalOrigin)))
                 self.backgroundNode.layer.animateFrame(from: initialBackgroundFrame, to: self.backgroundNode.frame, duration: duration, timingFunction: curve.timingFunction)
-//                self.trendingPane.layer.animatePosition(from: CGPoint(x: 0.0, y: initialBackgroundFrame.minY - self.backgroundNode.frame.minY), to: CGPoint(), duration: duration, timingFunction: curve.timingFunction, additive: true)
             }
         case .immediate:
             break
@@ -272,8 +267,6 @@ final class ChatBotsPaneSearchContainerNode: ASDisplayNode {
         })
         transition.updateAlpha(node: self.listView, alpha: 0.0, completion: { _ in
         })
-//        transition.updateAlpha(node: self.trendingPane, alpha: 0.0, completion: { _ in
-//        })
         transition.updateAlpha(node: self.notFoundNode, alpha: 0.0, completion: { _ in
         })
         self.deactivate()
@@ -289,38 +282,6 @@ final class ChatBotsPaneSearchContainerNode: ASDisplayNode {
         let deleteListItems = deletes.map { ListViewDeleteItem(index: $0, directionHint: nil) }
         let insertListItems = self.insertListItems(with: inserts)
         let updateListItems = self.updateListItems(with: updates)
-
-//        for (pane, _) in self.panesAndAnimatingOut {
-//            pane.removeFromSupernode()
-//        }
-//        self.panesAndAnimatingOut = []
-//        var resultIndex = 0
-//        for paneType in toArrangements {
-//            switch paneType {
-//            case .store:
-//                self.panesAndAnimatingOut.append((ChatBotsInputStorePane(inputNodeInteraction: self.inputNodeInteraction, theme: self.theme!, strings: self.strings), false))
-//            case .bot(let botId):
-//                let bot = results.first(where: { $0.bot.id == botId })!.bot
-//                self.panesAndAnimatingOut.append((ChatBotsInputSuggestionsPane(bot: bot, responses: results[resultIndex].responses, inputNodeInteraction: self.inputNodeInteraction, theme: self.theme!), false))
-//                resultIndex += 1
-//            }
-//        }
-        
-        
-        
-        
-        
-        
-        
-        
-        
-//        var index = 0
-//        var insertItems: [ListViewInsertItem] = bots.map {
-//            let itemNode = ChatBotsStoreListItem(bot: $0, inputNodeInteraction: self.inputNodeInteraction, theme: self.theme)
-//            let item = ListViewInsertItem(index: index, previousIndex: nil, item: itemNode, directionHint: nil)
-//            index += 1
-//            return item
-//        }
         
         let updateSizeAndInsets = ListViewUpdateSizeAndInsets(size: self.bounds.size, insets: UIEdgeInsets(), duration: 0, curve: .Spring(duration: 0))
         self.listView.transaction(deleteIndices: deleteListItems, insertIndicesAndItems: insertListItems, updateIndicesAndItems: updateListItems, options: [.Synchronous, .AnimateInsertion], scrollToItem: nil, updateSizeAndInsets: updateSizeAndInsets, stationaryItemRange: nil, updateOpaqueState: nil, completion: { _ in })
@@ -328,7 +289,6 @@ final class ChatBotsPaneSearchContainerNode: ASDisplayNode {
     
     private func insertListItems(with inserts: ([(Int, ChatBot, Int?)])) -> [ListViewInsertItem] {
         var result: [ListViewInsertItem] = []
-        var index = 0
         for insert in inserts {
             let itemNode = ChatBotsStoreListItem(bot: insert.1, inputNodeInteraction: self.inputNodeInteraction, theme: self.theme)
             result.append(ListViewInsertItem(index: insert.0, previousIndex: insert.2, item: itemNode, directionHint: nil))
