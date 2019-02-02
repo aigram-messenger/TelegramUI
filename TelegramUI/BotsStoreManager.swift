@@ -34,9 +34,9 @@ public final class BotsStoreManager: NSObject {
     }
     
     public func botPriceString(bot: ChatBot) -> String {
-        let price = arc4random_uniform(50)
-        if price % 2 == 1 {
-            return "\(price + 50) ₽"
+        let price = bot.price
+        if price != 0 {
+            return "\(price) ₽"
         }
         return "ПОЛУЧИТЬ"
     }

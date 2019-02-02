@@ -147,11 +147,11 @@ public final class ChatBotsManager {
     }
     
     public func enableBot(_ bot: ChatBot, enabled: Bool) {
-        botEnableStates[bot.id] = enabled
+        botEnableStates[bot.name] = enabled
     }
     
     public func isBotEnabled(_ bot: ChatBot) -> Bool {
-        return botEnableStates[bot.id] ?? true
+        return botEnableStates[bot.name] ?? true
     }
 }
 
