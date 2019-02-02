@@ -90,6 +90,7 @@ public final class ChatBotsManager {
                 guard let bot = try? ChatBot(url: url), !bot.isTarget else { continue }
                 result.append(bot)
             }
+            result.sort(by: { return $0.index <= $1.index })
             completion(.success(result))
         }
     }
