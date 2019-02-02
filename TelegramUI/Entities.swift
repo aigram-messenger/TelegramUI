@@ -33,6 +33,7 @@ public enum ChatBotTag: String, Codable, CustomStringConvertible {
     case cartoon
     case known
     case collections
+    case great
     
     public var description: String {
         switch self {
@@ -45,6 +46,7 @@ public enum ChatBotTag: String, Codable, CustomStringConvertible {
         case .cartoon: return "персонажи мультфильмов"
         case .known: return "известные"
         case .collections: return "коллекции"
+        case .great: return "великие"
         }
     }
 }
@@ -96,24 +98,29 @@ public struct ChatBot {
     }
     
     public init(url: URL) throws {
-        self.url = url
-        fileNameComponents = (url.deletingPathExtension().lastPathComponent, url.pathExtension)
-        
-        let decoder = JSONDecoder()
-        var data = try Data(contentsOf: url.appendingPathComponent("info.json"))
-        info = try decoder.decode(Swift.type(of: info), from: data)
-        
-        modelURL = url.appendingPathComponent("\(fileNameComponents.0)converted_model.tflite")
-        if !(try modelURL.checkResourceIsReachable()) { throw ChatBotError.modelFileNotExists }
-        
-        data = try Data(contentsOf: url.appendingPathComponent("words_\(fileNameComponents.0).json"))
-        words = try decoder.decode(Swift.type(of: words), from: data)
-        
-        data = try Data(contentsOf: url.appendingPathComponent("response_\(fileNameComponents.0).json"))
-        responses = try decoder.decode(Swift.type(of: responses), from: data)
-        
-        icon = UIImage(in: url, name: "icon", ext: "png") ?? UIImage()
-        preview = UIImage(in: url, name: "preview", ext: "png") ?? UIImage()
+        do {
+            self.url = url
+            fileNameComponents = (url.deletingPathExtension().lastPathComponent, url.pathExtension)
+
+            let decoder = JSONDecoder()
+            var data = try Data(contentsOf: url.appendingPathComponent("info.json"))
+            info = try decoder.decode(Swift.type(of: info), from: data)
+
+            modelURL = url.appendingPathComponent("\(fileNameComponents.0)converted_model.tflite")
+            if !(try modelURL.checkResourceIsReachable()) { throw ChatBotError.modelFileNotExists }
+
+            data = try Data(contentsOf: url.appendingPathComponent("words_\(fileNameComponents.0).json"))
+            words = try decoder.decode(Swift.type(of: words), from: data)
+
+            data = try Data(contentsOf: url.appendingPathComponent("response_\(fileNameComponents.0).json"))
+            responses = try decoder.decode(Swift.type(of: responses), from: data)
+
+            icon = UIImage(in: url, name: "icon", ext: "png") ?? UIImage()
+            preview = UIImage(in: url, name: "preview", ext: "png") ?? UIImage()
+        } catch {
+            print("CREATE BOT ERROR \(error)")
+            throw error
+        }
     }
     
     public func isAcceptedWithText(_ text: String) -> Bool {

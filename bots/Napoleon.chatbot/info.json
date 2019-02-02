@@ -1,0 +1,13 @@
+{
+    "title": "Наполеон",
+    "name": "napoleon",
+    "shortDescription": "Выдающийся французский полководец и государственный деятель.",
+    "type": "bot",
+    "tags": [
+        "paid",
+        "great",
+        "men"
+    ],
+    "index": 11,
+    "price": 690
+}
