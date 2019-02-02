@@ -1,7 +1,13 @@
 {
-    "id": 4,
-    "title": "Confucius",
+    "title": "Конфуций",
     "name": "confucius",
     "shortDescription": "Древний мыслитель и философ Китая.",
-    "type": "bot"
+    "type": "bot",
+    "tags": [
+        "free",
+        "great",
+        "men"
+    ],
+    "index": 1,
+    "price": 0
 }

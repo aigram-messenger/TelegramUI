@@ -1,7 +1,13 @@
 {
-    "id": 19,
-    "title": "Memes",
+    "title": "Мемы",
     "name": "memes",
     "shortDescription": "Текстовая информация состоящая из базовых единиц популярных фраз.",
-    "type": "bot"
+    "type": "bot",
+    "tags": [
+        "free",
+        "collections",
+        "unisex"
+    ],
+    "index": 10,
+    "price": 0
 }

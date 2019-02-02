@@ -1,7 +1,13 @@
 {
-    "id": 2,
-    "title": "Churchill",
+    "title": "Черчилkь",
     "name": "churchill",
     "shortDescription": "Британский государственный и политический деятель.",
-    "type": "bot"
+    "type": "bot",
+    "tags": [
+        "free",
+        "known",
+        "men"
+    ],
+    "index": 3,
+    "price": 0
 }

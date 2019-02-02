@@ -1,7 +1,13 @@
 {
-    "id": 18,
-    "title": "USSR",
+    "title": "Советские фильмы",
     "name": "ussr",
     "shortDescription": "Сборник популярных фраз и цитат из лучших советских фильмов.",
-    "type": "bot"
+    "type": "bot",
+    "tags": [
+        "free",
+        "collections",
+        "unisex"
+    ],
+    "index": 9,
+    "price": 0
 }

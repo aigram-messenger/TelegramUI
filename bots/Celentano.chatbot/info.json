@@ -1,7 +1,13 @@
 {
-    "id": 5,
-    "title": "Celentano",
+    "title": "Челентано",
     "name": "celentano",
     "shortDescription": "Очень харизматичный итальянский музыкант, киноактёр.",
-    "type": "bot"
+    "type": "bot",
+    "tags": [
+        "free",
+        "known",
+        "men"
+    ],
+    "index": 12,
+    "price": 690
 }

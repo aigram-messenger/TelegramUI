@@ -1,7 +1,13 @@
 {
-    "id": 7,
-    "title": "Chanel",
+    "title": "Коко Шанель",
     "name": "chanel",
     "shortDescription": "Французский модельер, основавшая модный дом «Chanel».",
-    "type": "bot"
+    "type": "bot",
+    "tags": [
+        "paid",
+        "known",
+        "women"
+    ],
+    "index": 13,
+    "price": 690
 }

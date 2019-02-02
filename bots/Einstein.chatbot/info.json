@@ -1,7 +1,13 @@
 {
-    "id": 3,
-    "title": "Einstein",
+    "title": "Эйнштейн",
     "name": "einstein",
     "shortDescription": "Гений, физик-теоретик, незаурядная фигура.",
-    "type": "bot"
+    "type": "bot",
+    "tags": [
+        "free",
+        "known",
+        "men"
+    ],
+    "index": 2,
+    "price": 0
 }
