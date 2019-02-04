@@ -90,7 +90,7 @@ extension BotsStoreManager: SKPaymentTransactionObserver {
                     }
                 }
             case .failed:
-                print("TRANS FAIL \(transaction.error)")
+                print("TRANS FAIL \(transaction.error!)")
                 SKPaymentQueue.default().finishTransaction(transaction)
                 self.buyCompletions[transaction.payment.productIdentifier]?(false)
                 self.buyCompletions.removeValue(forKey: transaction.payment.productIdentifier)

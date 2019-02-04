@@ -17,6 +17,7 @@ public enum Result<T> {
 public final class ChatBotsManager {
     static let shared: ChatBotsManager = .init()
     private(set) public var bots: [ChatBot] = []
+    private var loadedBotsFlag: Bool = false
     private(set) public var loadedBotsInStore: [ChatBot] = []
     private var queue: OperationQueue
     private var searchQueue: OperationQueue
@@ -82,19 +83,29 @@ public final class ChatBotsManager {
     }
     
     public func botsInStore(completion: @escaping (Result<[ChatBot]>) -> Void) {
-        DispatchQueue.main.asyncAfter(deadline: .now()) {
+        if loadedBotsFlag {
+            completion(.success(self.loadedBotsInStore))
+            return
+        }
+        DispatchQueue.global().asyncAfter(deadline: .now()) {
             var result: [ChatBot] = []
             
             let bundle = Bundle(for: ChatBotsManager.self)
             let urls = bundle.urls(forResourcesWithExtension: ChatBot.botExtension, subdirectory: "bots") ?? []
             for url in urls {
                 guard let bot = try? ChatBot(url: url), !bot.isTarget else { continue }
+                if bot.tags.contains(String(describing: ChatBotTag.free)), !bot.isLocal {
+                    _ = self.copyBot(bot)
+                }
                 result.append(bot)
             }
             result.sort(by: { return $0.index <= $1.index })
             BotsStoreManager.shared.loadProducts(for: result) { [weak self] in
                 self?.loadedBotsInStore = result
-                completion(.success(result))
+                self?.loadedBotsFlag = true
+                DispatchQueue.main.async {
+                    completion(.success(result))
+                }
             }
         }
     }
