@@ -1046,6 +1046,18 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
                 self?.controllerInteraction?.handleMessagesWithBots(nil)
                 completion(bought)
             }
+        }, showBotActions: { [weak self] bot in
+            self?.showBotDetailsAlert(bot)
+//            guard let self = self else { return }
+//            let actions = [
+//                TextAlertAction(type: .genericAction, title: "Подробнее", action: {}),
+//                TextAlertAction(type: .defaultAction, title: self.presentationData.strings.Common_Yes, action: {}),
+//                TextAlertAction(type: .destructiveAction, title: "Отключить", action: {})
+//            ]
+//            self.present(standardTextAlertController(theme: AlertControllerTheme(presentationTheme: self.presentationData.theme),
+//                                                     title: bot.title,
+//                                                     text: nil,
+//                                                     actions: actions)
         })
         
         self.controllerInteraction = controllerInteraction
@@ -1507,14 +1519,27 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
     func showBotDetailsAlert(_ bot: ChatBot) {
         let actionSheet = ActionSheetController(presentationTheme: self.presentationData.theme)
         var items: [ActionSheetItem] = []
+        
         items.append(ChatBotDetailsItem(bot: bot))
         if !BotsStoreManager.shared.isBotBought(bot) {
             items.append(ActionSheetButtonItem(title: "Получить", color: .accent, action: { [weak self] in
                 self?.controllerInteraction?.buyBot(bot) { [weak actionSheet] bought in
                     guard bought else { return }
+                    //TODO: обновить в магазине
                     actionSheet?.dismissAnimated()
                 }
             }))
+        } else {
+            let enabled = ChatBotsManager.shared.isBotEnabled(bot)
+            let title = enabled ? "Отключить" : "Включить"
+            let color = enabled ? ActionSheetButtonColor.destructive : .accent
+            let action = { [weak self, weak actionSheet] in
+                ChatBotsManager.shared.enableBot(bot, enabled: !enabled)
+                //TODO: обновить в магазине
+                actionSheet?.dismissAnimated()
+                self?.controllerInteraction?.handleMessagesWithBots(nil)
+            }
+            items.append(ActionSheetButtonItem(title: title, color: color, action: action))
         }
         
         let cancel: [ActionSheetItem] = [

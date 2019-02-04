@@ -355,7 +355,8 @@ final class ChatRecentActionsControllerNode: ViewControllerTracingNode {
         }, automaticMediaDownloadSettings: self.automaticMediaDownloadSettings,
            handleMessagesWithBots: { _ in },
            showBotDetails: { _ in },
-           buyBot: { _, _ in })
+           buyBot: { _, _ in },
+           showBotActions: { _ in })
         self.controllerInteraction = controllerInteraction
         
         self.listNode.displayedItemRangeChanged = { [weak self] displayedRange, opaqueTransactionState in

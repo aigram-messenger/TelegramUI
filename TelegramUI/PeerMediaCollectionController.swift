@@ -238,7 +238,8 @@ public class PeerMediaCollectionController: TelegramController {
         }, automaticMediaDownloadSettings: AutomaticMediaDownloadSettings.defaultSettings,
            handleMessagesWithBots: { _ in },
            showBotDetails: { _ in },
-           buyBot: { _, _ in })
+           buyBot: { _, _ in },
+           showBotActions: { _ in })
         
         self.controllerInteraction = controllerInteraction
         

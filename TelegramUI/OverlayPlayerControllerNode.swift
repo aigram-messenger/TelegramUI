@@ -73,7 +73,8 @@ final class OverlayPlayerControllerNode: ViewControllerTracingNode, UIGestureRec
         }, automaticMediaDownloadSettings: AutomaticMediaDownloadSettings.defaultSettings,
            handleMessagesWithBots: { _ in },
            showBotDetails: { _ in },
-           buyBot: { _, _ in })
+           buyBot: { _, _ in },
+           showBotActions: { _ in })
         
         self.dimNode = ASDisplayNode()
         self.dimNode.backgroundColor = UIColor(white: 0.0, alpha: 0.5)

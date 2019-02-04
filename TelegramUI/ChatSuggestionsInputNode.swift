@@ -151,6 +151,8 @@ final class ChatSuggestionsInputNode: ChatInputNode {
                     }
                 }
             }
+        }, botActions: { [weak self] bot in
+            self?.controllerInteraction.showBotActions(bot)
         })
 
         self.backgroundColor = theme.chat.inputMediaPanel.stickersBackgroundColor

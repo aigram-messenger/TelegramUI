@@ -153,7 +153,7 @@ final class ChatBotsBotItemNode: ListViewItemNode {
         guard let bot = self.currentItem else { return }
         switch gesture.state {
         case .began:
-            self.inputNodeInteraction?.botDetails(bot)
+            self.inputNodeInteraction?.botActions(bot)
         default:
             break
         }

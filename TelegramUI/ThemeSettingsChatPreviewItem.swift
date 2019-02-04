@@ -105,7 +105,8 @@ class ThemeSettingsChatPreviewItemNode: ListViewItemNode {
         }, automaticMediaDownloadSettings: AutomaticMediaDownloadSettings.defaultSettings,
            handleMessagesWithBots: { _ in },
            showBotDetails: { _ in },
-           buyBot: { _, _ in })
+           buyBot: { _, _ in },
+           showBotActions: { _ in })
         
         super.init(layerBacked: false, dynamicBounce: false)
         
