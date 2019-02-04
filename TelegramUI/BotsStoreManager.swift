@@ -12,8 +12,29 @@ import StoreKit
 public final class BotsStoreManager: NSObject {
     public static let shared: BotsStoreManager = .init()
     
+    private let prefix = "com.olcorporation.olai.bot."
+    private var productsRequest: SKProductsRequest?
+    private(set) public var products: [SKProduct] = []
+    private var productsCompletion: (() -> Void)?
+    
     private override init() {
         super.init()
+    }
+    
+    public func loadProducts(for bots: [ChatBot], _ completion: @escaping () -> Void) {
+        self.productsCompletion = { [weak self] in
+            completion()
+            self?.productsCompletion = nil
+        }
+        
+        var productIds: [String] = []
+        bots.forEach {
+            productIds.append(prefix + $0.name)
+        }
+        let request = SKProductsRequest(productIdentifiers: Set(productIds))
+        request.delegate = self
+        self.productsRequest = request
+        request.start()
     }
     
     public func buyBot(_ bot: ChatBot, completion: @escaping (Bool) -> Void) {
@@ -34,11 +55,14 @@ public final class BotsStoreManager: NSObject {
     }
     
     public func botPriceString(bot: ChatBot) -> String {
-        let price = bot.price
-        if price != 0 {
-            return "\(price) ₽"
-        }
-        return "ПОЛУЧИТЬ"
+        let id = prefix + bot.name
+        guard let product = self.products.first(where: { $0.productIdentifier == id }) else { return "ПОЛУЧИТЬ" }
+        let formatter = NumberFormatter()
+        formatter.formatterBehavior = .default
+        formatter.numberStyle = .currency
+        formatter.locale = product.priceLocale
+        let price = formatter.string(from: product.price) ?? "ПОЛУЧИТЬ"
+        return price
     }
 }
 
@@ -58,5 +82,12 @@ extension BotsStoreManager: SKPaymentTransactionObserver {
                 break
             }
         }
+    }
+}
+
+extension BotsStoreManager: SKProductsRequestDelegate {
+    public func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
+        self.products = response.products
+        self.productsCompletion?()
     }
 }

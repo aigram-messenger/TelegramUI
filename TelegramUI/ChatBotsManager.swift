@@ -17,6 +17,7 @@ public enum Result<T> {
 public final class ChatBotsManager {
     static let shared: ChatBotsManager = .init()
     private(set) public var bots: [ChatBot] = []
+    private(set) public var loadedBotsInStore: [ChatBot] = []
     private var queue: OperationQueue
     private var searchQueue: OperationQueue
     private var lastMessages: [String]?
@@ -91,7 +92,10 @@ public final class ChatBotsManager {
                 result.append(bot)
             }
             result.sort(by: { return $0.index <= $1.index })
-            completion(.success(result))
+            BotsStoreManager.shared.loadProducts(for: result) { [weak self] in
+                self?.loadedBotsInStore = result
+                completion(.success(result))
+            }
         }
     }
     
