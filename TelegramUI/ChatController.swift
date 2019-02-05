@@ -1521,6 +1521,14 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
         var items: [ActionSheetItem] = []
         
         items.append(ChatBotDetailsItem(bot: bot))
+        items.append(ActionSheetButtonItem(title: "Поделиться в чат", color: .accent, action: { [weak self, weak actionSheet] in
+            actionSheet?.dismissAnimated()
+            self?.controllerInteraction?.sendMessage(ChatBotsManager.shared.shareText)
+            
+//            let shareController = ShareController(account: strongSelf.account, subject: .text(), externalShare: true, immediateExternalShare: true)
+//            strongSelf.chatDisplayNode.dismissInput()
+//            strongSelf.present(shareController, in: .window(.root))
+        }))
         if !BotsStoreManager.shared.isBotBought(bot) {
             items.append(ActionSheetButtonItem(title: "Получить", color: .accent, action: { [weak self] in
                 self?.controllerInteraction?.buyBot(bot) { [weak actionSheet] bought in
