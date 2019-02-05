@@ -1088,6 +1088,7 @@
 		F7E0F2E121D2270100974C76 /* ChatBotsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7E0F2E021D2270100974C76 /* ChatBotsManager.swift */; };
 		F7F28FCF21CD1DB3008DC5A4 /* ChatBotsInputStorePane.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7F28FCE21CD1DB3008DC5A4 /* ChatBotsInputStorePane.swift */; };
 		F7F28FD121CD1E2D008DC5A4 /* ChatBotsInputSuggestionsPane.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7F28FD021CD1E2D008DC5A4 /* ChatBotsInputSuggestionsPane.swift */; };
+		F7F5F87B22099AB400D8DD4C /* ChatBotDetailsTagsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7F5F87A22099AB400D8DD4C /* ChatBotDetailsTagsView.swift */; };
 		FB31301621D80DF0004870C2 /* ObjC.h in Headers */ = {isa = PBXBuildFile; fileRef = FB31301421D80DF0004870C2 /* ObjC.h */; };
 		FB31301721D80DF0004870C2 /* ObjC.m in Sources */ = {isa = PBXBuildFile; fileRef = FB31301521D80DF0004870C2 /* ObjC.m */; };
 		FB31301921D80E87004870C2 /* TelegramUI-Bridging-Header.h in Headers */ = {isa = PBXBuildFile; fileRef = FB31301821D80E87004870C2 /* TelegramUI-Bridging-Header.h */; };
@@ -2267,6 +2268,7 @@
 		F7E0F2E021D2270100974C76 /* ChatBotsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotsManager.swift; sourceTree = "<group>"; };
 		F7F28FCE21CD1DB3008DC5A4 /* ChatBotsInputStorePane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotsInputStorePane.swift; sourceTree = "<group>"; };
 		F7F28FD021CD1E2D008DC5A4 /* ChatBotsInputSuggestionsPane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotsInputSuggestionsPane.swift; sourceTree = "<group>"; };
+		F7F5F87A22099AB400D8DD4C /* ChatBotDetailsTagsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotDetailsTagsView.swift; sourceTree = "<group>"; };
 		FB31301421D80DF0004870C2 /* ObjC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ObjC.h; sourceTree = "<group>"; };
 		FB31301521D80DF0004870C2 /* ObjC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ObjC.m; sourceTree = "<group>"; };
 		FB31301821D80E87004870C2 /* TelegramUI-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TelegramUI-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -4756,6 +4758,7 @@
 			isa = PBXGroup;
 			children = (
 				F7C2BF7321FB17BA005DA6C9 /* ChatBotDetailsItem.swift */,
+				F7F5F87A22099AB400D8DD4C /* ChatBotDetailsTagsView.swift */,
 			);
 			path = Additional;
 			sourceTree = "<group>";
@@ -5725,6 +5728,7 @@
 				D0E9BA0A1F0457DD00F079A4 /* BotCheckoutWebInteractionController.swift in Sources */,
 				D0EC6E041EB9F58900EBF1C3 /* SecretMediaPreviewController.swift in Sources */,
 				D0C26D571FDF2388004ABF18 /* OpenChatMessage.swift in Sources */,
+				F7F5F87B22099AB400D8DD4C /* ChatBotDetailsTagsView.swift in Sources */,
 				D0FA08BE20481EA300DD23FC /* Locale.swift in Sources */,
 				D0E412CE206A707400BEE4A2 /* FormControllerTextItem.swift in Sources */,
 				D0EC6E051EB9F58900EBF1C3 /* SecretMediaPreviewControllerNode.swift in Sources */,

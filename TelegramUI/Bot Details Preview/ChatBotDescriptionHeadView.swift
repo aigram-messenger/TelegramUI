@@ -14,6 +14,7 @@ class ChatBotDescriptionHeadView: UIView {
     private let botName: String
     private let botType: String
     private let botImage: UIImage
+    private let botTags: [String]
     
     //MARK: -
 
@@ -45,6 +46,12 @@ class ChatBotDescriptionHeadView: UIView {
         addSubview(view)
         return view
     }()
+    private lazy var tagsView: ChatBotDetailsTagsView = {
+        let view = ChatBotDetailsTagsView(tags: self.botTags)
+        addSubview(view)
+        
+        return view
+    }()
     
     override var frame: CGRect {
         didSet {
@@ -58,6 +65,7 @@ class ChatBotDescriptionHeadView: UIView {
         self.botName = bot.title
         self.botType = bot.type
         self.botImage = bot.preview
+        self.botTags = bot.tags.map { $0.capitalized }.sorted(by: { $0 < $1 })
         
         super.init(frame: .zero)
         
@@ -85,5 +93,13 @@ class ChatBotDescriptionHeadView: UIView {
         rect.origin.y = rect.maxY + 1
         rect.size.height = typeLabel.frame.height
         typeLabel.frame = rect
+        
+        let height = bounds.height - 8 - typeLabel.frame.maxY - 4
+        let width = bounds.width - 8 - imageView.frame.maxX
+        let tagsSize = tagsView.sizeThatFits(CGSize(width: width, height: height))
+        rect.size.width = width
+        rect.size.height = tagsSize.height
+        rect.origin.y = imageView.frame.maxY - tagsSize.height
+        tagsView.frame = rect
     }
 }
