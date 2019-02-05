@@ -16,6 +16,7 @@ class ChatBotDescriptionView: UIView {
         view.addSubview(self.pointInfoView)
         view.addSubview(self.descriptionView)
         view.addSubview(self.metaInfoView)
+        view.addSubview(self.rateView)
         return view
     }()
 
@@ -37,6 +38,14 @@ class ChatBotDescriptionView: UIView {
 
     private lazy var metaInfoView: ChatBotDescriptionMetaInfoView = {
         let view = ChatBotDescriptionMetaInfoView(bot: self.bot)
+        return view
+    }()
+
+    private lazy var rateView: ChatBotDescriptionRateView = {
+        let view = ChatBotDescriptionRateView { rate in
+            print("RATE \(rate)")
+        }
+
         return view
     }()
     
@@ -84,6 +93,9 @@ class ChatBotDescriptionView: UIView {
         let metaSize = metaInfoView.sizeThatFits(size)
         height += metaSize.height
         height += spacing
+
+        let rateSize = rateView.sizeThatFits(size)
+        height += rateSize.height
         
         return CGSize(width: size.width, height: height)
     }
@@ -107,5 +119,10 @@ class ChatBotDescriptionView: UIView {
         rect.origin.y = rect.maxY + spacing
         rect.size.height = metaSize.height
         self.metaInfoView.frame = rect
+
+        let rateSize = rateView.sizeThatFits(bounds.size)
+        rect.origin.y = rect.maxY + spacing
+        rect.size.height = rateSize.height
+        self.rateView.frame = rect
     }
 }
