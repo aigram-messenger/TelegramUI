@@ -89,8 +89,8 @@ public class InviteContactsController: ViewController, MFMessageComposeViewContr
         
         self.contactsNode.requestShareTelegram = { [weak self] in
             if let strongSelf = self {
-                let url = strongSelf.presentationData.strings.InviteText_URL
-                let body = strongSelf.presentationData.strings.InviteText_SingleContact(url).0
+//                let url = ChatBotsManager.shared.inviteUrl //strongSelf.presentationData.strings.InviteText_URL
+                let body = ChatBotsManager.shared.shareText //strongSelf.presentationData.strings.InviteText_SingleContact(url).0
                 
                 let shareController = ShareController(account: strongSelf.account, subject: .text(body), externalShare: true, immediateExternalShare: true)
                 strongSelf.present(shareController, in: .window(.root))
@@ -107,12 +107,12 @@ public class InviteContactsController: ViewController, MFMessageComposeViewContr
                     let composer = MFMessageComposeViewController()
                     composer.messageComposeDelegate = strongSelf
                     composer.recipients = Array(Set(recipients))
-                    let url = strongSelf.presentationData.strings.InviteText_URL
-                    var body = strongSelf.presentationData.strings.InviteText_SingleContact(url).0
-                    if numbers.count == 1, numbers[0].1 > 0 {
-                        body = strongSelf.presentationData.strings.InviteText_ContactsCountText(numbers[0].1)
-                        body = body.replacingOccurrences(of: "{url}", with: url)
-                    }
+//                    let url = ChatBotsManager.shared.inviteUrl //strongSelf.presentationData.strings.InviteText_URL
+                    let body = ChatBotsManager.shared.shareText //strongSelf.presentationData.strings.InviteText_SingleContact(url).0
+//                    if numbers.count == 1, numbers[0].1 > 0 {
+//                        body = strongSelf.presentationData.strings.InviteText_ContactsCountText(numbers[0].1)
+//                        body = body.replacingOccurrences(of: "{url}", with: url)
+//                    }
                     composer.body = body
                     strongSelf.composer = composer
                     if let window = strongSelf.view.window {
