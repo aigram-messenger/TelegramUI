@@ -22,7 +22,6 @@ public final class ChatBotsManager {
     private var queue: OperationQueue
     private var searchQueue: OperationQueue
     private var lastMessages: [String]?
-    private var botEnableStates: [ChatBot.ChatBotId: Bool] = [:]
     private var lastSearchText: String?
     
     public var inviteUrl: String {
@@ -173,10 +172,14 @@ public final class ChatBotsManager {
     }
     
     public func enableBot(_ bot: ChatBot, enabled: Bool) {
+        var botEnableStates: [ChatBot.ChatBotId: Bool] = (UserDefaults.standard.value(forKey: "EnabledBots") as? [ChatBot.ChatBotId: Bool]) ?? [:]
         botEnableStates[bot.name] = enabled
+        UserDefaults.standard.setValue(botEnableStates, forKey: "EnabledBots")
+        UserDefaults.standard.synchronize()
     }
     
     public func isBotEnabled(_ bot: ChatBot) -> Bool {
+        let botEnableStates: [ChatBot.ChatBotId: Bool] = (UserDefaults.standard.value(forKey: "EnabledBots") as? [ChatBot.ChatBotId: Bool]) ?? [:]
         return botEnableStates[bot.name] ?? true
     }
 }
