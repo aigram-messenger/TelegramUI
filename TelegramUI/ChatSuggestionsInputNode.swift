@@ -186,9 +186,10 @@ final class ChatSuggestionsInputNode: ChatInputNode {
     }
     
     func set(botResponses: [ChatBotResult]) {
+        let previous = self.currentResponses
         guard self.currentResponses != botResponses else { return }
         self.currentResponses = botResponses
-        self.updateBotsResults(botResponses)
+        self.updateBotsResults(botResponses, previous: previous)
     }
     
     func updateStorePane(for bot: ChatBot) {
@@ -240,11 +241,13 @@ final class ChatSuggestionsInputNode: ChatInputNode {
         return result
     }
     
-    func updateBotsResults(_ results: [ChatBotResult]) {
+    func updateBotsResults(_ results: [ChatBotResult], previous: [ChatBotResult]? = nil) {
+        let currentPaneIndex = self.paneArrangement.currentIndex
+        let newPaneIndex = !results.isEmpty && (currentPaneIndex > 0 || previous != nil) ? 1 : 0
         var toArrangements: [ChatBotsInputPaneType] = [.store]
         toArrangements.append(contentsOf: results.map { .bot($0.bot.id) })
         let (deletes, inserts, updates) = mergeListsStableWithUpdates(leftList: self.paneArrangement.panes, rightList: toArrangements)
-        self.paneArrangement = ChatBotsInputPaneArrangement(panes: toArrangements, currentIndex: results.isEmpty ? 0 : 1, indexTransition: 0)
+        self.paneArrangement = ChatBotsInputPaneArrangement(panes: toArrangements, currentIndex: newPaneIndex, indexTransition: 0)
         
         let deleteListItems = deletes.map { ListViewDeleteItem(index: $0, directionHint: nil) }
         let insertListItems = self.insertListItems(with: inserts, botsResults: results)
