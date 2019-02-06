@@ -354,12 +354,18 @@ public final class ChatHistoryListNode: ListView, ChatHistoryNode {
         var messages: [Message] = []
         var counter = 0
         forEachMessageInCurrentHistoryView(reversed: true) { (message) -> Bool in
-            guard counter < 1, message.flags.contains(.Incoming) else { return false }
+            if !message.flags.contains(.Incoming) {
+                guard counter == 0 else { return false }
+                return true
+            } else if counter > 0 {
+                return false
+            }
+
             messages.append(message)
             counter += 1
             return true
         }
-        print("\(messages)")
+        print("\(messages.map { $0.text })")
         return messages
     }
     
