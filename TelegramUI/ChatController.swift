@@ -1035,7 +1035,8 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
         }, cancelInteractiveKeyboardGestures: { [weak self] in
             (self?.view.window as? WindowHost)?.cancelInteractiveKeyboardGestures()
             self?.chatDisplayNode.cancelInteractiveKeyboardGestures()
-        }, automaticMediaDownloadSettings: self.automaticMediaDownloadSettings, handleMessagesWithBots: { [weak self] messages in
+        }, automaticMediaDownloadSettings: self.automaticMediaDownloadSettings,
+           handleMessagesWithBots: { [weak self] messages in
             let handleEmpty = messages == nil ? false : true
             self?.requestHandlingLastMessages(messages, handleEmpty: handleEmpty)
         }, showBotDetails: { [weak self] bot in
@@ -1585,9 +1586,15 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
     }
     
     func requestHandlingLastMessages(_ messages: [String]?, handleEmpty: Bool = true) {
+        let condition: Bool
+        switch self.presentationInterfaceState.inputMode {
+        case .suggestions, .none: condition = true
+        default: condition = false
+        }
+        guard condition else { return }
         let messages: [String] = messages ?? self.chatDisplayNode.lastMessages.map { $0.text }
         
-        if self.currentMessages == messages, handleEmpty { return  }
+        if self.currentMessages == messages, handleEmpty { return }
         self.currentMessages = messages
         ChatBotsManager.shared.handleMessages(messages, completion: { [weak self] (responses) in
             guard let self = self, self.currentMessages == messages else { return }
