@@ -1047,17 +1047,7 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
                 completion(bought)
             }
         }, showBotActions: { [weak self] bot in
-            self?.showBotDetailsAlert(bot)
-//            guard let self = self else { return }
-//            let actions = [
-//                TextAlertAction(type: .genericAction, title: "Подробнее", action: {}),
-//                TextAlertAction(type: .defaultAction, title: self.presentationData.strings.Common_Yes, action: {}),
-//                TextAlertAction(type: .destructiveAction, title: "Отключить", action: {})
-//            ]
-//            self.present(standardTextAlertController(theme: AlertControllerTheme(presentationTheme: self.presentationData.theme),
-//                                                     title: bot.title,
-//                                                     text: nil,
-//                                                     actions: actions)
+            self?.showBotActions(bot)
         })
         
         self.controllerInteraction = controllerInteraction
@@ -1515,20 +1505,48 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
             return super.displayNode as! ChatControllerNode
         }
     }
+
+    func showBotActions(_ bot: ChatBot) {
+        let actionSheet = ActionSheetController(presentationTheme: self.presentationData.theme)
+        var items: [ActionSheetItem] = []
+
+        items.append(ActionSheetButtonItem(title: "Подробно о боте", color: .accent, action: { [weak self, weak actionSheet] in
+            actionSheet?.dismissAnimated()
+            self?.showBotDetailsAlert(bot)
+        }))
+        items.append(ActionSheetButtonItem(title: "Поделиться в чат", color: .accent, action: { [weak self, weak actionSheet] in
+            actionSheet?.dismissAnimated()
+            self?.controllerInteraction?.sendMessage(ChatBotsManager.shared.shareText)
+        }))
+        items.append(ActionSheetButtonItem(title: "Отключить бота", color: .destructive, action: { [weak self, weak actionSheet] in
+            ChatBotsManager.shared.enableBot(bot, enabled: false)
+            //TODO: обновить в магазине
+            actionSheet?.dismissAnimated()
+            self?.controllerInteraction?.handleMessagesWithBots(nil)
+        }))
+
+        let cancel: [ActionSheetItem] = [
+            ActionSheetButtonItem(title: self.presentationData.strings.Common_Cancel, color: .accent, action: { [weak actionSheet] in
+                actionSheet?.dismissAnimated()
+            })
+        ]
+        actionSheet.setItemGroups([ActionSheetItemGroup(items:items), ActionSheetItemGroup(items: cancel)])
+        self.present(actionSheet, in: .window(.root))
+    }
     
     func showBotDetailsAlert(_ bot: ChatBot) {
         let actionSheet = ActionSheetController(presentationTheme: self.presentationData.theme)
         var items: [ActionSheetItem] = []
         
         items.append(ChatBotDetailsItem(bot: bot))
-        items.append(ActionSheetButtonItem(title: "Поделиться в чат", color: .accent, action: { [weak self, weak actionSheet] in
-            actionSheet?.dismissAnimated()
-            self?.controllerInteraction?.sendMessage(ChatBotsManager.shared.shareText)
-            
-//            let shareController = ShareController(account: strongSelf.account, subject: .text(), externalShare: true, immediateExternalShare: true)
-//            strongSelf.chatDisplayNode.dismissInput()
-//            strongSelf.present(shareController, in: .window(.root))
-        }))
+//        items.append(ActionSheetButtonItem(title: "Поделиться в чат", color: .accent, action: { [weak self, weak actionSheet] in
+//            actionSheet?.dismissAnimated()
+//            self?.controllerInteraction?.sendMessage(ChatBotsManager.shared.shareText)
+//
+////            let shareController = ShareController(account: strongSelf.account, subject: .text(), externalShare: true, immediateExternalShare: true)
+////            strongSelf.chatDisplayNode.dismissInput()
+////            strongSelf.present(shareController, in: .window(.root))
+//        }))
         if !BotsStoreManager.shared.isBotBought(bot) {
             items.append(ActionSheetButtonItem(title: "Получить", color: .accent, action: { [weak self] in
                 self?.controllerInteraction?.buyBot(bot) { [weak actionSheet] bought in
