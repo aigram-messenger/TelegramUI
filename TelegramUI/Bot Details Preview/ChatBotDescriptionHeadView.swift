@@ -76,7 +76,21 @@ class ChatBotDescriptionHeadView: UIView {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
+    override func sizeThatFits(_ size: CGSize) -> CGSize {
+        var resultSize = size
+        resultSize.height = 8 + 72 + 8
+        let width = size.width - 8 - 72 - 16 - 8
+        let tagsSize = tagsView.sizeThatFits(CGSize(width: width, height: CGFloat.greatestFiniteMagnitude))
+        let titleSize = titleLabel.sizeThatFits(CGSize(width: width, height: CGFloat.greatestFiniteMagnitude))
+        let typeSize = typeLabel.sizeThatFits(CGSize(width: width, height: CGFloat.greatestFiniteMagnitude))
+        let tempHeight = 8 + titleSize.height + 1 + typeSize.height + 4 + tagsSize.height + 8
+
+        resultSize.height = max(tempHeight, resultSize.height)
+
+        return resultSize
+    }
+
     //MARK: -
     
     private func updateFrame() {
@@ -85,7 +99,7 @@ class ChatBotDescriptionHeadView: UIView {
 
         titleLabel.sizeToFit()
         rect.origin.x = rect.maxX + 16
-        rect.size.width = bounds.width - 8 - rect.maxX
+        rect.size.width = bounds.width - 8 - imageView.frame.maxX - 16
         rect.size.height = titleLabel.frame.height
         titleLabel.frame = rect
 
@@ -99,7 +113,8 @@ class ChatBotDescriptionHeadView: UIView {
         let tagsSize = tagsView.sizeThatFits(CGSize(width: width, height: height))
         rect.size.width = width
         rect.size.height = tagsSize.height
-        rect.origin.y = imageView.frame.maxY - tagsSize.height
+        rect.origin.y = bounds.maxY - 8 - tagsSize.height
+        rect.origin.y = max(typeLabel.frame.maxY + 4, rect.origin.y)
         tagsView.frame = rect
     }
 }

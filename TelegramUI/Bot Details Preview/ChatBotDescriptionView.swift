@@ -82,7 +82,9 @@ class ChatBotDescriptionView: UIView {
     
     override func sizeThatFits(_ size: CGSize) -> CGSize {
         var height: CGFloat = 0
-        height += 88
+
+        let headerSize = headerView.sizeThatFits(size)
+        height += headerSize.height
         height += 63
         
         height += spacing
@@ -102,8 +104,9 @@ class ChatBotDescriptionView: UIView {
     
     private func updateFrame() {
         self.containerView.frame = bounds
-        
-        var rect = CGRect(x: 0, y: 0, width: bounds.width, height: 88)
+
+        let headerSize = headerView.sizeThatFits(bounds.size)
+        var rect = CGRect(x: 0, y: 0, width: bounds.width, height: headerSize.height)
         self.headerView.frame = rect
         
         rect.origin.y = rect.maxY
