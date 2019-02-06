@@ -106,7 +106,8 @@ class ThemeSettingsChatPreviewItemNode: ListViewItemNode {
            handleMessagesWithBots: { _ in },
            showBotDetails: { _ in },
            buyBot: { _, _ in },
-           showBotActions: { _ in })
+           showBotActions: { _ in },
+           handleSuggestionTap: { _ in })
         
         super.init(layerBacked: false, dynamicBounce: false)
         

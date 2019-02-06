@@ -1048,6 +1048,13 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
             }
         }, showBotActions: { [weak self] bot in
             self?.showBotActions(bot)
+        }, handleSuggestionTap: { [weak self] suggestion in
+            self?.updateChatPresentationInterfaceState(animated: true, interactive: true, {
+                $0.updatedInputMode { current in
+                    return ChatInputMode.text
+                }
+            })
+            self?.chatDisplayNode.text = suggestion
         })
         
         self.controllerInteraction = controllerInteraction

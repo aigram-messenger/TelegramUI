@@ -169,6 +169,13 @@ class ChatControllerNode: ASDisplayNode, UIScrollViewDelegate {
     }
 
     public var lastMessages: [Message] { return historyNode.lastMessages }
+    public var text: String {
+        get { return textInputPanelNode?.text ?? "" }
+        set {
+            textInputPanelNode?.text = newValue
+//            self.textInputPanelNode?.updateInputTextState(ChatTextInputState(), keepSendButtonEnabled: true, extendedSearchLayout: false, animated: true)
+        }
+    }
     
     init(account: Account, chatLocation: ChatLocation, messageId: MessageId?, controllerInteraction: ChatControllerInteraction, chatPresentationInterfaceState: ChatPresentationInterfaceState, automaticMediaDownloadSettings: AutomaticMediaDownloadSettings, navigationBar: NavigationBar?, controller: ChatController?) {
         self.account = account

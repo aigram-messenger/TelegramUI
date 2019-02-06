@@ -239,7 +239,8 @@ public class PeerMediaCollectionController: TelegramController {
            handleMessagesWithBots: { _ in },
            showBotDetails: { _ in },
            buyBot: { _, _ in },
-           showBotActions: { _ in })
+           showBotActions: { _ in },
+           handleSuggestionTap: { _ in })
         
         self.controllerInteraction = controllerInteraction
         
