@@ -197,7 +197,7 @@ public class ChatListController: TelegramController, KeyShortcutResponder, UIVie
         
         self.titleView.openProxySettings = { [weak self] in
             if let strongSelf = self {
-                (strongSelf.navigationController as? NavigationController)?.pushViewController(proxySettingsController(account: account))
+//                (strongSelf.navigationController as? NavigationController)?.pushViewController(proxySettingsController(account: account))
             }
         }
         

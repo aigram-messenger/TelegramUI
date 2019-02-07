@@ -100,10 +100,10 @@ final class NetworkStatusTitleView: UIView, NavigationBarTitleView, NavigationBa
         
         self.addSubnode(self.activityIndicator)
         self.addSubnode(self.titleNode)
-        self.addSubnode(self.proxyNode)
+//        self.addSubnode(self.proxyNode)
         self.addSubview(self.lockView)
         self.addSubview(self.buttonView)
-        self.addSubview(self.proxyButton)
+//        self.addSubview(self.proxyButton)
         
         self.buttonView.highligthedChanged = { [weak self] highlighted in
             if let strongSelf = self {
@@ -235,7 +235,7 @@ final class NetworkStatusTitleView: UIView, NavigationBarTitleView, NavigationBa
     }
     
     override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-        if !self.proxyButton.isHidden {
+        if !self.proxyButton.isHidden, self.proxyButton.superview != nil {
             if let result = self.proxyButton.hitTest(point.offsetBy(dx: -self.proxyButton.frame.minX, dy: -self.proxyButton.frame.minY), with: event) {
                 return result;
             }
