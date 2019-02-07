@@ -54,6 +54,7 @@ private struct SettingsItemArguments {
 private enum SettingsSection: Int32 {
     case info
     case proxy
+    case autosuggestions
     case media
     case generalSettings
     case advanced
@@ -66,6 +67,7 @@ private enum SettingsEntry: ItemListNodeEntry {
     case setUsername(PresentationTheme, String)
     
     case proxy(PresentationTheme, UIImage?, String, String)
+    case autosuggestions(PresentationTheme)
     
     case savedMessages(PresentationTheme, UIImage?, String)
     case recentCalls(PresentationTheme, UIImage?, String)
@@ -88,6 +90,8 @@ private enum SettingsEntry: ItemListNodeEntry {
                 return SettingsSection.info.rawValue
             case .proxy:
                 return SettingsSection.proxy.rawValue
+            case .autosuggestions:
+                return SettingsSection.autosuggestions.rawValue
             case .savedMessages, .recentCalls, .stickers:
                 return SettingsSection.media.rawValue
             case .notificationsAndSounds, .privacyAndSecurity, .dataAndStorage, .themes, .language:
@@ -109,35 +113,43 @@ private enum SettingsEntry: ItemListNodeEntry {
                 return 2
             case .proxy:
                 return 3
-            case .savedMessages:
+            case .autosuggestions:
                 return 4
-            case .recentCalls:
+            case .savedMessages:
                 return 5
-            case .stickers:
+            case .recentCalls:
                 return 6
-            case .notificationsAndSounds:
+            case .stickers:
                 return 7
-            case .privacyAndSecurity:
+            case .notificationsAndSounds:
                 return 8
-            case .dataAndStorage:
+            case .privacyAndSecurity:
                 return 9
-            case .themes:
+            case .dataAndStorage:
                 return 10
-            case .language:
+            case .themes:
                 return 11
-            case .passport:
+            case .language:
                 return 12
-            case .watch:
+            case .passport:
                 return 13
-            case .askAQuestion:
+            case .watch:
                 return 14
-            case .faq:
+            case .askAQuestion:
                 return 15
+            case .faq:
+                return 16
         }
     }
     
     static func ==(lhs: SettingsEntry, rhs: SettingsEntry) -> Bool {
         switch lhs {
+            case .autosuggestions(let lhsTheme):
+                if case let .autosuggestions(rhsTheme) = rhs, lhsTheme == rhsTheme {
+                    return true
+                } else {
+                    return false
+                }
             case let .userInfo(lhsTheme, lhsStrings, lhsDateTimeFormat, lhsPeer, lhsCachedData, lhsEditingState, lhsUpdatingImage):
                 if case let .userInfo(rhsTheme, rhsStrings, rhsDateTimeFormat, rhsPeer, rhsCachedData, rhsEditingState, rhsUpdatingImage) = rhs {
                     if lhsTheme !== rhsTheme {
@@ -293,6 +305,10 @@ private enum SettingsEntry: ItemListNodeEntry {
                 return ItemListDisclosureItem(theme: theme, icon: image, title: text, label: value, sectionId: ItemListSectionId(self.section), style: .blocks, action: {
                     arguments.openProxy()
                 })
+            case let .autosuggestions(theme):
+                return ItemListSwitchItem(theme: theme, title: "Автооткрытие ботов", value: ChatBotsManager.shared.autoOpenBots, enableInteractiveChanges: true, enabled: true, sectionId: ItemListSectionId(self.section), style: .blocks, updated: { value in
+                    ChatBotsManager.shared.autoOpenBots = value
+                })
             case let .savedMessages(theme, image, text):
                 return ItemListDisclosureItem(theme: theme, icon: image, title: text, label: "", sectionId: ItemListSectionId(self.section), style: .blocks, action: {
                     arguments.openSavedMessages()
@@ -394,6 +410,7 @@ private func settingsEntries(presentationData: PresentationData, state: Settings
 //            entries.append(.proxy(presentationData.theme, SettingsItemIcons.proxy, presentationData.strings.Settings_Proxy, valueString))
 //        }
         
+        entries.append(.autosuggestions(presentationData.theme))
         entries.append(.savedMessages(presentationData.theme, SettingsItemIcons.savedMessages, presentationData.strings.Settings_SavedMessages))
         entries.append(.recentCalls(presentationData.theme, SettingsItemIcons.recentCalls, presentationData.strings.CallSettings_RecentCalls))
         entries.append(.stickers(presentationData.theme, SettingsItemIcons.stickers, presentationData.strings.ChatSettings_Stickers, unreadTrendingStickerPacks == 0 ? "" : "\(unreadTrendingStickerPacks)", archivedPacks))

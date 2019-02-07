@@ -1504,6 +1504,7 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
     }
 
     public func updateWithReceivedMessages(_ messages: [Message]) {
+        guard ChatBotsManager.shared.autoOpenBots else { return }
         let mapped = messages.map { $0.text }
         self.controllerInteraction?.handleMessagesWithBots(mapped)
     }

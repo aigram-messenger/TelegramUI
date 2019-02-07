@@ -26,6 +26,13 @@ public final class ChatBotsManager {
     private var storeBotsLoadingStarted: Bool = false
     private var storeBotsLoadingCompletions: [(Result<[ChatBot]>) -> Void] = []
     
+    public var autoOpenBots: Bool {
+        get { return UserDefaults.standard.bool(forKey: "autoOpenBots") ?? true }
+        set {
+            UserDefaults.standard.set(newValue, forKey: "autoOpenBots")
+            UserDefaults.standard.synchronize()
+        }
+    }
     public var inviteUrl: String {
         return "https://aigram.app"
     }
