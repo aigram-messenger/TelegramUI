@@ -1604,13 +1604,14 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
                         return ChatInputMode.suggestions(responses: responses, expanded: nil)
                     }
                     if responses.isEmpty {
-                        if case ChatInputMode.suggestions = current {
-                            return ChatInputMode.text
-                        }
+                        return ChatInputMode.suggestions(responses: responses, expanded: nil)
+//                        if case ChatInputMode.suggestions = current {
+//                            return ChatInputMode.text
+//                        }
                     } else {
                         return ChatInputMode.suggestions(responses: responses, expanded: nil)
                     }
-                    return current
+//                    return current
                 }
             })
         })
