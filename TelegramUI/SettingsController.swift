@@ -306,7 +306,7 @@ private enum SettingsEntry: ItemListNodeEntry {
                     arguments.openProxy()
                 })
             case let .autosuggestions(theme):
-                return ItemListSwitchItem(theme: theme, title: "Автооткрытие ботов", value: ChatBotsManager.shared.autoOpenBots, enableInteractiveChanges: true, enabled: true, sectionId: ItemListSectionId(self.section), style: .blocks, updated: { value in
+                return ItemListSwitchItem(theme: theme, title: "Автоматические боты", value: ChatBotsManager.shared.autoOpenBots, enableInteractiveChanges: true, enabled: true, sectionId: ItemListSectionId(self.section), style: .blocks, updated: { value in
                     ChatBotsManager.shared.autoOpenBots = value
                 })
             case let .savedMessages(theme, image, text):
