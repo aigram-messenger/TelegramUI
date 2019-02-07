@@ -1,0 +1,13 @@
+{
+    "title": "Спанч-Боб",
+    "name": "sponge_bob",
+    "shortDescription": "Чрезмерно оптимистичный мульт-герой, всегда раздражает остальных.",
+    "type": "bot",
+    "tags": [
+        "paid",
+        "cartoon",
+        "men"
+    ],
+    "index": 21,
+    "price": 138
+}

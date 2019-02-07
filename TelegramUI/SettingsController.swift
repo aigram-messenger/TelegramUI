@@ -379,20 +379,20 @@ private func settingsEntries(presentationData: PresentationData, state: Settings
             entries.append(.setUsername(presentationData.theme, presentationData.strings.Settings_SetUsername))
         }
         
-        if !proxySettings.servers.isEmpty {
-            let valueString: String
-            if proxySettings.enabled, let activeServer = proxySettings.activeServer {
-                switch activeServer.connection {
-                    case .mtp:
-                        valueString = presentationData.strings.SocksProxySetup_ProxyTelegram
-                    case .socks5:
-                        valueString = presentationData.strings.SocksProxySetup_ProxySocks5
-                }
-            } else {
-                valueString = presentationData.strings.Settings_ProxyDisabled
-            }
-            entries.append(.proxy(presentationData.theme, SettingsItemIcons.proxy, presentationData.strings.Settings_Proxy, valueString))
-        }
+//        if !proxySettings.servers.isEmpty {
+//            let valueString: String
+//            if proxySettings.enabled, let activeServer = proxySettings.activeServer {
+//                switch activeServer.connection {
+//                    case .mtp:
+//                        valueString = presentationData.strings.SocksProxySetup_ProxyTelegram
+//                    case .socks5:
+//                        valueString = presentationData.strings.SocksProxySetup_ProxySocks5
+//                }
+//            } else {
+//                valueString = presentationData.strings.Settings_ProxyDisabled
+//            }
+//            entries.append(.proxy(presentationData.theme, SettingsItemIcons.proxy, presentationData.strings.Settings_Proxy, valueString))
+//        }
         
         entries.append(.savedMessages(presentationData.theme, SettingsItemIcons.savedMessages, presentationData.strings.Settings_SavedMessages))
         entries.append(.recentCalls(presentationData.theme, SettingsItemIcons.recentCalls, presentationData.strings.CallSettings_RecentCalls))

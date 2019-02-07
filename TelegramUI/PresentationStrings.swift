@@ -953,6 +953,7 @@ public final class PresentationStrings {
     public var Watch_Conversation_Reply: String { return self._s[760]! }
     public var ShareMenu_CopyShareLink: String { return self._s[761]! }
     public var Stickers_Search: String { return self._s[762]! }
+    public var Bots_Search: String { return "Поиск стикеров" }
     public var Notifications_GroupNotificationsExceptions: String { return self._s[763]! }
     public var Channel_Setup_TypePrivateHelp: String { return self._s[764]! }
     public var PhotoEditor_GrainTool: String { return self._s[765]! }
@@ -2139,6 +2140,7 @@ public final class PresentationStrings {
     public var Map_LiveLocationFor1Hour: String { return self._s[1863]! }
     public var AutoNightTheme_AutomaticSection: String { return self._s[1864]! }
     public var Stickers_NoStickersFound: String { return self._s[1865]! }
+    public var Bots_NoBotsFound: String { return "Таких ботов не найдено" }
     public var Passport_Identity_AddIdentityCard: String { return self._s[1867]! }
     public func Notification_JoinedChannel(_ _0: String) -> (String, [(Int, NSRange)]) {
         return formatWithArgumentRanges(self._s[1868]!, self._r[1868]!, [_0])

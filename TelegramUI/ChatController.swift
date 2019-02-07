@@ -1035,9 +1035,27 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
         }, cancelInteractiveKeyboardGestures: { [weak self] in
             (self?.view.window as? WindowHost)?.cancelInteractiveKeyboardGestures()
             self?.chatDisplayNode.cancelInteractiveKeyboardGestures()
-        }, automaticMediaDownloadSettings: self.automaticMediaDownloadSettings, handleMessagesWithBots: { [weak self] messages in
+        }, automaticMediaDownloadSettings: self.automaticMediaDownloadSettings,
+           handleMessagesWithBots: { [weak self] messages in
             let handleEmpty = messages == nil ? false : true
             self?.requestHandlingLastMessages(messages, handleEmpty: handleEmpty)
+        }, showBotDetails: { [weak self] bot in
+            self?.showBotDetailsAlert(bot)
+        }, buyBot: { [weak self] bot, completion in
+            BotsStoreManager.shared.buyBot(bot) { [weak self] (bought) in
+                print("BOT \(bot.title) BOUGHT \(bought)")
+                self?.controllerInteraction?.handleMessagesWithBots(nil)
+                completion(bought)
+            }
+        }, showBotActions: { [weak self] bot in
+            self?.showBotActions(bot)
+        }, handleSuggestionTap: { [weak self] suggestion in
+            self?.updateChatPresentationInterfaceState(animated: true, interactive: true, {
+                $0.updatedInputMode { current in
+                    return ChatInputMode.text
+                }
+            })
+            self?.chatDisplayNode.text = suggestion
         })
         
         self.controllerInteraction = controllerInteraction
@@ -1495,28 +1513,105 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
             return super.displayNode as! ChatControllerNode
         }
     }
+
+    func showBotActions(_ bot: ChatBot) {
+        let actionSheet = ActionSheetController(presentationTheme: self.presentationData.theme)
+        var items: [ActionSheetItem] = []
+
+        items.append(ActionSheetButtonItem(title: "Подробно о боте", color: .accent, action: { [weak self, weak actionSheet] in
+            actionSheet?.dismissAnimated()
+            self?.showBotDetailsAlert(bot)
+        }))
+        items.append(ActionSheetButtonItem(title: "Поделиться в чат", color: .accent, action: { [weak self, weak actionSheet] in
+            actionSheet?.dismissAnimated()
+            self?.controllerInteraction?.sendMessage(ChatBotsManager.shared.shareText)
+        }))
+        items.append(ActionSheetButtonItem(title: "Отключить бота", color: .destructive, action: { [weak self, weak actionSheet] in
+            ChatBotsManager.shared.enableBot(bot, enabled: false)
+            //TODO: обновить в магазине
+            actionSheet?.dismissAnimated()
+            self?.controllerInteraction?.handleMessagesWithBots(nil)
+        }))
+
+        let cancel: [ActionSheetItem] = [
+            ActionSheetButtonItem(title: self.presentationData.strings.Common_Cancel, color: .accent, action: { [weak actionSheet] in
+                actionSheet?.dismissAnimated()
+            })
+        ]
+        actionSheet.setItemGroups([ActionSheetItemGroup(items:items), ActionSheetItemGroup(items: cancel)])
+        self.present(actionSheet, in: .window(.root))
+    }
+    
+    func showBotDetailsAlert(_ bot: ChatBot) {
+        let actionSheet = ActionSheetController(presentationTheme: self.presentationData.theme)
+        var items: [ActionSheetItem] = []
+        
+        items.append(ChatBotDetailsItem(bot: bot))
+//        items.append(ActionSheetButtonItem(title: "Поделиться в чат", color: .accent, action: { [weak self, weak actionSheet] in
+//            actionSheet?.dismissAnimated()
+//            self?.controllerInteraction?.sendMessage(ChatBotsManager.shared.shareText)
+//
+////            let shareController = ShareController(account: strongSelf.account, subject: .text(), externalShare: true, immediateExternalShare: true)
+////            strongSelf.chatDisplayNode.dismissInput()
+////            strongSelf.present(shareController, in: .window(.root))
+//        }))
+        if !BotsStoreManager.shared.isBotBought(bot) {
+            items.append(ActionSheetButtonItem(title: "Получить", color: .accent, action: { [weak self] in
+                self?.controllerInteraction?.buyBot(bot) { [weak actionSheet] bought in
+                    guard bought else { return }
+                    //TODO: обновить в магазине
+                    actionSheet?.dismissAnimated()
+                }
+            }))
+        } else {
+            let enabled = ChatBotsManager.shared.isBotEnabled(bot)
+            let title = enabled ? "Отключить" : "Включить"
+            let color = enabled ? ActionSheetButtonColor.destructive : .accent
+            let action = { [weak self, weak actionSheet] in
+                ChatBotsManager.shared.enableBot(bot, enabled: !enabled)
+                //TODO: обновить в магазине
+                actionSheet?.dismissAnimated()
+                self?.controllerInteraction?.handleMessagesWithBots(nil)
+            }
+            items.append(ActionSheetButtonItem(title: title, color: color, action: action))
+        }
+        
+        let cancel: [ActionSheetItem] = [
+            ActionSheetButtonItem(title: self.presentationData.strings.Common_Cancel, color: .accent, action: { [weak actionSheet] in
+                actionSheet?.dismissAnimated()
+            })
+        ]
+        actionSheet.setItemGroups([ActionSheetItemGroup(items:items), ActionSheetItemGroup(items: cancel)])
+        self.present(actionSheet, in: .window(.root))
+    }
     
     func requestHandlingLastMessages(_ messages: [String]?, handleEmpty: Bool = true) {
+        let condition: Bool
+        switch self.presentationInterfaceState.inputMode {
+        case .suggestions, .none: condition = true
+        default: condition = false
+        }
+        guard condition else { return }
         let messages: [String] = messages ?? self.chatDisplayNode.lastMessages.map { $0.text }
         
-        if self.currentMessages == messages, handleEmpty { return  }
-        print("HANDLE \(messages)")
+        if self.currentMessages == messages, handleEmpty { return }
         self.currentMessages = messages
         ChatBotsManager.shared.handleMessages(messages, completion: { [weak self] (responses) in
             guard let self = self, self.currentMessages == messages else { return }
             self.updateChatPresentationInterfaceState(animated: true, interactive: true, {
                 $0.updatedInputMode { current in
                     guard handleEmpty else {
-                        return ChatInputMode.suggestions(responses: responses)
+                        return ChatInputMode.suggestions(responses: responses, expanded: nil)
                     }
                     if responses.isEmpty {
-                        if case ChatInputMode.suggestions = current {
-                            return ChatInputMode.text
-                        }
+                        return ChatInputMode.suggestions(responses: responses, expanded: nil)
+//                        if case ChatInputMode.suggestions = current {
+//                            return ChatInputMode.text
+//                        }
                     } else {
-                        return ChatInputMode.suggestions(responses: responses)
+                        return ChatInputMode.suggestions(responses: responses, expanded: nil)
                     }
-                    return current
+//                    return current
                 }
             })
         })

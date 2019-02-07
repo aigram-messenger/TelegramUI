@@ -26,6 +26,7 @@ public final class TelegramRootController: NavigationController {
         super.init(mode: .automaticMasterDetail, theme: NavigationControllerTheme(presentationTheme: self.presentationData.theme))
         
         FirebaseApp.configure()
+        ChatBotsManager.shared.botsInStore(completion: { _ in })
             
         self.presentationDataDisposable = (account.telegramApplicationContext.presentationData
             |> deliverOnMainQueue).start(next: { [weak self] presentationData in

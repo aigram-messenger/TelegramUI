@@ -1,7 +1,13 @@
 {
-    "id": 6,
-    "title": "Monroe",
+    "title": "Мэрилин Монро",
     "name": "monroe",
-    "shortDescription": "Для вашего идентификатора продукта может потребоваться несколько часов для регистрации в iTunesConnect",
-    "type": "bot"
+    "shortDescription": "Американская киноактриса, секс-символ 1950-х годов, певица и модель.",
+    "type": "bot",
+    "tags": [
+        "free",
+        "known",
+        "women"
+    ],
+    "index": 4,
+    "price": 0
 }

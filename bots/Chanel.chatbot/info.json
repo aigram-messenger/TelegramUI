@@ -1,7 +1,13 @@
 {
-    "id": 2,
-    "title": "Chanel",
+    "title": "Коко Шанель",
     "name": "chanel",
-    "shortDescription": "Для вашего идентификатора продукта может потребоваться несколько часов для регистрации в iTunesConnect",
-    "type": "bot"
+    "shortDescription": "Французский модельер, основавшая модный дом «Chanel».",
+    "type": "bot",
+    "tags": [
+        "paid",
+        "known",
+        "women"
+    ],
+    "index": 13,
+    "price": 690
 }

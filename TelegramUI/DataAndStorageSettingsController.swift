@@ -372,19 +372,19 @@ private func dataAndStorageControllerEntries(state: DataAndStorageControllerStat
     entries.append(.saveEditedPhotos(presentationData.theme, presentationData.strings.Settings_SaveEditedPhotos, data.generatedMediaStoreSettings.storeEditedPhotos))
     entries.append(.autoplayGifs(presentationData.theme, presentationData.strings.ChatSettings_AutoPlayAnimations, data.automaticMediaDownloadSettings.autoplayGifs))
     
-    let proxyValue: String
-    if let proxySettings = data.proxySettings, let activeServer = proxySettings.activeServer, proxySettings.enabled {
-        switch activeServer.connection {
-            case .socks5:
-                proxyValue = presentationData.strings.ChatSettings_ConnectionType_UseSocks5
-            case .mtp:
-                proxyValue = presentationData.strings.SocksProxySetup_ProxyTelegram
-        }
-    } else {
-        proxyValue = presentationData.strings.GroupInfo_SharedMediaNone
-    }
-    entries.append(.connectionHeader(presentationData.theme, presentationData.strings.ChatSettings_ConnectionType_Title.uppercased()))
-    entries.append(.connectionProxy(presentationData.theme, presentationData.strings.SocksProxySetup_Title, proxyValue))
+//    let proxyValue: String
+//    if let proxySettings = data.proxySettings, let activeServer = proxySettings.activeServer, proxySettings.enabled {
+//        switch activeServer.connection {
+//            case .socks5:
+//                proxyValue = presentationData.strings.ChatSettings_ConnectionType_UseSocks5
+//            case .mtp:
+//                proxyValue = presentationData.strings.SocksProxySetup_ProxyTelegram
+//        }
+//    } else {
+//        proxyValue = presentationData.strings.GroupInfo_SharedMediaNone
+//    }
+//    entries.append(.connectionHeader(presentationData.theme, presentationData.strings.ChatSettings_ConnectionType_Title.uppercased()))
+//    entries.append(.connectionProxy(presentationData.theme, presentationData.strings.SocksProxySetup_Title, proxyValue))
     
     return entries
 }
@@ -436,7 +436,7 @@ func dataAndStorageController(account: Account) -> ViewController {
     }, openNetworkUsage: {
         pushControllerImpl?(networkUsageStatsController(account: account))
     }, openProxy: {
-        pushControllerImpl?(proxySettingsController(account: account))
+//        pushControllerImpl?(proxySettingsController(account: account))
     }, toggleAutomaticDownloadMaster: { value in
         let _ = updateMediaDownloadSettingsInteractively(postbox: account.postbox, { settings in
             var settings = settings

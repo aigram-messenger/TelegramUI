@@ -353,7 +353,11 @@ final class ChatRecentActionsControllerNode: ViewControllerTracingNode {
         }, requestMessageUpdate: { _ in
         }, cancelInteractiveKeyboardGestures: {
         }, automaticMediaDownloadSettings: self.automaticMediaDownloadSettings,
-           handleMessagesWithBots: { _ in })
+           handleMessagesWithBots: { _ in },
+           showBotDetails: { _ in },
+           buyBot: { _, _ in },
+           showBotActions: { _ in },
+           handleSuggestionTap: { _ in })
         self.controllerInteraction = controllerInteraction
         
         self.listNode.displayedItemRangeChanged = { [weak self] displayedRange, opaqueTransactionState in

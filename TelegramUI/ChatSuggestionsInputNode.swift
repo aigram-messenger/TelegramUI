@@ -76,6 +76,7 @@ final class ChatSuggestionsInputNode: ChatInputNode {
     private var validLayout: (CGFloat, CGFloat, CGFloat, CGFloat, CGFloat, CGFloat, CGFloat, CGFloat, ChatPresentationInterfaceState)?
     
     private var currentView: ItemCollectionsView?
+    private var botsSearchContainerNode: ChatBotsPaneSearchContainerNode?
 
     private let botsListPanel: ASDisplayNode
     private let topSeparator: ASDisplayNode
@@ -92,11 +93,13 @@ final class ChatSuggestionsInputNode: ChatInputNode {
     private var panesAndAnimatingOut: [(ChatMediaInputPane, Bool)]
     private var panRecognizer: UIPanGestureRecognizer?
     private var currentResponses: [ChatBotResult]?
+    private var strings: PresentationStrings
 
-    init(account: Account, controllerInteraction: ChatControllerInteraction, theme: PresentationTheme) {
+    init(account: Account, controllerInteraction: ChatControllerInteraction, theme: PresentationTheme, strings: PresentationStrings) {
         self.account = account
         self.controllerInteraction = controllerInteraction
         self.theme = theme
+        self.strings = strings
         
         self.botsListContainer = ASDisplayNode()
         self.botsListContainer.clipsToBounds = true
@@ -122,17 +125,34 @@ final class ChatSuggestionsInputNode: ChatInputNode {
         self.inputNodeInteraction = ChatBotsInputNodeInteraction(navigateToCollectionId: { [weak self] id in
             self?.navigateToCollection(withId: id)
         }, sendMessage: { [weak self] in
-            self?.controllerInteraction.sendMessage($0)
+            self?.controllerInteraction.handleSuggestionTap($0)
         }, buyBot: { [weak self] bot in
-            BotsStoreManager.shared.buyBot(bot) { (bought) in
-                print("BOT \(bot.title) BOUGHT \(bought)")
-                self?.controllerInteraction.handleMessagesWithBots(nil)
+            self?.controllerInteraction.buyBot(bot) { (bought) in
                 self?.updateStorePane(for: bot)
             }
         }, enableBot: { [weak self] bot, enabled in
             ChatBotsManager.shared.enableBot(bot, enabled: enabled)
             self?.updateStorePane(for: bot)
             self?.controllerInteraction.handleMessagesWithBots(nil)
+        }, botDetails: { [weak self] bot in
+            self?.controllerInteraction.showBotDetails(bot)
+        }, toggleSearch: { [weak self] value in
+            if let strongSelf = self {
+                strongSelf.controllerInteraction.updateInputMode { current in
+                    switch current {
+                    case let .suggestions(responses, _):
+                        if value {
+                            return .suggestions(responses: responses, expanded: .search)
+                        } else {
+                            return .suggestions(responses: responses, expanded: nil)
+                        }
+                    default:
+                        return current
+                    }
+                }
+            }
+        }, botActions: { [weak self] bot in
+            self?.controllerInteraction.showBotActions(bot)
         })
 
         self.backgroundColor = theme.chat.inputMediaPanel.stickersBackgroundColor
@@ -166,9 +186,10 @@ final class ChatSuggestionsInputNode: ChatInputNode {
     }
     
     func set(botResponses: [ChatBotResult]) {
+        let previous = self.currentResponses
         guard self.currentResponses != botResponses else { return }
         self.currentResponses = botResponses
-        self.updateBotsResults(botResponses)
+        self.updateBotsResults(botResponses, previous: previous)
     }
     
     func updateStorePane(for bot: ChatBot) {
@@ -220,11 +241,13 @@ final class ChatSuggestionsInputNode: ChatInputNode {
         return result
     }
     
-    func updateBotsResults(_ results: [ChatBotResult]) {
+    func updateBotsResults(_ results: [ChatBotResult], previous: [ChatBotResult]? = nil) {
+        let currentPaneIndex = self.paneArrangement.currentIndex
+        let newPaneIndex = !results.isEmpty && (currentPaneIndex > 0 || previous != nil) ? 1 : 0
         var toArrangements: [ChatBotsInputPaneType] = [.store]
         toArrangements.append(contentsOf: results.map { .bot($0.bot.id) })
         let (deletes, inserts, updates) = mergeListsStableWithUpdates(leftList: self.paneArrangement.panes, rightList: toArrangements)
-        self.paneArrangement = ChatBotsInputPaneArrangement(panes: toArrangements, currentIndex: results.isEmpty ? 0 : 1, indexTransition: 0)
+        self.paneArrangement = ChatBotsInputPaneArrangement(panes: toArrangements, currentIndex: newPaneIndex, indexTransition: 0)
         
         let deleteListItems = deletes.map { ListViewDeleteItem(index: $0, directionHint: nil) }
         let insertListItems = self.insertListItems(with: inserts, botsResults: results)
@@ -238,7 +261,7 @@ final class ChatSuggestionsInputNode: ChatInputNode {
         for paneType in toArrangements {
             switch paneType {
             case .store:
-                self.panesAndAnimatingOut.append((ChatBotsInputStorePane(inputNodeInteraction: self.inputNodeInteraction, theme: self.theme!), false))
+                self.panesAndAnimatingOut.append((ChatBotsInputStorePane(inputNodeInteraction: self.inputNodeInteraction, theme: self.theme!, strings: self.strings), false))
             case .bot(let botId):
                 let bot = results.first(where: { $0.bot.id == botId })!.bot
                 self.panesAndAnimatingOut.append((ChatBotsInputSuggestionsPane(bot: bot, responses: results[resultIndex].responses, inputNodeInteraction: self.inputNodeInteraction, theme: self.theme!), false))
@@ -258,10 +281,55 @@ final class ChatSuggestionsInputNode: ChatInputNode {
         self.validLayout = (width, leftInset, rightInset, bottomInset, standardInputHeight, inputHeight, maximumHeight, inputPanelHeight, interfaceState)
         
         let separatorHeight = UIScreenPixel
-        let panelHeight = standardInputHeight
-        let contentVerticalOffset: CGFloat = 0.0
+        let panelHeight: CGFloat
         let containerOffset: CGFloat = 0
+        
+        var isExpanded: Bool = false
+        var displaySearch: Bool = false
+        if case let .suggestions(_, maybeExpanded) = interfaceState.inputMode, let expanded = maybeExpanded {
+            isExpanded = true
+            switch expanded {
+            case .content:
+                panelHeight = maximumHeight
+            case .search:
+                panelHeight = maximumHeight
+                displaySearch = true
+            }
+        } else {
+            panelHeight = standardInputHeight
+        }
+        
+        if displaySearch {
+            let containerFrame = CGRect(origin: CGPoint(x: 0.0, y: -inputPanelHeight), size: CGSize(width: width, height: panelHeight + inputPanelHeight))
+            if let botsSearchContainerNode = self.botsSearchContainerNode {
+                transition.updateFrame(node: botsSearchContainerNode, frame: containerFrame)
+                botsSearchContainerNode.updateLayout(size: containerFrame.size, leftInset: leftInset, rightInset: rightInset, bottomInset: bottomInset, inputHeight: inputHeight, transition: transition)
+            } else {
+                let botsSearchContainerNode = ChatBotsPaneSearchContainerNode(theme: self.theme!, strings: self.strings, inputNodeInteraction: self.inputNodeInteraction, cancel: { [weak self] in
+                    self?.botsSearchContainerNode?.deactivate()
+                    self?.inputNodeInteraction.toggleSearch(false)
+                })//ChatBotsPaneSearchContainerNode(account: self.account, theme: self.theme, strings: self.strings, controllerInteraction: self.controllerInteraction, inputNodeInteraction: self.inputNodeInteraction, cancel: { [weak self] in
+//                    self?.botsSearchContainerNode?.deactivate()
+//                    self?.inputNodeInteraction.toggleSearch(false)
+//                })
+                self.botsSearchContainerNode = botsSearchContainerNode
+                self.insertSubnode(botsSearchContainerNode, belowSubnode: self.botsListContainer)
+                botsSearchContainerNode.frame = containerFrame
+                botsSearchContainerNode.updateLayout(size: containerFrame.size, leftInset: leftInset, rightInset: rightInset, bottomInset: bottomInset, inputHeight: inputHeight, transition: .immediate)
+                var placeholderNode: ChatBotStoreSearchPlaceholderListItemNode?
+                (self.panesAndAnimatingOut[0].0 as? ChatBotsInputStorePane)?.listView.forEachItemNode { itemNode in
+                    if let itemNode = itemNode as? ChatBotStoreSearchPlaceholderListItemNode {
+                        placeholderNode = itemNode
+                    }
+                }
+                if let placeholderNode = placeholderNode {
+                    botsSearchContainerNode.animateIn(from: placeholderNode, transition: transition)
+                }
+            }
+        }
 
+        let contentVerticalOffset: CGFloat = displaySearch ? -(inputPanelHeight + 41.0) : 0.0
+        
         transition.updateFrame(node: self.botsListContainer, frame: CGRect(origin: CGPoint(x: 0.0, y: contentVerticalOffset), size: CGSize(width: width, height: max(0.0, 41.0 + UIScreenPixel))))
         transition.updateFrame(node: self.botsListPanel, frame: CGRect(origin: CGPoint(x: 0.0, y: containerOffset), size: CGSize(width: width, height: 41.0)))
         transition.updateFrame(node: self.topSeparator, frame: CGRect(origin: CGPoint(x: 0.0, y: 41.0 + containerOffset), size: CGSize(width: width, height: separatorHeight)))
@@ -302,7 +370,7 @@ final class ChatSuggestionsInputNode: ChatInputNode {
         }
         
         for i in 0..<self.panesAndAnimatingOut.count {
-            self.panesAndAnimatingOut[i].0.updateLayout(size: CGSize(width: width - leftInset - rightInset, height: panelHeight), topInset: 41.0, bottomInset: bottomInset, isExpanded: false, transition: transition)
+            self.panesAndAnimatingOut[i].0.updateLayout(size: CGSize(width: width - leftInset - rightInset, height: panelHeight), topInset: 41.0, bottomInset: bottomInset, isExpanded: isExpanded, transition: transition)
             
             let paneType = self.paneArrangement.panes[i]
             let contains = visiblePanes.contains(where: { $0.0 == paneType })
@@ -330,6 +398,28 @@ final class ChatSuggestionsInputNode: ChatInputNode {
                 self.panesAndAnimatingOut[i].0.removeFromSupernode()
             }
         }
+        
+        if !displaySearch, let botsSearchContainerNode = self.botsSearchContainerNode {
+            self.botsSearchContainerNode = nil
+
+            var placeholderNode: ChatBotStoreSearchPlaceholderListItemNode?
+            (self.panesAndAnimatingOut[0].0 as? ChatBotsInputStorePane)?.listView.forEachItemNode { itemNode in
+                if let itemNode = itemNode as? ChatBotStoreSearchPlaceholderListItemNode {
+                    placeholderNode = itemNode
+                }
+            }
+            if let placeholderNode = placeholderNode {
+                botsSearchContainerNode.animateOut(to: placeholderNode, transition: transition, completion: { [weak botsSearchContainerNode] in
+                    botsSearchContainerNode?.removeFromSupernode()
+                })
+            } else {
+                botsSearchContainerNode.removeFromSupernode()
+            }
+        }
+
+//        if let panRecognizer = self.panRecognizer, panRecognizer.isEnabled != !displaySearch {
+//            panRecognizer.isEnabled = !displaySearch
+//        }
         
         return (standardInputHeight, max(0.0, panelHeight - standardInputHeight))
     }

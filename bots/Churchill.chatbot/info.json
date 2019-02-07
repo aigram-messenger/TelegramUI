@@ -1,7 +1,13 @@
 {
-    "id": 3,
-    "title": "Churchill",
+    "title": "Черчилль",
     "name": "churchill",
-    "shortDescription": "Для вашего идентификатора продукта может потребоваться несколько часов для регистрации в iTunesConnect",
-    "type": "bot"
+    "shortDescription": "Британский государственный и политический деятель.",
+    "type": "bot",
+    "tags": [
+        "free",
+        "known",
+        "men"
+    ],
+    "index": 3,
+    "price": 0
 }

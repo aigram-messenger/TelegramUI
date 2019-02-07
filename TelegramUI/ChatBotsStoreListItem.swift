@@ -18,7 +18,7 @@ struct ChatBotsStoreListItem: ListViewItem, ItemListItem {
     let inputNodeInteraction: ChatBotsInputNodeInteraction
     let theme: PresentationTheme
     
-    var selectable: Bool { return false }
+    var selectable: Bool { return true }
     
     init(bot: ChatBot, inputNodeInteraction: ChatBotsInputNodeInteraction, theme: PresentationTheme) {
         self.bot = bot
@@ -32,7 +32,7 @@ struct ChatBotsStoreListItem: ListViewItem, ItemListItem {
             let (layout, apply) = node.asyncLayout()(self, params, itemListNeighbors(item: self, topItem: previousItem as? ItemListItem, bottomItem: nextItem as? ItemListItem))
             
             var size = layout.contentSize
-            size.height = 10
+            size.height = 96
             node.contentSize = size
             node.insets = layout.insets
             
@@ -69,5 +69,7 @@ struct ChatBotsStoreListItem: ListViewItem, ItemListItem {
     }
     
     func selected(listView: ListView) {
+        print("SELECTED")
+        self.inputNodeInteraction.botDetails(self.bot)
     }
 }

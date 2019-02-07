@@ -1,0 +1,13 @@
+{
+    "title": "Терминатор",
+    "name": "terminator",
+    "shortDescription": "Персонаж, сыгранный Арнольдом Шварценеггером.",
+    "type": "bot",
+    "tags": [
+        "paid",
+        "films",
+        "men"
+    ],
+    "index": 16,
+    "price": 69
+}

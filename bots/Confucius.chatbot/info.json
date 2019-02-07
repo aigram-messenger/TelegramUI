@@ -1,7 +1,13 @@
 {
-    "id": 4,
-    "title": "Confucius",
+    "title": "Конфуций",
     "name": "confucius",
-    "shortDescription": "Для вашего идентификатора продукта может потребоваться несколько часов для регистрации в iTunesConnect",
-    "type": "bot"
+    "shortDescription": "Древний мыслитель и философ Китая.",
+    "type": "bot",
+    "tags": [
+        "free",
+        "great",
+        "men"
+    ],
+    "index": 1,
+    "price": 0
 }

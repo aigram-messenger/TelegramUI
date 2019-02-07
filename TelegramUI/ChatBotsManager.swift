@@ -9,16 +9,38 @@
 import Foundation
 import UIKit
 
+public enum Result<T> {
+    case success(T)
+    case fail(Error)
+}
+
 public final class ChatBotsManager {
     static let shared: ChatBotsManager = .init()
     private(set) public var bots: [ChatBot] = []
+    private var loadedBotsFlag: Bool = false
+    private(set) public var loadedBotsInStore: [ChatBot] = []
     private var queue: OperationQueue
+    private var searchQueue: OperationQueue
     private var lastMessages: [String]?
-    private var botEnableStates: [ChatBot.ChatBotId: Bool] = [:]
+    private var lastSearchText: String?
+    private var storeBotsLoadingStarted: Bool = false
+    private var storeBotsLoadingCompletions: [(Result<[ChatBot]>) -> Void] = []
+    
+    public var inviteUrl: String {
+        return "https://aigram.app"
+    }
+    public var shareText: String {
+        return """
+            Привет, я общаюсь здесь с тобой используя нейроботов – помощников для переписок. Скачай AiGram – мессенджер с Искусственным интеллектом и продолжай общаться с пользователями Telegram в новом формате!
+            https://aigram.app
+            """
+    }
     
     private init() {
         queue = OperationQueue()
         queue.maxConcurrentOperationCount = 1
+        searchQueue = OperationQueue()
+        searchQueue.maxConcurrentOperationCount = 1
         
         let fm = FileManager.default
         guard var chatBotsUrl = fm.urls(for: .documentDirectory, in: .userDomainMask).first else { return }
@@ -71,17 +93,54 @@ public final class ChatBotsManager {
         }
     }
     
-    public func botsInStore() -> [ChatBot] {
-        var result: [ChatBot] = []
-        
-        let bundle = Bundle(for: ChatBotsManager.self)
-        let urls = bundle.urls(forResourcesWithExtension: ChatBot.botExtension, subdirectory: "bots") ?? []
-        for url in urls {
-            guard let bot = try? ChatBot(url: url), !bot.isTarget else { continue }
-            result.append(bot)
+    public func botsInStore(completion: @escaping (Result<[ChatBot]>) -> Void) {
+        if loadedBotsFlag {
+            completion(.success(self.loadedBotsInStore))
+            return
         }
-        
-        return result
+        storeBotsLoadingCompletions.append(completion)
+        guard !storeBotsLoadingStarted else { return }
+        DispatchQueue.global().asyncAfter(deadline: .now()) {
+            self.storeBotsLoadingStarted = true
+            var result: [ChatBot] = []
+            
+            let bundle = Bundle(for: ChatBotsManager.self)
+            let urls = bundle.urls(forResourcesWithExtension: ChatBot.botExtension, subdirectory: "bots") ?? []
+            for url in urls {
+                guard let bot = try? ChatBot(url: url), !bot.isTarget else { continue }
+                if bot.tags.contains(String(describing: ChatBotTag.free)), !bot.isLocal {
+                    _ = self.copyBot(bot)
+                }
+                result.append(bot)
+            }
+            result.sort(by: { return $0.index <= $1.index })
+            BotsStoreManager.shared.loadProducts(for: result) { [weak self] in
+                self?.loadedBotsInStore = result
+                self?.loadedBotsFlag = true
+                DispatchQueue.main.async {
+                    self?.storeBotsLoadingCompletions.forEach({ (block) in
+                        block(.success(result))
+                    })
+                    self?.storeBotsLoadingCompletions.removeAll()
+                }
+            }
+        }
+    }
+    
+    public func search(_ text: String, completion: @escaping ([ChatBot]) -> Void) {
+        if self.lastSearchText != text {
+            self.lastSearchText = nil
+            self.searchQueue.cancelAllOperations()
+        }
+        self.lastSearchText = text
+        let block = BlockOperation { [unowned self, text] in
+            guard self.lastSearchText == text else { return }
+            let result: [ChatBot] = self.bots.filter { $0.isAcceptedWithText(text) }
+            DispatchQueue.main.async {
+                completion(result)
+            }
+        }
+        self.searchQueue.addOperation(block)
     }
     
     public func copyBot(_ bot: ChatBot) -> Bool {
@@ -121,11 +180,15 @@ public final class ChatBotsManager {
     }
     
     public func enableBot(_ bot: ChatBot, enabled: Bool) {
-        botEnableStates[bot.id] = enabled
+        var botEnableStates: [ChatBot.ChatBotId: Bool] = (UserDefaults.standard.value(forKey: "EnabledBots") as? [ChatBot.ChatBotId: Bool]) ?? [:]
+        botEnableStates[bot.name] = enabled
+        UserDefaults.standard.setValue(botEnableStates, forKey: "EnabledBots")
+        UserDefaults.standard.synchronize()
     }
     
     public func isBotEnabled(_ bot: ChatBot) -> Bool {
-        return botEnableStates[bot.id] ?? true
+        let botEnableStates: [ChatBot.ChatBotId: Bool] = (UserDefaults.standard.value(forKey: "EnabledBots") as? [ChatBot.ChatBotId: Bool]) ?? [:]
+        return botEnableStates[bot.name] ?? true
     }
 }
 

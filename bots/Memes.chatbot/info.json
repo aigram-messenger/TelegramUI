@@ -1,7 +1,13 @@
 {
-    "id": 5,
-    "title": "Memes",
+    "title": "Мемы",
     "name": "memes",
-    "shortDescription": "Для вашего идентификатора продукта может потребоваться несколько часов для регистрации в iTunesConnect",
-    "type": "bot"
+    "shortDescription": "Текстовая информация состоящая из базовых единиц популярных фраз.",
+    "type": "bot",
+    "tags": [
+        "free",
+        "collections",
+        "unisex"
+    ],
+    "index": 10,
+    "price": 0
 }
