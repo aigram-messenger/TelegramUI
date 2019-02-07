@@ -23,6 +23,8 @@ public final class ChatBotsManager {
     private var searchQueue: OperationQueue
     private var lastMessages: [String]?
     private var lastSearchText: String?
+    private var storeBotsLoadingStarted: Bool = false
+    private var storeBotsLoadingCompletions: [(Result<[ChatBot]>) -> Void] = []
     
     public var inviteUrl: String {
         return "https://aigram.app"
@@ -96,7 +98,10 @@ public final class ChatBotsManager {
             completion(.success(self.loadedBotsInStore))
             return
         }
+        storeBotsLoadingCompletions.append(completion)
+        guard !storeBotsLoadingStarted else { return }
         DispatchQueue.global().asyncAfter(deadline: .now()) {
+            self.storeBotsLoadingStarted = true
             var result: [ChatBot] = []
             
             let bundle = Bundle(for: ChatBotsManager.self)
@@ -113,7 +118,10 @@ public final class ChatBotsManager {
                 self?.loadedBotsInStore = result
                 self?.loadedBotsFlag = true
                 DispatchQueue.main.async {
-                    completion(.success(result))
+                    self?.storeBotsLoadingCompletions.forEach({ (block) in
+                        block(.success(result))
+                    })
+                    self?.storeBotsLoadingCompletions.removeAll()
                 }
             }
         }
