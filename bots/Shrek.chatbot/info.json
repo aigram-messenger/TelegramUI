@@ -1,0 +1,13 @@
+{
+    "title": "Шрек",
+    "name": "shrek",
+    "shortDescription": "Огромный зелёный огр из одноименного мультфильма.",
+    "type": "bot",
+    "tags": [
+        "free",
+        "cartoon",
+        "men"
+    ],
+    "next": "scooby_doo",
+    "price": 0
+}

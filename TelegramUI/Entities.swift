@@ -57,7 +57,7 @@ private struct ChatBotInfo: Codable {
     let shortDescription: String
     let type: ChatBotType
     let tags: [ChatBotTag]
-    let index: Int
+    let next: ChatBot.ChatBotId?
     let price: Int?
 }
 
@@ -72,13 +72,14 @@ public struct ChatBot {
     
     public var id: Int { return name.hashValue }
     public var title: String { return info.title }
-    public var name: String { return info.name }
+    public var name: ChatBotId { return info.name }
     public var shortDescription: String { return info.shortDescription }
     public var type: String { return String(describing: info.type) }
     public var isTarget: Bool { return name == TargetBotName }
     public var fullDescription: String { return shortDescription }
     public var tags: [String] { return info.tags.map { String(describing: $0) } }
-    public var index: Int { return info.index }
+    public var index: Int = 0
+    public var nextBotId: ChatBotId? { return info.next }
     public var price: Int { return info.price ?? 0 }
     
     public let words: [String]

@@ -1,0 +1,13 @@
+{
+    "title": "Тирион Ланнистер",
+    "name": "tyrion",
+    "shortDescription": "Остроумный и красноречивый карлик из сериала «Игра престолов».",
+    "type": "bot",
+    "tags": [
+        "paid",
+        "films",
+        "men"
+    ],
+    "next": "snow",
+    "price": 69
+}

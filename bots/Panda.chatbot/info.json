@@ -1,0 +1,13 @@
+{
+    "title": "Кунг-фу Панда",
+    "name": "panda",
+    "shortDescription": "Персонаж панды По – настоящий мастер Кунг-фу",
+    "type": "bot",
+    "tags": [
+        "paid",
+        "known",
+        "men"
+    ],
+    "next": "ussr",
+    "price": 690
+}

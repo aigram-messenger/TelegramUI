@@ -113,14 +113,33 @@ public final class ChatBotsManager {
             
             let bundle = Bundle(for: ChatBotsManager.self)
             let urls = bundle.urls(forResourcesWithExtension: ChatBot.botExtension, subdirectory: "bots") ?? []
+            var tempBots: [ChatBot.ChatBotId: ChatBot] = [:]
+            var linkedNames: Set<ChatBot.ChatBotId> = Set()
             for url in urls {
                 guard let bot = try? ChatBot(url: url), !bot.isTarget else { continue }
                 if bot.tags.contains(String(describing: ChatBotTag.free)), !bot.isLocal {
                     _ = self.copyBot(bot)
                 }
-                result.append(bot)
+                tempBots[bot.name] = bot
+                if let nextName = bot.nextBotId {
+                    linkedNames.insert(nextName)
+                }
             }
-            result.sort(by: { return $0.index <= $1.index })
+            
+            var name = Set(tempBots.keys).subtracting(linkedNames).first
+            var index = 1
+            while let currentName = name {
+                if var bot = tempBots[currentName] {
+                    bot.index = index
+                    result.append(bot)
+                    
+                    name = bot.nextBotId
+                    index += 1
+                } else {
+                    break
+                }
+            }
+            
             BotsStoreManager.shared.loadProducts(for: result) { [weak self] in
                 self?.loadedBotsInStore = result
                 self?.loadedBotsFlag = true
