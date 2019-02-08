@@ -453,7 +453,7 @@ void on_surface_created() {
 
     // Telegram
     telegram_sphere = create_textured_rectangle(CSizeMake(148, 148), telegram_sphere_texture);
-    telegram_plane = create_textured_rectangle(CSizeMake(82, 74), telegram_plane_texture);
+    telegram_plane = create_textured_rectangle(CSizeMake(0, 0), telegram_plane_texture);
     telegram_plane.params.anchor=xyzMake(6, -5, 0);
 
 
@@ -477,19 +477,19 @@ void on_surface_created() {
     vec4 free_bg_color = {246/255., 73/255., 55/255., 1};
     free_bg = create_rectangle(CSizeMake(160*2, 160*2), free_bg_color);
 
-    free_knot1 = create_textured_rectangle(CSizeMake(138/3, 138/3), free_knot_up_texture);
+    free_knot1 = create_textured_rectangle(CSizeMake(0, 0), free_knot_up_texture);
     free_knot1.params.anchor.x = -23+10;
     free_knot1.params.anchor.y = 23-10;
 
-    free_knot2 = create_textured_rectangle(CSizeMake(138/3, 138/3), free_knot_up_texture);
+    free_knot2 = create_textured_rectangle(CSizeMake(0, 0), free_knot_up_texture);
     free_knot2.params.anchor.x = -23+10;
     free_knot2.params.anchor.y = 23-10;
 
-    free_knot3 = create_textured_rectangle(CSizeMake(150/3, 150/3), free_knot_down_texture);
+    free_knot3 = create_textured_rectangle(CSizeMake(0, 0), free_knot_down_texture);
     free_knot3.params.anchor.x = -100/4.+20/2.;
     free_knot3.params.anchor.y = -100/4.+20/2.;
 
-    free_knot4 = create_textured_rectangle(CSizeMake(150/3, 150/3), free_knot_down_texture);
+    free_knot4 = create_textured_rectangle(CSizeMake(0, 0), free_knot_down_texture);
     free_knot4.params.anchor.x = -100/4.+20/2.;
     free_knot4.params.anchor.y = -100/4.+20/2.;
 
