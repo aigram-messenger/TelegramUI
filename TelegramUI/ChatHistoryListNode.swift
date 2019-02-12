@@ -351,6 +351,14 @@ public final class ChatHistoryListNode: ListView, ChatHistoryNode {
     private var loadedMessagesFromCachedDataDisposable: Disposable?
 
     public var lastMessages: [Message] {
+        if let chatController = self.closestViewController as? ChatController,
+            let messageToReply = chatController.messageToReply {
+            print("REPLY \(messageToReply.text)")
+            return [messageToReply]
+        }
+        
+        
+        
         var messages: [Message] = []
         var counter = 0
         forEachMessageInCurrentHistoryView(reversed: true) { (message) -> Bool in

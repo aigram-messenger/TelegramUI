@@ -193,6 +193,13 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
     var purposefulAction: (() -> Void)?
     
     private var currentMessages: [String]?
+    var messageToReply: Message? {
+        if let messageId = self.presentationInterfaceState.interfaceState.replyMessageId,
+            let message = self.chatDisplayNode.historyNode.messageInCurrentHistoryView(messageId) {
+            return message
+        }
+        return nil
+    }
     
     public init(account: Account, chatLocation: ChatLocation, messageId: MessageId? = nil, botStart: ChatControllerInitialBotStart? = nil, mode: ChatControllerPresentationMode = .standard(previewing: false)) {
         let _ = ChatControllerCount.modify { value in
@@ -1587,10 +1594,13 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
     }
     
     func requestHandlingLastMessages(_ messages: [String]?, handleEmpty: Bool = true) {
+        var handleEmpty = handleEmpty
         let condition: Bool
         switch self.presentationInterfaceState.inputMode {
         case .suggestions, .none: condition = true
-        default: condition = false
+        default:
+            condition = self.presentationInterfaceState.interfaceState.replyMessageId != nil
+//            handleEmpty = false
         }
         guard condition else { return }
         let messages: [String] = messages ?? self.chatDisplayNode.lastMessages.map { $0.text }
@@ -1600,19 +1610,20 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
         ChatBotsManager.shared.handleMessages(messages, completion: { [weak self] (responses) in
             guard let self = self, self.currentMessages == messages else { return }
             self.updateChatPresentationInterfaceState(animated: true, interactive: true, {
-                $0.updatedInputMode { current in
+                $0.updatedInputMode { [weak self] current in
                     guard handleEmpty else {
                         return ChatInputMode.suggestions(responses: responses, expanded: nil)
                     }
                     if responses.isEmpty {
-                        return ChatInputMode.suggestions(responses: responses, expanded: nil)
-//                        if case ChatInputMode.suggestions = current {
-//                            return ChatInputMode.text
-//                        }
+                        if self?.presentationInterfaceState.interfaceState.replyMessageId == nil {
+                            return ChatInputMode.suggestions(responses: responses, expanded: nil)
+                        } else if case ChatInputMode.suggestions = current {
+                            return .text
+                        }
                     } else {
                         return ChatInputMode.suggestions(responses: responses, expanded: nil)
                     }
-//                    return current
+                    return current
                 }
             })
         })
@@ -2084,6 +2095,9 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
                 if let message = strongSelf.chatDisplayNode.historyNode.messageInCurrentHistoryView(messageId) {
                     strongSelf.updateChatPresentationInterfaceState(animated: true, interactive: true, { $0.updatedInterfaceState({ $0.withUpdatedReplyMessageId(message.id) }).updatedSearch(nil) })
                     strongSelf.chatDisplayNode.ensureInputViewFocused()
+                    strongSelf.updateWithReceivedMessages(strongSelf.chatDisplayNode.lastMessages)
+                    
+//                    self?.requestHandlingLastMessages(messages, handleEmpty: handleEmpty)
                 }
             }
         }, setupEditMessage: { [weak self] messageId in
