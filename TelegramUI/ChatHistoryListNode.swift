@@ -357,8 +357,6 @@ public final class ChatHistoryListNode: ListView, ChatHistoryNode {
             return [messageToReply]
         }
         
-        
-        
         var messages: [Message] = []
         var counter = 0
         forEachMessageInCurrentHistoryView(reversed: true) { (message) -> Bool in
@@ -369,8 +367,10 @@ public final class ChatHistoryListNode: ListView, ChatHistoryNode {
                 return false
             }
 
-            messages.append(message)
-            counter += 1
+            if !message.text.isEmpty {
+                messages.append(message)
+                counter += 1
+            }
             return true
         }
         print("\(messages.map { $0.text })")
@@ -938,9 +938,8 @@ public final class ChatHistoryListNode: ListView, ChatHistoryNode {
                             strongSelf.scrolledToIndex?(scrolledToIndex)
                         }
                     }
-                    let chatController = self?.closestViewController as? ChatController
-                    let messages = self?.lastMessages ?? []
-                    chatController?.updateWithReceivedMessages(messages)
+                    let messages = self?.lastMessages.map { $0.text }
+                    self?.controllerInteraction.handleMessagesWithBots(messages)
                     
                     subscriber.putCompletion()
                 })

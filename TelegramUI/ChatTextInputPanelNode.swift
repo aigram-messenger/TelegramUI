@@ -1418,11 +1418,11 @@ class ChatTextInputPanelNode: ChatInputPanelNode, ASEditableTextNodeDelegate {
                 } else {
                     return (.media(mode: mode, expanded: .content), state.interfaceState.messageActionsState.closedButtonKeyboardMessageId)
                 }
-            } else if case let .suggestions(responses, expanded) = state.inputMode {
+            } else if case let .suggestions(responses, expanded, userInitiated) = state.inputMode {
                 if let _ = expanded {
-                    return (.suggestions(responses: responses, expanded: nil), state.interfaceState.messageActionsState.closedButtonKeyboardMessageId)
+                    return (.suggestions(responses: responses, expanded: nil, userInitiated: userInitiated), state.interfaceState.messageActionsState.closedButtonKeyboardMessageId)
                 } else {
-                    return (.suggestions(responses: responses, expanded: .content), state.interfaceState.messageActionsState.closedButtonKeyboardMessageId)
+                    return (.suggestions(responses: responses, expanded: .content, userInitiated: userInitiated), state.interfaceState.messageActionsState.closedButtonKeyboardMessageId)
                 }
             } else {
                 return (state.inputMode, state.interfaceState.messageActionsState.closedButtonKeyboardMessageId)
@@ -1460,7 +1460,7 @@ class ChatTextInputPanelNode: ChatInputPanelNode, ASEditableTextNodeDelegate {
                         self.interfaceInteraction?.setupMessageAutoremoveTimeout()
                     case .suggestions:
                         self.interfaceInteraction?.updateInputModeAndDismissedButtonKeyboardMessageId({ state in
-                            return (.suggestions(responses: [], expanded: nil), nil)
+                            return (.suggestions(responses: [], expanded: nil, userInitiated: true), nil)
                         })
                         self.updateBotsResponses()
                 }
