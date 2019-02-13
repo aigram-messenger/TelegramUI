@@ -1587,46 +1587,38 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
         self.currentReply = hasReply
         
         print("HANDLE MESSAGES (\(hasReply)) \(messages)")
-        
-        if hasReply {
-            ChatBotsManager.shared.handleMessages(messages, completion: { [weak self] responses in
-                guard let self = self, self.currentMessages == messages else { return }
-                self.updateChatPresentationInterfaceState(animated: true, interactive: true, {
-                    $0.updatedInputMode { current in
-                        if responses.isEmpty {
-                            if case .suggestions = current { return ChatInputMode.text }
-                            return current
-                        } else {
-                            if case let .suggestions(_, expanded, userInitiated) = current {
-                                return ChatInputMode.suggestions(responses: responses, expanded: expanded, userInitiated: userInitiated)
-                            }
-                            return ChatInputMode.suggestions(responses: responses, expanded: nil, userInitiated: false)
-                        }
-                    }
-                })
-            })
-        } else {
+        if !hasReply {
             switch self.presentationInterfaceState.inputMode {
             case .suggestions, .none: break
             default: return
             }
             if !self.chatDisplayNode.text.isEmpty { return }
-            
-            ChatBotsManager.shared.handleMessages(messages, completion: { [weak self] responses in
-                guard let self = self, self.currentMessages == messages else { return }
-                self.updateChatPresentationInterfaceState(animated: true, interactive: true, {
-                    $0.updatedInputMode { current in
+        }
+        
+        ChatBotsManager.shared.handleMessages(messages, completion: { [weak self] responses in
+            guard let self = self, self.currentMessages == messages else { return }
+            self.updateChatPresentationInterfaceState(animated: true, interactive: true, {
+                $0.updatedInputMode { current in
+                    if !hasReply {
                         if case let .suggestions(_, expanded, userInitiated) = current {
                             return ChatInputMode.suggestions(responses: responses, expanded: expanded, userInitiated: userInitiated)
                         }
-                        if responses.isEmpty {
-                            return current
-                        }
-                        return ChatInputMode.suggestions(responses: responses, expanded: nil, userInitiated: false)
                     }
-                })
+                    if responses.isEmpty {
+                        if hasReply {
+                            if case .suggestions = current { return ChatInputMode.text }
+                        }
+                        return current
+                    } else {
+                        if hasReply, case let .suggestions(_, expanded, userInitiated) = current {
+                            return ChatInputMode.suggestions(responses: responses, expanded: expanded, userInitiated: userInitiated)
+                        }
+                    }
+                    
+                    return ChatInputMode.suggestions(responses: responses, expanded: nil, userInitiated: false)
+                }
             })
-        }
+        })
     }
     
     private func themeAndStringsUpdated() {
