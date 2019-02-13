@@ -118,13 +118,13 @@ static void TGDispatchOnMainThread(dispatch_block_t block) {
         NSArray<NSString *> *stringKeys = @[
             @"Tour.Title1",
             @"Tour.Title2",
-//            @"Tour.Title3",
+            @"Tour.Title3",
             @"Tour.Title4",
             @"Tour.Title5",
             @"Tour.Title6",
             @"Tour.Text1",
             @"Tour.Text2",
-//            @"Tour.Text3",
+            @"Tour.Text3",
             @"Tour.Text4",
             @"Tour.Text5",
             @"Tour.Text6",
@@ -359,7 +359,7 @@ static void TGDispatchOnMainThread(dispatch_block_t block) {
     _pageControl = [[UIPageControl alloc] init];
     _pageControl.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin;
     _pageControl.userInteractionEnabled = false;
-    [_pageControl setNumberOfPages:6];
+    [_pageControl setNumberOfPages:_headlines.count];
     _pageControl.pageIndicatorTintColor = _regularDotColor;
     _pageControl.currentPageIndicatorTintColor = _highlightedDotColor;
     [self.view addSubview:_pageControl];
