@@ -269,7 +269,7 @@ class ChatControllerNode: ASDisplayNode, UIScrollViewDelegate {
         }
         self.textInputPanelNode?.updateBotsResponses = { [weak self] in
             let mapped = (self?.lastMessages ?? []).map { $0.text }
-            self?.controller?.requestHandlingLastMessages(mapped, handleEmpty: false)
+            self?.controllerInteraction.handleMessagesWithBots(mapped)
         }
         self.textInputPanelNode?.sendMessage = { [weak self] in
             if let strongSelf = self, let textInputPanelNode = strongSelf.inputPanelNode as? ChatTextInputPanelNode {
@@ -754,6 +754,7 @@ class ChatControllerNode: ASDisplayNode, UIScrollViewDelegate {
                     if let strongSelf = self, let accessoryPanelNode = accessoryPanelNode, strongSelf.accessoryPanelNode === accessoryPanelNode {
                         if let _ = accessoryPanelNode as? ReplyAccessoryPanelNode {
                             strongSelf.requestUpdateChatInterfaceState(true, { $0.withUpdatedReplyMessageId(nil) })
+                            strongSelf.controllerInteraction.handleMessagesWithBots(strongSelf.lastMessages.map { $0.text })
                         } else if let _ = accessoryPanelNode as? ForwardAccessoryPanelNode {
                             strongSelf.requestUpdateChatInterfaceState(true, { $0.withUpdatedForwardMessageIds(nil) })
                         } else if let _ = accessoryPanelNode as? EditAccessoryPanelNode {
@@ -937,7 +938,7 @@ class ChatControllerNode: ASDisplayNode, UIScrollViewDelegate {
         if case let .media(_, expanded) = self.chatPresentationInterfaceState.inputMode, expanded != nil {
             displayTopDimNode = true
             expandTopDimNode = true
-        } else if case let .suggestions(_, expanded) = self.chatPresentationInterfaceState.inputMode, expanded != nil {
+        } else if case let .suggestions(_, expanded, _) = self.chatPresentationInterfaceState.inputMode, expanded != nil {
             displayTopDimNode = true
             expandTopDimNode = true
         }

@@ -27,7 +27,7 @@ public final class ChatBotsManager {
     private var storeBotsLoadingCompletions: [(Result<[ChatBot]>) -> Void] = []
     
     public var autoOpenBots: Bool {
-        get { return UserDefaults.standard.bool(forKey: "autoOpenBots") ?? true }
+        get { return (UserDefaults.standard.value(forKey: "autoOpenBots") as? Bool) ?? true }
         set {
             UserDefaults.standard.set(newValue, forKey: "autoOpenBots")
             UserDefaults.standard.synchronize()

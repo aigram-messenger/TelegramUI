@@ -140,11 +140,11 @@ final class ChatSuggestionsInputNode: ChatInputNode {
             if let strongSelf = self {
                 strongSelf.controllerInteraction.updateInputMode { current in
                     switch current {
-                    case let .suggestions(responses, _):
+                    case let .suggestions(responses, _, userInitiated):
                         if value {
-                            return .suggestions(responses: responses, expanded: .search)
+                            return .suggestions(responses: responses, expanded: .search, userInitiated: userInitiated)
                         } else {
-                            return .suggestions(responses: responses, expanded: nil)
+                            return .suggestions(responses: responses, expanded: nil, userInitiated: userInitiated)
                         }
                     default:
                         return current
@@ -286,7 +286,7 @@ final class ChatSuggestionsInputNode: ChatInputNode {
         
         var isExpanded: Bool = false
         var displaySearch: Bool = false
-        if case let .suggestions(_, maybeExpanded) = interfaceState.inputMode, let expanded = maybeExpanded {
+        if case let .suggestions(_, maybeExpanded, _) = interfaceState.inputMode, let expanded = maybeExpanded {
             isExpanded = true
             switch expanded {
             case .content:

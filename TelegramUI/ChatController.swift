@@ -193,6 +193,14 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
     var purposefulAction: (() -> Void)?
     
     private var currentMessages: [String]?
+    private var currentReply: Bool?
+    var messageToReply: Message? {
+        if let messageId = self.presentationInterfaceState.interfaceState.replyMessageId,
+            let message = self.chatDisplayNode.historyNode.messageInCurrentHistoryView(messageId) {
+            return message
+        }
+        return nil
+    }
     
     public init(account: Account, chatLocation: ChatLocation, messageId: MessageId? = nil, botStart: ChatControllerInitialBotStart? = nil, mode: ChatControllerPresentationMode = .standard(previewing: false)) {
         let _ = ChatControllerCount.modify { value in
@@ -1037,14 +1045,13 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
             self?.chatDisplayNode.cancelInteractiveKeyboardGestures()
         }, automaticMediaDownloadSettings: self.automaticMediaDownloadSettings,
            handleMessagesWithBots: { [weak self] messages in
-            let handleEmpty = messages == nil ? false : true
-            self?.requestHandlingLastMessages(messages, handleEmpty: handleEmpty)
+            self?.requestHandlingLastMessages(messages)
         }, showBotDetails: { [weak self] bot in
             self?.showBotDetailsAlert(bot)
         }, buyBot: { [weak self] bot, completion in
             BotsStoreManager.shared.buyBot(bot) { [weak self] (bought) in
                 print("BOT \(bot.title) BOUGHT \(bought)")
-                self?.controllerInteraction?.handleMessagesWithBots(nil)
+                self?.requestHandlingLastMessages(self?.chatDisplayNode.lastMessages.map { $0.text })
                 completion(bought)
             }
         }, showBotActions: { [weak self] bot in
@@ -1502,12 +1509,6 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
             return $0.updatedMode(mode)
         })
     }
-
-    public func updateWithReceivedMessages(_ messages: [Message]) {
-        guard ChatBotsManager.shared.autoOpenBots else { return }
-        let mapped = messages.map { $0.text }
-        self.controllerInteraction?.handleMessagesWithBots(mapped)
-    }
     
     var chatDisplayNode: ChatControllerNode {
         get {
@@ -1548,14 +1549,6 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
         var items: [ActionSheetItem] = []
         
         items.append(ChatBotDetailsItem(bot: bot))
-//        items.append(ActionSheetButtonItem(title: "Поделиться в чат", color: .accent, action: { [weak self, weak actionSheet] in
-//            actionSheet?.dismissAnimated()
-//            self?.controllerInteraction?.sendMessage(ChatBotsManager.shared.shareText)
-//
-////            let shareController = ShareController(account: strongSelf.account, subject: .text(), externalShare: true, immediateExternalShare: true)
-////            strongSelf.chatDisplayNode.dismissInput()
-////            strongSelf.present(shareController, in: .window(.root))
-//        }))
         if !BotsStoreManager.shared.isBotBought(bot) {
             items.append(ActionSheetButtonItem(title: "Получить", color: .accent, action: { [weak self] in
                 self?.controllerInteraction?.buyBot(bot) { [weak actionSheet] bought in
@@ -1586,33 +1579,43 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
         self.present(actionSheet, in: .window(.root))
     }
     
-    func requestHandlingLastMessages(_ messages: [String]?, handleEmpty: Bool = true) {
-        let condition: Bool
-        switch self.presentationInterfaceState.inputMode {
-        case .suggestions, .none: condition = true
-        default: condition = false
-        }
-        guard condition else { return }
-        let messages: [String] = messages ?? self.chatDisplayNode.lastMessages.map { $0.text }
-        
-        if self.currentMessages == messages, handleEmpty { return }
+    private func requestHandlingLastMessages(_ messages: [String]?) {
+        let hasReply = self.presentationInterfaceState.interfaceState.replyMessageId != nil
+//        if self.currentMessages == messages, self.currentReply == hasReply { return }
+        let messages = messages ?? self.currentMessages ?? []
         self.currentMessages = messages
-        ChatBotsManager.shared.handleMessages(messages, completion: { [weak self] (responses) in
+        self.currentReply = hasReply
+        
+        print("HANDLE MESSAGES (\(hasReply)) \(messages)")
+        if !hasReply {
+            switch self.presentationInterfaceState.inputMode {
+            case .suggestions, .none: break
+            default: return
+            }
+            if !self.chatDisplayNode.text.isEmpty { return }
+        }
+        
+        ChatBotsManager.shared.handleMessages(messages, completion: { [weak self] responses in
             guard let self = self, self.currentMessages == messages else { return }
             self.updateChatPresentationInterfaceState(animated: true, interactive: true, {
                 $0.updatedInputMode { current in
-                    guard handleEmpty else {
-                        return ChatInputMode.suggestions(responses: responses, expanded: nil)
+                    if !hasReply {
+                        if case let .suggestions(_, expanded, userInitiated) = current {
+                            return ChatInputMode.suggestions(responses: responses, expanded: expanded, userInitiated: userInitiated)
+                        }
                     }
                     if responses.isEmpty {
-                        return ChatInputMode.suggestions(responses: responses, expanded: nil)
-//                        if case ChatInputMode.suggestions = current {
-//                            return ChatInputMode.text
-//                        }
+                        if hasReply {
+                            if case .suggestions = current { return ChatInputMode.text }
+                        }
+                        return current
                     } else {
-                        return ChatInputMode.suggestions(responses: responses, expanded: nil)
+                        if hasReply, case let .suggestions(_, expanded, userInitiated) = current {
+                            return ChatInputMode.suggestions(responses: responses, expanded: expanded, userInitiated: userInitiated)
+                        }
                     }
-//                    return current
+                    
+                    return ChatInputMode.suggestions(responses: responses, expanded: nil, userInitiated: false)
                 }
             })
         })
@@ -2083,7 +2086,8 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
             if let strongSelf = self, strongSelf.isNodeLoaded, canSendMessagesToChat(strongSelf.presentationInterfaceState) {
                 if let message = strongSelf.chatDisplayNode.historyNode.messageInCurrentHistoryView(messageId) {
                     strongSelf.updateChatPresentationInterfaceState(animated: true, interactive: true, { $0.updatedInterfaceState({ $0.withUpdatedReplyMessageId(message.id) }).updatedSearch(nil) })
-                    strongSelf.chatDisplayNode.ensureInputViewFocused()
+//                    strongSelf.chatDisplayNode.ensureInputViewFocused()
+                    strongSelf.requestHandlingLastMessages(strongSelf.chatDisplayNode.lastMessages.map { $0.text })
                 }
             }
         }, setupEditMessage: { [weak self] messageId in
