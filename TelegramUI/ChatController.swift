@@ -2096,8 +2096,6 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
                     strongSelf.updateChatPresentationInterfaceState(animated: true, interactive: true, { $0.updatedInterfaceState({ $0.withUpdatedReplyMessageId(message.id) }).updatedSearch(nil) })
                     strongSelf.chatDisplayNode.ensureInputViewFocused()
                     strongSelf.updateWithReceivedMessages(strongSelf.chatDisplayNode.lastMessages)
-                    
-//                    self?.requestHandlingLastMessages(messages, handleEmpty: handleEmpty)
                 }
             }
         }, setupEditMessage: { [weak self] messageId in
