@@ -2086,7 +2086,7 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
             if let strongSelf = self, strongSelf.isNodeLoaded, canSendMessagesToChat(strongSelf.presentationInterfaceState) {
                 if let message = strongSelf.chatDisplayNode.historyNode.messageInCurrentHistoryView(messageId) {
                     strongSelf.updateChatPresentationInterfaceState(animated: true, interactive: true, { $0.updatedInterfaceState({ $0.withUpdatedReplyMessageId(message.id) }).updatedSearch(nil) })
-                    strongSelf.chatDisplayNode.ensureInputViewFocused()
+//                    strongSelf.chatDisplayNode.ensureInputViewFocused()
                     strongSelf.requestHandlingLastMessages(strongSelf.chatDisplayNode.lastMessages.map { $0.text })
                 }
             }
