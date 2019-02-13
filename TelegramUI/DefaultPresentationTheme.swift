@@ -425,7 +425,7 @@ private func makeDefaultPresentationTheme(accentColor: UIColor, day: Bool) -> Pr
     )
 }
 
-public let defaultPresentationTheme = makeDefaultPresentationTheme(accentColor: UIColor(rgb: 0x00C6B6), day: true)
+public let defaultPresentationTheme = makeDefaultPresentationTheme(accentColor: UIColor(rgb: 0x00C6B6), day: false)
 
 let defaultDayAccentColor: Int32 = 0x00C6B6
 

@@ -131,12 +131,12 @@ private class ChatSuggestionItemNode: ListViewItemNode {
         let makeTextLayout = TextNode.asyncLayout(self.textNode)
         return { item, params, neighbors in
             let text = item.response["response"] ?? ""
-            let textColor: UIColor = item.theme.list.itemPrimaryTextColor
+            let textColor: UIColor = item.theme.chat.bubble.outgoingPrimaryTextColor
             
             let textInsets = UIEdgeInsetsMake(5, 8, 5, 14)
             
             let entities = generateTextEntities(text, enabledTypes: [])
-            let string = stringWithAppliedEntities(text, entities: entities, baseColor: textColor, linkColor: item.theme.list.itemAccentColor, baseFont: titleFont, linkFont: titleFont, boldFont: titleBoldFont, italicFont: titleItalicFont, fixedFont: titleFixedFont)
+            let string = stringWithAppliedEntities(text, entities: entities, baseColor: textColor, linkColor: item.theme.chat.bubble.outgoingAccentTextColor, baseFont: titleFont, linkFont: titleFont, boldFont: titleBoldFont, italicFont: titleItalicFont, fixedFont: titleFixedFont)
             
             let textConstrainedSize = CGSize(width: params.width - params.leftInset - params.rightInset, height: CGFloat.greatestFiniteMagnitude)
             let (titleLayout, titleApply) = makeTextLayout(TextNodeLayoutArguments(attributedString: string, backgroundColor: nil, maximumNumberOfLines: 0, truncationType: .end, constrainedSize: textConstrainedSize, alignment: .right, cutout: nil, insets: .init()))
