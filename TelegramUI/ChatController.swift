@@ -1594,6 +1594,12 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
             }
             if !self.chatDisplayNode.text.isEmpty { return }
         }
+        if !ChatBotsManager.shared.autoOpenBots {
+            if case .suggestions = self.presentationInterfaceState.inputMode {
+            } else {
+                return
+            }
+        }
         
         ChatBotsManager.shared.handleMessages(messages, completion: { [weak self] responses in
             guard let self = self, self.currentMessages == messages else { return }

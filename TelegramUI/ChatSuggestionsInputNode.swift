@@ -243,7 +243,7 @@ final class ChatSuggestionsInputNode: ChatInputNode {
     
     func updateBotsResults(_ results: [ChatBotResult], previous: [ChatBotResult]? = nil) {
         let currentPaneIndex = self.paneArrangement.currentIndex
-        let newPaneIndex = !results.isEmpty && (currentPaneIndex > 0 || previous != nil) ? 1 : 0
+        let newPaneIndex = results.isEmpty ? 0 : 1//TODO: обновить !results.isEmpty && (currentPaneIndex > 0 || previous != nil) ? 1 : 0
         var toArrangements: [ChatBotsInputPaneType] = [.store]
         toArrangements.append(contentsOf: results.map { .bot($0.bot.id) })
         let (deletes, inserts, updates) = mergeListsStableWithUpdates(leftList: self.paneArrangement.panes, rightList: toArrangements)

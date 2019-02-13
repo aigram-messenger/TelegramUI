@@ -1,0 +1,13 @@
+{
+    "title": "Ассистент",
+    "name": "assistant",
+    "shortDescription": "Личный помощник для общения на популярные темы.",
+    "type": "bot",
+    "tags": [
+        "free",
+        "collections",
+        "unisex"
+    ],
+    "next": "ussr",
+    "price": 0
+}
