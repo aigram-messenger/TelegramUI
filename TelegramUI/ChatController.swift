@@ -1051,18 +1051,23 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
         }, buyBot: { [weak self] bot, completion in
             BotsStoreManager.shared.buyBot(bot) { [weak self] (bought) in
                 print("BOT \(bot.title) BOUGHT \(bought)")
-                self?.requestHandlingLastMessages(self?.chatDisplayNode.lastMessages.map { $0.text })
+                guard let strongSelf = self else { return }
+                if bought {
+                    self?.requestHandlingLastMessages(nil)
+                } else {
+                    let actions = [TextAlertAction(type: .defaultAction, title: strongSelf.presentationData.strings.Common_OK, action: {})]
+                    strongSelf.present(standardTextAlertController(theme: AlertControllerTheme(presentationTheme: strongSelf.presentationData.theme),
+                                                                   title: "Ошибка покупки",
+                                                                   text: "Не удалось купить бота \"\(bot.title)\".\nВероятно, надо войти под другой записью в AppStore либо выйти из нее.",
+                                                                   actions: actions),
+                                       in: .window(.root))
+                }
                 completion(bought)
             }
         }, showBotActions: { [weak self] bot in
             self?.showBotActions(bot)
         }, handleSuggestionTap: { [weak self] suggestion in
-            self?.updateChatPresentationInterfaceState(animated: true, interactive: true, {
-                $0.updatedInputMode { current in
-                    return ChatInputMode.text
-                }
-            })
-            self?.chatDisplayNode.text = suggestion
+            self?.updateText(suggestion)
         })
         
         self.controllerInteraction = controllerInteraction
@@ -1516,7 +1521,7 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
         }
     }
 
-    func showBotActions(_ bot: ChatBot) {
+    private func showBotActions(_ bot: ChatBot) {
         let actionSheet = ActionSheetController(presentationTheme: self.presentationData.theme)
         var items: [ActionSheetItem] = []
 
@@ -1526,7 +1531,7 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
         }))
         items.append(ActionSheetButtonItem(title: "Поделиться в чат", color: .accent, action: { [weak self, weak actionSheet] in
             actionSheet?.dismissAnimated()
-            self?.controllerInteraction?.sendMessage(ChatBotsManager.shared.shareText)
+            self?.updateText(ChatBotsManager.shared.shareText)
         }))
         items.append(ActionSheetButtonItem(title: "Отключить бота", color: .destructive, action: { [weak self, weak actionSheet] in
             ChatBotsManager.shared.enableBot(bot, enabled: false)
@@ -1544,7 +1549,7 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
         self.present(actionSheet, in: .window(.root))
     }
     
-    func showBotDetailsAlert(_ bot: ChatBot) {
+    private func showBotDetailsAlert(_ bot: ChatBot) {
         let actionSheet = ActionSheetController(presentationTheme: self.presentationData.theme)
         var items: [ActionSheetItem] = []
         
@@ -1555,6 +1560,7 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
                     guard bought else { return }
                     //TODO: обновить в магазине
                     actionSheet?.dismissAnimated()
+                    self?.controllerInteraction?.handleMessagesWithBots(nil)
                 }
             }))
         } else {
@@ -1590,9 +1596,8 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
         if !hasReply {
             switch self.presentationInterfaceState.inputMode {
             case .suggestions, .none: break
-            default: return
+            default: return 
             }
-            if !self.chatDisplayNode.text.isEmpty { return }
         }
         if !ChatBotsManager.shared.autoOpenBots {
             if case .suggestions = self.presentationInterfaceState.inputMode {
@@ -1600,6 +1605,7 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
                 return
             }
         }
+        if !self.chatDisplayNode.text.isEmpty { return }
         
         ChatBotsManager.shared.handleMessages(messages, completion: { [weak self] responses in
             guard let self = self, self.currentMessages == messages else { return }
@@ -1612,7 +1618,11 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
                     }
                     if responses.isEmpty {
                         if hasReply {
+                            if case let .suggestions(_, expanded, userInitiated) = current, userInitiated {
+                                return ChatInputMode.suggestions(responses: responses, expanded: expanded, userInitiated: userInitiated)
+                            }
                             if case .suggestions = current { return ChatInputMode.text }
+                            if case .none = current { return ChatInputMode.text }
                         }
                         return current
                     } else {
@@ -1624,6 +1634,14 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
                     return ChatInputMode.suggestions(responses: responses, expanded: nil, userInitiated: false)
                 }
             })
+        })
+    }
+    
+    private func updateText(_ text: String) {
+        let inputState = ChatTextInputState(inputText: NSAttributedString(string: text))
+        self.updateChatPresentationInterfaceState(animated: true, interactive: false, {
+            $0.updatedInterfaceState { $0.withUpdatedComposeInputState(inputState) }
+                .updatedInputMode { _ in return ChatInputMode.text }
         })
     }
     
