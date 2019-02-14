@@ -20,7 +20,9 @@ let TargetBotName: String = "target"
 public enum ChatBotType: String, Codable, CustomStringConvertible {
     case bot
     
-    public var description: String { return self.rawValue.capitalized }
+    public var description: String {
+        return "NeuroBot"
+    }
 }
 
 public enum ChatBotTag: String, Codable, CustomStringConvertible {

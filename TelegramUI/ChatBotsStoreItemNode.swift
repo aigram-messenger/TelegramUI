@@ -166,7 +166,7 @@ class ChatStoreBotItemNode: ListViewItemNode {
     }
     
     @objc private func buyBotAction() {
-        self.installationActionNode.isUserInteractionEnabled = false
+//        self.installationActionNode.isUserInteractionEnabled = false
         self.item?.inputNodeInteraction.buyBot(self.bot)
     }
     

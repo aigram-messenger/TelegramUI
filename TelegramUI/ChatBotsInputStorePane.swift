@@ -76,7 +76,7 @@ final class ChatBotsInputStorePane: ChatMediaInputPane, UIScrollViewDelegate {
 //        let searchPlaceholderItem = ListViewInsertItem(index: 0, previousIndex: nil, item: searchPlaceholderNode, directionHint: nil)
 //        insertItems.insert(searchPlaceholderItem, at: 0)
         
-        let updateSizeAndInsets = ListViewUpdateSizeAndInsets(size: self.listView.frame.size, insets: UIEdgeInsets(), duration: 0, curve: .Spring(duration: 0))
+        let updateSizeAndInsets = ListViewUpdateSizeAndInsets(size: self.listView.frame.size, insets: UIEdgeInsets(), duration: 0, curve: .Default(duration: nil))
         self.listView.transaction(deleteIndices: [], insertIndicesAndItems: insertItems, updateIndicesAndItems: [], options: [.Synchronous, .AnimateInsertion], scrollToItem: nil, updateSizeAndInsets: updateSizeAndInsets, stationaryItemRange: nil, updateOpaqueState: nil, completion: { _ in })
     }
 }

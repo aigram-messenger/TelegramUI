@@ -67,7 +67,7 @@ private enum SettingsEntry: ItemListNodeEntry {
     case setUsername(PresentationTheme, String)
     
     case proxy(PresentationTheme, UIImage?, String, String)
-    case autosuggestions(PresentationTheme)
+    case autosuggestions(PresentationTheme, String)
     
     case savedMessages(PresentationTheme, UIImage?, String)
     case recentCalls(PresentationTheme, UIImage?, String)
@@ -144,8 +144,8 @@ private enum SettingsEntry: ItemListNodeEntry {
     
     static func ==(lhs: SettingsEntry, rhs: SettingsEntry) -> Bool {
         switch lhs {
-            case .autosuggestions(let lhsTheme):
-                if case let .autosuggestions(rhsTheme) = rhs, lhsTheme == rhsTheme {
+            case .autosuggestions(let lhsTheme, let lhsText):
+                if case let .autosuggestions(rhsTheme, rhsText) = rhs, lhsTheme == rhsTheme, lhsText == rhsText {
                     return true
                 } else {
                     return false
@@ -305,8 +305,8 @@ private enum SettingsEntry: ItemListNodeEntry {
                 return ItemListDisclosureItem(theme: theme, icon: image, title: text, label: value, sectionId: ItemListSectionId(self.section), style: .blocks, action: {
                     arguments.openProxy()
                 })
-            case let .autosuggestions(theme):
-                return ItemListSwitchItem(theme: theme, title: "Автоматические боты", value: ChatBotsManager.shared.autoOpenBots, enableInteractiveChanges: true, enabled: true, sectionId: ItemListSectionId(self.section), style: .blocks, updated: { value in
+            case let .autosuggestions(theme, text):
+                return ItemListSwitchItem(theme: theme, title: text, value: ChatBotsManager.shared.autoOpenBots, enableInteractiveChanges: true, enabled: true, sectionId: ItemListSectionId(self.section), style: .blocks, updated: { value in
                     ChatBotsManager.shared.autoOpenBots = value
                 })
             case let .savedMessages(theme, image, text):
@@ -410,7 +410,7 @@ private func settingsEntries(presentationData: PresentationData, state: Settings
 //            entries.append(.proxy(presentationData.theme, SettingsItemIcons.proxy, presentationData.strings.Settings_Proxy, valueString))
 //        }
         
-        entries.append(.autosuggestions(presentationData.theme))
+        entries.append(.autosuggestions(presentationData.theme, presentationData.strings.Settings_AutoOpenBots))
         entries.append(.savedMessages(presentationData.theme, SettingsItemIcons.savedMessages, presentationData.strings.Settings_SavedMessages))
         entries.append(.recentCalls(presentationData.theme, SettingsItemIcons.recentCalls, presentationData.strings.CallSettings_RecentCalls))
         entries.append(.stickers(presentationData.theme, SettingsItemIcons.stickers, presentationData.strings.ChatSettings_Stickers, unreadTrendingStickerPacks == 0 ? "" : "\(unreadTrendingStickerPacks)", archivedPacks))

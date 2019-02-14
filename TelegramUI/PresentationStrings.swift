@@ -3444,6 +3444,13 @@ public final class PresentationStrings {
         let form = presentationStringsPluralizationForm(self.lc, value)
         return String(format: self._ps[85 * 6 + Int(form.rawValue)]!, "\(value)")
     }
+    
+    public var Settings_AutoOpenBots: String {
+        if self.baseLanguageCode == "en" {
+            return "Automatic bots"
+        }
+        return "Автоматические боты"
+    }
         
     init(primaryComponent: PresentationStringsComponent, secondaryComponent: PresentationStringsComponent?) {
         self.primaryComponent = primaryComponent
