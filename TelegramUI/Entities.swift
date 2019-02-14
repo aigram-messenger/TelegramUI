@@ -109,7 +109,7 @@ public struct ChatBot {
             var data = try Data(contentsOf: url.appendingPathComponent("info.json"))
             info = try decoder.decode(Swift.type(of: info), from: data)
 
-            modelURL = url.appendingPathComponent("\(fileNameComponents.0)converted_model.tflite")
+            modelURL = url.appendingPathComponent("converted_model.tflite")
             if !(try modelURL.checkResourceIsReachable()) { throw ChatBotError.modelFileNotExists }
 
             data = try Data(contentsOf: url.appendingPathComponent("words_\(fileNameComponents.0).json"))

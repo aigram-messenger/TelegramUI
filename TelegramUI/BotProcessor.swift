@@ -50,7 +50,7 @@ private class InterpreterOperation: Operation {
                 let firstOutput = (try outputs.output(index: 0)) as? [Any] ?? []
                 let outputs = firstOutput[0] as? [Float32] ?? []
                 var responses: [BotResponse] = []
-                for i in 0..<outputs.count where outputs[i] > 0.5 {
+                for i in 0..<outputs.count where outputs[i] >= 0.9 {
                     responses.append(contentsOf: self.constructResponses(with: self.bot.responses[i]))
                 }
                 completion?(responses)
