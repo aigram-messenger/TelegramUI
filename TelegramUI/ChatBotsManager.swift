@@ -94,10 +94,21 @@ public final class ChatBotsManager {
             DispatchQueue.main.async {
                 if messages == self.lastMessages {
                     self.lastMessages = nil
+                    results = self.resultsWithAssistantHandling(results: results)
                     completion(results)
                 }
             }
         }
+    }
+    
+    private func resultsWithAssistantHandling(results: [ChatBotResult]) -> [ChatBotResult] {
+        var results = results
+        if let index = results.firstIndex(where: { $0.bot.name == "assistant" }), index > 0 {
+            let temp = results.remove(at: index)
+            results.insert(temp, at: 0)
+        }
+        
+        return results
     }
     
     public func botsInStore(completion: @escaping (Result<[ChatBot]>) -> Void) {
