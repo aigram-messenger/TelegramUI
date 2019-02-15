@@ -1632,6 +1632,8 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
                                     return ChatInputMode.suggestions(responses: responses, expanded: expanded, userInitiated: userInitiated || byUserInitiating)
                                 }
                                 return ChatInputMode.text
+                            } else if byUserInitiating {
+                                return ChatInputMode.suggestions(responses: responses, expanded: nil, userInitiated: true)
                             }
                         }
                         return current
