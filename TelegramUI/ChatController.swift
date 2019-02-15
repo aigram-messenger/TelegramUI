@@ -1587,7 +1587,10 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
     
     private func requestHandlingLastMessages(_ messages: [String]?) {
         let hasReply = self.presentationInterfaceState.interfaceState.replyMessageId != nil
-//        if self.currentMessages == messages, self.currentReply == hasReply { return }
+        if case let .suggestions(_, _, userInitiated) = self.presentationInterfaceState.inputMode, userInitiated {
+        } else if self.currentMessages == messages, self.currentReply == hasReply {
+            return
+        }
         let messages = messages ?? self.currentMessages ?? []
         self.currentMessages = messages
         self.currentReply = hasReply
