@@ -94,6 +94,7 @@ final class ChatSuggestionsInputNode: ChatInputNode {
     private var panRecognizer: UIPanGestureRecognizer?
     private var currentResponses: [ChatBotResult]?
     private var strings: PresentationStrings
+    private var storeByUser: Bool = false
 
     init(account: Account, controllerInteraction: ChatControllerInteraction, theme: PresentationTheme, strings: PresentationStrings) {
         self.account = account
@@ -127,14 +128,17 @@ final class ChatSuggestionsInputNode: ChatInputNode {
         }, sendMessage: { [weak self] in
             self?.controllerInteraction.handleSuggestionTap($0)
         }, buyBot: { [weak self] bot in
+            self?.storeByUser = true
             self?.controllerInteraction.buyBot(bot) { (bought) in
                 self?.updateStorePane(for: bot)
             }
         }, enableBot: { [weak self] bot, enabled in
+            self?.storeByUser = true
             ChatBotsManager.shared.enableBot(bot, enabled: enabled)
             self?.updateStorePane(for: bot)
             self?.controllerInteraction.handleMessagesWithBots(nil, false)
         }, botDetails: { [weak self] bot in
+            self?.storeByUser = true
             self?.controllerInteraction.showBotDetails(bot)
         }, toggleSearch: { [weak self] value in
             if let strongSelf = self {
@@ -242,8 +246,8 @@ final class ChatSuggestionsInputNode: ChatInputNode {
     }
     
     func updateBotsResults(_ results: [ChatBotResult], previous: [ChatBotResult]? = nil) {
-        let currentPaneIndex = self.paneArrangement.currentIndex
-        let newPaneIndex = results.isEmpty ? 0 : 1//TODO: обновить !results.isEmpty && (currentPaneIndex > 0 || previous != nil) ? 1 : 0
+//        let currentPaneIndex = self.paneArrangement.currentIndex
+        let newPaneIndex = results.isEmpty || self.storeByUser ? 0 : 1//!results.isEmpty && (currentPaneIndex > 0 || previous != nil) ? 1 : 0
         var toArrangements: [ChatBotsInputPaneType] = [.store]
         toArrangements.append(contentsOf: results.map { .bot($0.bot.id) })
         let (deletes, inserts, updates) = mergeListsStableWithUpdates(leftList: self.paneArrangement.panes, rightList: toArrangements)
@@ -253,7 +257,12 @@ final class ChatSuggestionsInputNode: ChatInputNode {
         let insertListItems = self.insertListItems(with: inserts, botsResults: results)
         let updateListItems = self.updateListItems(with: updates, botsResults: results)
         
+        var storePane: ChatBotsInputStorePane?
         for (pane, _) in self.panesAndAnimatingOut {
+            if let pane = pane as? ChatBotsInputStorePane {
+                storePane = pane
+                continue
+            }
             pane.removeFromSupernode()
         }
         self.panesAndAnimatingOut = []
@@ -261,7 +270,7 @@ final class ChatSuggestionsInputNode: ChatInputNode {
         for paneType in toArrangements {
             switch paneType {
             case .store:
-                self.panesAndAnimatingOut.append((ChatBotsInputStorePane(inputNodeInteraction: self.inputNodeInteraction, theme: self.theme!, strings: self.strings), false))
+                self.panesAndAnimatingOut.append((storePane ?? ChatBotsInputStorePane(inputNodeInteraction: self.inputNodeInteraction, theme: self.theme!, strings: self.strings), false))
             case .bot(let botId):
                 let bot = results.first(where: { $0.bot.id == botId })!.bot
                 self.panesAndAnimatingOut.append((ChatBotsInputSuggestionsPane(bot: bot, responses: results[resultIndex].responses, inputNodeInteraction: self.inputNodeInteraction, theme: self.theme!), false))
@@ -415,10 +424,6 @@ final class ChatSuggestionsInputNode: ChatInputNode {
                 botsSearchContainerNode.removeFromSupernode()
             }
         }
-
-//        if let panRecognizer = self.panRecognizer, panRecognizer.isEnabled != !displaySearch {
-//            panRecognizer.isEnabled = !displaySearch
-//        }
         
         return (standardInputHeight, max(0.0, panelHeight - standardInputHeight))
     }
@@ -472,8 +477,10 @@ final class ChatSuggestionsInputNode: ChatInputNode {
         guard (collectionId != self.inputNodeInteraction.highlightedItemCollectionId || true) else { return }
 
         if collectionId.namespace == ChatBotsInputPanelAuxiliaryNamespace.store.rawValue {
+            self.storeByUser = true
             self.setCurrentPane(.store, transition: .animated(duration: 0.25, curve: .spring))
         } else {
+            self.storeByUser = false
             self.setCurrentPane(.bot(Int(collectionId.id)), transition: .animated(duration: 0.25, curve: .spring))
         }
     }
