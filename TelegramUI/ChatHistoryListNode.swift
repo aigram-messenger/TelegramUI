@@ -939,7 +939,7 @@ public final class ChatHistoryListNode: ListView, ChatHistoryNode {
                         }
                     }
                     let messages = self?.lastMessages.map { $0.text }
-                    self?.controllerInteraction.handleMessagesWithBots(messages)
+                    self?.controllerInteraction.handleMessagesWithBots(messages, false)
                     
                     subscriber.putCompletion()
                 })

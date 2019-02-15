@@ -133,7 +133,7 @@ final class ChatSuggestionsInputNode: ChatInputNode {
         }, enableBot: { [weak self] bot, enabled in
             ChatBotsManager.shared.enableBot(bot, enabled: enabled)
             self?.updateStorePane(for: bot)
-            self?.controllerInteraction.handleMessagesWithBots(nil)
+            self?.controllerInteraction.handleMessagesWithBots(nil, false)
         }, botDetails: { [weak self] bot in
             self?.controllerInteraction.showBotDetails(bot)
         }, toggleSearch: { [weak self] value in

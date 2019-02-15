@@ -353,7 +353,7 @@ final class ChatRecentActionsControllerNode: ViewControllerTracingNode {
         }, requestMessageUpdate: { _ in
         }, cancelInteractiveKeyboardGestures: {
         }, automaticMediaDownloadSettings: self.automaticMediaDownloadSettings,
-           handleMessagesWithBots: { _ in },
+           handleMessagesWithBots: { _, _ in },
            showBotDetails: { _ in },
            buyBot: { _, _ in },
            showBotActions: { _ in },

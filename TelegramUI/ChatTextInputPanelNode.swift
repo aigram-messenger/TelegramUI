@@ -1459,9 +1459,9 @@ class ChatTextInputPanelNode: ChatInputPanelNode, ASEditableTextNodeDelegate {
                     case .messageAutoremoveTimeout:
                         self.interfaceInteraction?.setupMessageAutoremoveTimeout()
                     case .suggestions:
-                        self.interfaceInteraction?.updateInputModeAndDismissedButtonKeyboardMessageId({ state in
-                            return (.suggestions(responses: [], expanded: nil, userInitiated: true), nil)
-                        })
+//                        self.interfaceInteraction?.updateInputModeAndDismissedButtonKeyboardMessageId({ state in
+//                            return (.suggestions(responses: [], expanded: nil, userInitiated: true), nil)
+//                        })
                         self.updateBotsResponses()
                 }
                 break

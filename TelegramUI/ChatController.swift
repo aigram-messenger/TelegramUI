@@ -1044,8 +1044,8 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
             (self?.view.window as? WindowHost)?.cancelInteractiveKeyboardGestures()
             self?.chatDisplayNode.cancelInteractiveKeyboardGestures()
         }, automaticMediaDownloadSettings: self.automaticMediaDownloadSettings,
-           handleMessagesWithBots: { [weak self] messages in
-            self?.requestHandlingLastMessages(messages)
+           handleMessagesWithBots: { [weak self] messages, byUserInitiating in
+            self?.requestHandlingLastMessages(messages, byUserInitiating: byUserInitiating)
         }, showBotDetails: { [weak self] bot in
             self?.showBotDetailsAlert(bot)
         }, buyBot: { [weak self] bot, completion in
@@ -1537,7 +1537,7 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
             ChatBotsManager.shared.enableBot(bot, enabled: false)
             //TODO: обновить в магазине
             actionSheet?.dismissAnimated()
-            self?.controllerInteraction?.handleMessagesWithBots(nil)
+            self?.controllerInteraction?.handleMessagesWithBots(nil, false)
         }))
 
         let cancel: [ActionSheetItem] = [
@@ -1564,7 +1564,7 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
                     guard bought else { return }
                     //TODO: обновить в магазине
                     actionSheet?.dismissAnimated()
-                    self?.controllerInteraction?.handleMessagesWithBots(nil)
+                    self?.controllerInteraction?.handleMessagesWithBots(nil, false)
                 }
             }))
         } else {
@@ -1575,7 +1575,7 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
                 ChatBotsManager.shared.enableBot(bot, enabled: !enabled)
                 //TODO: обновить в магазине
                 actionSheet?.dismissAnimated()
-                self?.controllerInteraction?.handleMessagesWithBots(nil)
+                self?.controllerInteraction?.handleMessagesWithBots(nil, false)
             }
             items.append(ActionSheetButtonItem(title: title, color: color, action: action))
         }
@@ -1589,9 +1589,10 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
         self.present(actionSheet, in: .window(.root))
     }
     
-    private func requestHandlingLastMessages(_ messages: [String]?) {
+    private func requestHandlingLastMessages(_ messages: [String]?, byUserInitiating: Bool = false) {
         let hasReply = self.presentationInterfaceState.interfaceState.replyMessageId != nil
         if case let .suggestions(_, _, userInitiated) = self.presentationInterfaceState.inputMode, userInitiated {
+        } else if byUserInitiating {
         } else if self.currentMessages == messages, self.currentReply == hasReply {
             return
         }
@@ -1603,12 +1604,12 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
         if !hasReply {
             switch self.presentationInterfaceState.inputMode {
             case .suggestions, .none: break
-            default: return 
+            default: if !byUserInitiating { return }
             }
         }
         if !ChatBotsManager.shared.autoOpenBots {
             if case .suggestions = self.presentationInterfaceState.inputMode {
-            } else {
+            } else if !byUserInitiating {
                 return
             }
         }
@@ -1620,15 +1621,15 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
                 $0.updatedInputMode { current in
                     if responses.isEmpty {
                         if hasReply {
-                            if case let .suggestions(_, expanded, userInitiated) = current, userInitiated {
-                                return ChatInputMode.suggestions(responses: responses, expanded: expanded, userInitiated: userInitiated)
+                            if case let .suggestions(_, expanded, userInitiated) = current, userInitiated || byUserInitiating {
+                                return ChatInputMode.suggestions(responses: responses, expanded: expanded, userInitiated: userInitiated || byUserInitiating)
                             }
                             if case .suggestions = current { return ChatInputMode.text }
                             if case .none = current { return ChatInputMode.text }
                         } else {
                             if case let .suggestions(_, expanded, userInitiated) = current {
-                                if userInitiated {
-                                    return ChatInputMode.suggestions(responses: responses, expanded: expanded, userInitiated: userInitiated)
+                                if userInitiated || byUserInitiating {
+                                    return ChatInputMode.suggestions(responses: responses, expanded: expanded, userInitiated: userInitiated || byUserInitiating)
                                 }
                                 return ChatInputMode.text
                             }
@@ -1636,11 +1637,11 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
                         return current
                     } else {
                         if hasReply, case let .suggestions(_, expanded, userInitiated) = current {
-                            return ChatInputMode.suggestions(responses: responses, expanded: expanded, userInitiated: userInitiated)
+                            return ChatInputMode.suggestions(responses: responses, expanded: expanded, userInitiated: userInitiated || byUserInitiating)
                         }
                     }
                     
-                    return ChatInputMode.suggestions(responses: responses, expanded: nil, userInitiated: false)
+                    return ChatInputMode.suggestions(responses: responses, expanded: nil, userInitiated: byUserInitiating)
                 }
             })
         })
