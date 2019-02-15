@@ -60,14 +60,20 @@ public final class BotsStoreManager: NSObject {
         return bot.isLocal
     }
     
-    public func botPriceString(bot: ChatBot) -> String {
+    public func botPrice(bot: ChatBot) -> Float {
         let id = prefix + bot.name
-        guard let product = self.products.first(where: { $0.productIdentifier == id }) else { return "ПОЛУЧИТЬ" }
+        guard let product = self.products.first(where: { $0.productIdentifier == id }) else { return 0 }
+        return Float(product.price)
+    }
+    
+    public func botPriceString(bot: ChatBot, defaultValue: String = "ПОЛУЧИТЬ") -> String {
+        let id = prefix + bot.name
+        guard let product = self.products.first(where: { $0.productIdentifier == id }) else { return defaultValue }
         let formatter = NumberFormatter()
         formatter.formatterBehavior = .default
         formatter.numberStyle = .currency
         formatter.locale = product.priceLocale
-        let price = formatter.string(from: product.price) ?? "ПОЛУЧИТЬ"
+        let price = formatter.string(from: product.price) ?? defaultValue
         return price
     }
 }

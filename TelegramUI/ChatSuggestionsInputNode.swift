@@ -268,13 +268,15 @@ final class ChatSuggestionsInputNode: ChatInputNode {
                 resultIndex += 1
             }
         }
-
+        let scrollTo = ListViewScrollToItem(index: 0, position: .top(0), animated: true, curve: .Default(duration: 0.25), directionHint: .Up)
         self.botsListView.transaction(deleteIndices: deleteListItems,
                                       insertIndicesAndItems: insertListItems,
                                       updateIndicesAndItems: updateListItems,
                                       options: [.Synchronous, .LowLatency],
+                                      scrollToItem: scrollTo,
                                       updateOpaqueState: nil)
         self.setCurrentPane(self.paneArrangement.panes[self.paneArrangement.currentIndex], transition: .animated(duration: 0.25, curve: .spring))
+        self.botsListView.transaction(deleteIndices: [], insertIndicesAndItems: [], updateIndicesAndItems: [], options: [.Synchronous], scrollToItem: scrollTo, additionalScrollDistance: 0, updateSizeAndInsets: nil, stationaryItemRange: nil, updateOpaqueState: nil)
     }
 
     override func updateLayout(width: CGFloat, leftInset: CGFloat, rightInset: CGFloat, bottomInset: CGFloat, standardInputHeight: CGFloat, inputHeight: CGFloat, maximumHeight: CGFloat, inputPanelHeight: CGFloat, transition: ContainedViewLayoutTransition, interfaceState: ChatPresentationInterfaceState) -> (CGFloat, CGFloat) {
@@ -308,10 +310,7 @@ final class ChatSuggestionsInputNode: ChatInputNode {
                 let botsSearchContainerNode = ChatBotsPaneSearchContainerNode(theme: self.theme!, strings: self.strings, inputNodeInteraction: self.inputNodeInteraction, cancel: { [weak self] in
                     self?.botsSearchContainerNode?.deactivate()
                     self?.inputNodeInteraction.toggleSearch(false)
-                })//ChatBotsPaneSearchContainerNode(account: self.account, theme: self.theme, strings: self.strings, controllerInteraction: self.controllerInteraction, inputNodeInteraction: self.inputNodeInteraction, cancel: { [weak self] in
-//                    self?.botsSearchContainerNode?.deactivate()
-//                    self?.inputNodeInteraction.toggleSearch(false)
-//                })
+                })
                 self.botsSearchContainerNode = botsSearchContainerNode
                 self.insertSubnode(botsSearchContainerNode, belowSubnode: self.botsListContainer)
                 botsSearchContainerNode.frame = containerFrame

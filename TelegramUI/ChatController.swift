@@ -1555,7 +1555,11 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
         
         items.append(ChatBotDetailsItem(bot: bot))
         if !BotsStoreManager.shared.isBotBought(bot) {
-            items.append(ActionSheetButtonItem(title: "Получить", color: .accent, action: { [weak self] in
+            var title = "Получить"
+            if BotsStoreManager.shared.botPrice(bot: bot) > 0 {
+                title = "Купить за " + BotsStoreManager.shared.botPriceString(bot: bot, defaultValue: "")
+            }
+            items.append(ActionSheetButtonItem(title: title, color: .accent, action: { [weak self] in
                 self?.controllerInteraction?.buyBot(bot) { [weak actionSheet] bought in
                     guard bought else { return }
                     //TODO: обновить в магазине
