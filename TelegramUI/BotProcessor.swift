@@ -77,10 +77,10 @@ private class InterpreterOperation: Operation {
         var result: [BotResponse] = []
         
         if let responseString = response["response"] {
-            let splitted = responseString.split(whereSeparator: { $0 == "\n" || $0 == "\r\n" })
+            let splitted = responseString.split(whereSeparator: { $0 == "\r\n" })
             for splittedValue in splitted {
                 var newResponse = response
-                newResponse["response"] = String(splittedValue)
+                newResponse["response"] = String(splittedValue).replacingOccurrences(of: "\"", with: "")
                 result.append(newResponse)
             }
         } else {

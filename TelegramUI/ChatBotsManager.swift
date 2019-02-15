@@ -127,13 +127,18 @@ public final class ChatBotsManager {
             var tempBots: [ChatBot.ChatBotId: ChatBot] = [:]
             var linkedNames: Set<ChatBot.ChatBotId> = Set()
             for url in urls {
-                guard let bot = try? ChatBot(url: url), !bot.isTarget else { continue }
-                if bot.tags.contains(String(describing: ChatBotTag.free)), !bot.isLocal {
-                    _ = self.copyBot(bot)
-                }
-                tempBots[bot.name] = bot
-                if let nextName = bot.nextBotId {
-                    linkedNames.insert(nextName)
+                do {
+                    let bot = try ChatBot(url: url)
+                    guard !bot.isTarget else { continue }
+                    if bot.tags.contains(String(describing: ChatBotTag.free)), !bot.isLocal {
+                        _ = self.copyBot(bot)
+                    }
+                    tempBots[bot.name] = bot
+                    if let nextName = bot.nextBotId {
+                        linkedNames.insert(nextName)
+                    }
+                } catch {
+                    print("ERROR INIT BOT \(error)")
                 }
             }
             
