@@ -3,7 +3,6 @@ import Display
 import Postbox
 import TelegramCore
 import SwiftSignalKit
-import FirebaseCore
 
 public final class TelegramRootController: NavigationController {
     private let account: Account
@@ -25,7 +24,6 @@ public final class TelegramRootController: NavigationController {
         
         super.init(mode: .automaticMasterDetail, theme: NavigationControllerTheme(presentationTheme: self.presentationData.theme))
         
-        FirebaseApp.configure()
         ChatBotsManager.shared.botsInStore(completion: { _ in })
             
         self.presentationDataDisposable = (account.telegramApplicationContext.presentationData
