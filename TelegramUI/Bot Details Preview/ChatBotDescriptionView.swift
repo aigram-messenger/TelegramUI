@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import TelegramCore
 
 class ChatBotDescriptionView: UIView {
     private lazy var containerView: UIView = {
@@ -45,8 +46,11 @@ class ChatBotDescriptionView: UIView {
     }()
 
     private lazy var rateView: ChatBotDescriptionRateView = {
-        let view = ChatBotDescriptionRateView { rate in
-            print("RATE \(rate)")
+        let view = ChatBotDescriptionRateView { [weak self] rate in
+            guard let self = self else { return }
+            ChatBotsManager.shared.rateBot(self.bot, rating: rate, userId: self.account.id.int64) { [weak self] error in
+                self?.rateCompletion?(error)
+            }
         }
 
         return view
@@ -57,6 +61,8 @@ class ChatBotDescriptionView: UIView {
     //MARK: -
     
     private let bot: ChatBot
+    private let account: Account
+    private var rateCompletion: ((Error?) -> Void)?
     
     override var frame: CGRect {
         didSet {
@@ -66,8 +72,10 @@ class ChatBotDescriptionView: UIView {
     
     //MARK: -
     
-    init(bot: ChatBot) {
+    init(account: Account, bot: ChatBot, rateCompletion: ((Error?) -> Void)?) {
         self.bot = bot
+        self.account = account
+        self.rateCompletion = rateCompletion
         
         super.init(frame: .zero)
         setup()

@@ -1554,7 +1554,20 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
         let actionSheet = ActionSheetController(presentationTheme: self.presentationData.theme)
         var items: [ActionSheetItem] = []
         
-        items.append(ChatBotDetailsItem(bot: bot))
+        items.append(ChatBotDetailsItem(account: self.account, bot: bot) { [weak self] error in
+            guard let strongSelf = self else { return }
+            var title: String?
+            var text = "Ваш голос учтен"
+            if error != nil {
+                title = "Ошибка"
+                text = "Не удалось сохранить вашу оценку"
+            }
+            let actions = [TextAlertAction(type: .defaultAction, title: strongSelf.presentationData.strings.Common_OK, action: {})]
+            strongSelf.present(standardTextAlertController(theme: AlertControllerTheme(presentationTheme: strongSelf.presentationData.theme),
+                                                           title: title,
+                                                           text: text,
+                                                           actions: actions), in: .window(.root))
+        })
         if !BotsStoreManager.shared.isBotBought(bot) {
             var title = "Получить"
             if BotsStoreManager.shared.botPrice(bot: bot) > 0 {

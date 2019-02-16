@@ -275,6 +275,15 @@ public final class ChatBotsManager {
         }.resume()
     }
     
+    public func rateBot(_ bot: ChatBot, rating: Int, userId: Int64, completion: @escaping (Error?) -> Void) {
+        let url: URL! = URL(string: "https://us-central1-api-7231730271161646241-853730.cloudfunctions.net/voteBot?user_id=\(userId)&bot_id=\(bot.name)&rating=\(rating)")
+        self.session.dataTask(with: url) { (_, _, error) in
+            DispatchQueue.main.async {
+                completion(error)
+            }
+        }.resume()
+    }
+    
     func sendEnablingBot(_ bot: ChatBot, enabled: Bool, userId: Int64) {
         let type = enabled ? 1 : 2
         let url: URL! = URL(string: "https://us-central1-api-7231730271161646241-853730.cloudfunctions.net/installDeleteBot?bot_id=\(bot.name)&type=\(type)&user_id=\(userId)")
