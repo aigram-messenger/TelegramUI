@@ -32,7 +32,7 @@ public final class BotsStoreManager: NSObject {
         
         var productIds: [String] = []
         bots.forEach {
-            productIds.append(prefix + $0.name)
+            productIds.append(self.idOfBot($0))
         }
         let request = SKProductsRequest(productIdentifiers: Set(productIds))
         request.delegate = self
@@ -45,7 +45,7 @@ public final class BotsStoreManager: NSObject {
             completion(true)
             return
         }
-        let id = prefix + bot.name
+        let id = self.idOfBot(bot)
         guard let product = self.products.first(where: { $0.productIdentifier == id }) else {
             completion(false)
             return
@@ -61,13 +61,13 @@ public final class BotsStoreManager: NSObject {
     }
     
     public func botPrice(bot: ChatBot) -> Float {
-        let id = prefix + bot.name
+        let id = self.idOfBot(bot)
         guard let product = self.products.first(where: { $0.productIdentifier == id }) else { return 0 }
         return Float(product.price)
     }
     
     public func botPriceString(bot: ChatBot, defaultValue: String = "ПОЛУЧИТЬ") -> String {
-        let id = prefix + bot.name
+        let id = self.idOfBot(bot)
         guard let product = self.products.first(where: { $0.productIdentifier == id }) else { return defaultValue }
         let formatter = NumberFormatter()
         formatter.formatterBehavior = .default
@@ -112,5 +112,19 @@ extension BotsStoreManager: SKProductsRequestDelegate {
     public func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
         self.products = response.products
         self.productsCompletion?()
+    }
+}
+
+extension BotsStoreManager {
+    private static let nameMaps: [ChatBot.ChatBotId: String] = [
+        "celentano": "Celentano",
+        "lannister": "tyrion",
+        "spongebob": "sponge_bob"
+    ]
+    
+    private func idOfBot(_ bot: ChatBot) -> String {
+        let name = BotsStoreManager.nameMaps[bot.name] ?? bot.name
+        let result: String = self.prefix + name
+        return result
     }
 }
