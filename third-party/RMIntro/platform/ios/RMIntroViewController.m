@@ -148,9 +148,9 @@ static void TGDispatchOnMainThread(dispatch_block_t block) {
         _englishStrings = englishStrings;
         
         _headlines = @[ _englishStrings[@"Tour.Title1"], _englishStrings[@"Tour.Title2"], _englishStrings[@"Tour.Title3"], _englishStrings[@"Tour.Title4"],
-                        _englishStrings[@"Tour.Title5"], _englishStrings[@"Tour.Title6"]];
+                        _englishStrings[@"Tour.Title5"], /*_englishStrings[@"Tour.Title6"]*/];
         _descriptions = @[_englishStrings[@"Tour.Text1"], _englishStrings[@"Tour.Text2"], _englishStrings[@"Tour.Text3"], _englishStrings[@"Tour.Text4"],
-                          _englishStrings[@"Tour.Text5"], _englishStrings[@"Tour.Text6"]];
+                          _englishStrings[@"Tour.Text5"], /*_englishStrings[@"Tour.Text6"]*/];
         
         __weak RMIntroViewController *weakSelf = self;
         _didEnterBackgroundObserver = [[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationDidEnterBackgroundNotification object:nil queue:nil usingBlock:^(__unused NSNotification *notification)
@@ -638,7 +638,7 @@ NSInteger _current_page_end;
                 _currentPage--;
         }
         
-        _currentPage = MAX(0, MIN(5, _currentPage));
+        _currentPage = MAX(0, MIN(_headlines.count - 1, _currentPage));
         _current_page_end = _currentPage;
     }
     else

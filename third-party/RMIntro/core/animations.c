@@ -1531,21 +1531,21 @@ void on_draw_frame() {
             knot_delays[j2] = temp;
         }
 
-        if (current_page == 2) {
+        if (current_page == 0x5) {
             ic_pin_layer.rotation = -15;
             ic_cam_layer.rotation = 15;
             ic_smile_layer.rotation = -15;
             ic_bubble_layer.rotation = -15;
         }
 
-        if (current_page == 4) {
+        if (current_page == 0x3) {
             anim_safe_button_q = 21;
             anim_safe_button_i = 2;
             anim_safe_button_j = 3;
             anim_safe_button_start_time = time_local + 1.5;
         }
 
-        if (current_page == 5) {
+        if (current_page == 0x4) {
             ic_pin_layer.rotation = -15;
             ic_videocam_layer.rotation = -30;
             ic_cam_layer.rotation = 15;
@@ -1661,7 +1661,7 @@ void on_draw_frame() {
     }
 
 
-    else if (current_page == 2)
+    else if (current_page == 0x5)
     {
         rglNormalDraw();
         if (direct == 1) {
@@ -1673,7 +1673,7 @@ void on_draw_frame() {
     }
 
 
-    else if (current_page == 4)
+    else if (current_page == 0x3)
     {
         if (direct == 1) {
             privateLayer.rotation=private_scroll_offset + t(-90, 0, 0, duration_const, EaseOut);
@@ -1718,7 +1718,7 @@ void on_draw_frame() {
 
 
 
-    else if (current_page == 2)
+    else if (current_page == 0x5)
     {
         if (direct==1) {
             float size = t(r1*2, r2*2, 0, duration_const, EaseInEaseOut);
@@ -1739,7 +1739,7 @@ void on_draw_frame() {
     }
 
 
-    else if (current_page == 3)
+    else if (current_page == 0x2)
     {
         if (direct == 1) {
             float r = 316/4.;
@@ -1758,7 +1758,7 @@ void on_draw_frame() {
     }
 
 
-    else if (current_page == 4)
+    else if (current_page == 0x3)
     {
         if (direct == 1) {
 
@@ -1815,7 +1815,7 @@ void on_draw_frame() {
     }
 
 
-    else if (current_page == 5)
+    else if (current_page == 0x4)
     {
 
         float k = 0;
@@ -1951,7 +1951,7 @@ void on_draw_frame() {
             draw_ic(0);
         }
     }
-    else if (current_page == 2) {
+    else if (current_page == 0x5) {
         glEnable(GL_BLEND);
         glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -1996,7 +1996,7 @@ void on_draw_frame() {
         ribbon3.params.rotation = 180;
         ribbon4.params.rotation = 270;
     }
-    else if (current_page == 3) {
+    else if (current_page == 0x2) {
         if (direct == 1) {
             glDisable(GL_BLEND);
             free_bg.params.alpha = 1;
@@ -2025,7 +2025,7 @@ void on_draw_frame() {
             draw_stars();
         }
     }
-    else if (current_page == 4)
+    else if (current_page == 0x3)
     {
         if (direct == 1) {
             glDisable(GL_BLEND);
@@ -2054,7 +2054,7 @@ void on_draw_frame() {
             draw_shape(&private_bg, main_matrix);
         }
     }
-    else if (current_page == 5)
+    else if (current_page == 0x4)
     {
         glDisable(GL_BLEND);
         private_bg.params.alpha = 1.;
@@ -2138,7 +2138,7 @@ void on_draw_frame() {
             }
         }
     }
-    else if (current_page == 2)
+    else if (current_page == 0x5)
     {
         rglNormalDrawThroughMask();
 
@@ -2313,7 +2313,7 @@ void on_draw_frame() {
     }
 
 
-    else if (current_page == 3) {
+    else if (current_page == 0x2) {
         if (direct == 1) {
 
             // reset ribbons positions
@@ -2477,7 +2477,7 @@ void on_draw_frame() {
     }
 
 
-    else if (current_page == 4)
+    else if (current_page == 0x3)
     {
         private_stroke.params.scale = xyzMake(1, 1, 1);
 
@@ -2570,7 +2570,7 @@ void on_draw_frame() {
     }
 
 
-    else if (current_page == 5) {
+    else if (current_page == 0x4) {
         float private_fade_k = .5;
 
         rglNormalDraw();
