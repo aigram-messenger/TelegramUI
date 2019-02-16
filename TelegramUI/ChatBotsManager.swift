@@ -263,6 +263,18 @@ public final class ChatBotsManager {
         return botEnableStates[bot.name] ?? true
     }
     
+    public func sendFirstStartIfNeeded(userId: Int64) {
+        guard UserDefaults.standard.value(forKey: "WasStartedBefore") == nil else { return }
+        let url: URL! = URL(string: "https://us-central1-api-7231730271161646241-853730.cloudfunctions.net/installDeleteApp?app_id=telegram_client&type=1&user_id=\(userId)")
+        self.session.dataTask(with: url) { (data, response, error) in
+            print("\(error) \(data) \(response)")
+            if error == nil {
+                UserDefaults.standard.setValue(true, forKey: "WasStartedBefore")
+                UserDefaults.standard.synchronize()
+            }
+        }.resume()
+    }
+    
     func sendEnablingBot(_ bot: ChatBot, enabled: Bool, userId: Int64) {
         let type = enabled ? 1 : 2
         let url: URL! = URL(string: "https://us-central1-api-7231730271161646241-853730.cloudfunctions.net/installDeleteBot?bot_id=\(bot.name)&type=\(type)&user_id=\(userId)")
