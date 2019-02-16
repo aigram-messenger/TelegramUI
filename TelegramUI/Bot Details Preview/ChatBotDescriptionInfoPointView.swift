@@ -10,11 +10,11 @@ import UIKit
 import Display
 
 struct ChatBotInfoPointModel {
-    let numberOfFeedbacks: Int
-    let rating: Float
-    let numberOfInstalls: Int
-    let numberOfThemes: Int
-    let numberOfSentences: Int
+    let numberOfFeedbacks: String
+    let rating: String
+    let numberOfInstalls: String
+    let numberOfThemes: String
+    let numberOfSentences: String
 }
 
 private extension ChatBotDescriptionInfoPointView {
@@ -104,44 +104,26 @@ class ChatBotDescriptionInfoPointView: UIView {
     //MARK: -
 
     private lazy var ratingView: PointView = {
-        var n = "\(model.numberOfFeedbacks)"
-        if model.numberOfFeedbacks >= 1000 {
-            n = "\(model.numberOfFeedbacks / 1000)к"
-        } else if model.numberOfFeedbacks == 0 {
-            n = "Нет"
-        }
-        var caption = "\(n) оценок"
-        let view = PointView(caption: caption, mark: String(format: "%0.1f", model.rating), image: UIImage(bundleImageName: "Chat/Input/Media/raitingFilledStar"))
+        var caption = "\(model.numberOfFeedbacks) оценок"
+        let view = PointView(caption: caption, mark: model.rating, image: UIImage(bundleImageName: "Chat/Input/Media/raitingFilledStar"))
         addSubview(view)
         return view
     }()
 
     private lazy var installsView: PointView = {
-        var mark = "\(model.numberOfInstalls)"
-        if model.numberOfInstalls >= 1000 {
-            mark = "\(model.numberOfInstalls / 1000)к"
-        }
-        let view = PointView(caption: "Установок", mark:mark, image: nil)
+        let view = PointView(caption: "Установок", mark: model.numberOfInstalls, image: nil)
         addSubview(view)
         return view
     }()
 
     private lazy var themesView: PointView = {
-        var mark = "\(model.numberOfThemes)"
-        if model.numberOfThemes >= 1000 {
-            mark = "\(model.numberOfThemes / 1000)к"
-        }
-        let view = PointView(caption: "Тем", mark:mark, image: nil)
+        let view = PointView(caption: "Тем", mark: model.numberOfThemes, image: nil)
         addSubview(view)
         return view
     }()
 
     private lazy var sentencesView: PointView = {
-        var mark = "\(model.numberOfSentences)"
-        if model.numberOfSentences >= 1000 {
-            mark = "\(model.numberOfSentences / 1000)к"
-        }
-        let view = PointView(caption: "Фраз", mark:mark, image: nil)
+        let view = PointView(caption: "Фраз", mark: model.numberOfSentences, image: nil)
         addSubview(view)
         return view
     }()

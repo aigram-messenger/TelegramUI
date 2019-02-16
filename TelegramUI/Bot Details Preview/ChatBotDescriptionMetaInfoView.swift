@@ -36,10 +36,7 @@ class ChatBotDescriptionMetaInfoView: UIView {
     //MARK: -
     
     init(bot: ChatBot) {
-        let date = Date()
-        let dts = ChatBotDescriptionMetaInfoView.dateToString
-        let developerName = "Motherfucker"
-        self.metaInfo = "Добавлен: \(dts(date))\nОбновлен: \(dts(date))\nРазработчик: \(developerName)"
+        self.metaInfo = "Добавлен: \(bot.addDate)\nОбновлен: \(bot.addDate)\nРазработчик: \(bot.developer)"
         super.init(frame: .zero)
         self.clipsToBounds = true
         self.label.translatesAutoresizingMaskIntoConstraints = false

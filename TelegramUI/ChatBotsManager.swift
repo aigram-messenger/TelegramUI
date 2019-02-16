@@ -8,6 +8,8 @@
 
 import Foundation
 import UIKit
+import FirebaseCore
+import FirebaseFunctions
 
 public enum Result<T> {
     case success(T)
@@ -25,6 +27,7 @@ public final class ChatBotsManager {
     private var lastSearchText: String?
     private var storeBotsLoadingStarted: Bool = false
     private var storeBotsLoadingCompletions: [(Result<[ChatBot]>) -> Void] = []
+    private let session = URLSession(configuration: .default)
     
     public var autoOpenBots: Bool {
         get { return (UserDefaults.standard.value(forKey: "autoOpenBots") as? Bool) ?? true }
@@ -42,6 +45,9 @@ public final class ChatBotsManager {
             https://aigram.app
             """
     }
+    
+    private lazy var functions = Functions.functions()
+    private var botsDetailsFromBack: [ChatBot.ChatBotId: ChatBotBackDetails] = [:]
     
     private init() {
         queue = OperationQueue()
@@ -64,10 +70,33 @@ public final class ChatBotsManager {
             bots.append(bot)
         }
         
+        self.getTreshovieBots { result in
+            self.botsDetailsFromBack = result
+        }
+        
 //        let temp = bots
 //        for bot in temp {
 //            deleteBot(bot)
 //        }
+    }
+    
+    public func botDetails(_ bot: ChatBot) -> ChatBotBackDetails {
+        var details: ChatBotBackDetails
+        
+        if let temp = self.botsDetailsFromBack[bot.name] {
+            details = temp
+        } else {
+            details = ChatBotBackDetails(name: bot.name,
+                                         installation: "0",
+                                         deletion: "0",
+                                         theme: "0",
+                                         phrase: "0",
+                                         price: "0",
+                                         rating: "0",
+                                         votings: "0")
+        }
+        
+        return details
     }
     
     public func handleMessages(_ messages: [String], completion: @escaping ([ChatBotResult]) -> Void) {
@@ -238,5 +267,32 @@ extension ChatBotsManager {
     private var targetBot: ChatBot? {
         //TODO: not implemented
         return nil
+    }
+    
+    private struct TempBackDetails: Codable {
+        let payload: [ChatBotBackDetails]
+    }
+    
+    private func getTreshovieBots(success: @escaping ([ChatBot.ChatBotId: ChatBotBackDetails]) -> Void) {
+        let url: URL! = URL(string: "https://us-central1-api-7231730271161646241-853730.cloudfunctions.net/getBotsInfo")
+        let dataTask = self.session.dataTask(with: url) { (data, response, error) in
+            print("\(error)")
+            var result: [ChatBot.ChatBotId: ChatBotBackDetails] = [:]
+            if let data = data {
+                let decoder = JSONDecoder()
+                do {
+                    let temp = try decoder.decode(TempBackDetails.self, from: data)
+                    for detail in temp.payload {
+                        result[detail.name] = detail
+                    }
+                } catch {
+                    print("\(error)")
+                }
+            }
+            DispatchQueue.main.async {
+                success(result)
+            }
+        }
+        dataTask.resume()
     }
 }

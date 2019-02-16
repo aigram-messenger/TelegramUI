@@ -61,6 +61,20 @@ private struct ChatBotInfo: Codable {
     let tags: [ChatBotTag]
     let next: ChatBot.ChatBotId?
     let price: Int?
+    let addDate: String
+    let updateDate: String
+    let developer: String
+}
+
+public struct ChatBotBackDetails: Codable {
+    public let name: String
+    public let installation: String
+    public let deletion: String
+    public let theme: String
+    public let phrase: String
+    public let price: String
+    public let rating: String
+    public let votings: String
 }
 
 public struct ChatBot {
@@ -83,6 +97,9 @@ public struct ChatBot {
     public var index: Int = 0
     public var nextBotId: ChatBotId? { return info.next }
     public var price: Int { return info.price ?? 0 }
+    public var addDate: String { return info.addDate }
+    public var updateDate: String { return info.updateDate }
+    public var developer: String { return info.developer }
     
     public let words: [String]
     public let responses: [BotResponse]

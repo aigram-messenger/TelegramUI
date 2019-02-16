@@ -1088,6 +1088,9 @@
 		F7F28FCF21CD1DB3008DC5A4 /* ChatBotsInputStorePane.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7F28FCE21CD1DB3008DC5A4 /* ChatBotsInputStorePane.swift */; };
 		F7F28FD121CD1E2D008DC5A4 /* ChatBotsInputSuggestionsPane.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7F28FD021CD1E2D008DC5A4 /* ChatBotsInputSuggestionsPane.swift */; };
 		F7F5F87B22099AB400D8DD4C /* ChatBotDetailsTagsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7F5F87A22099AB400D8DD4C /* ChatBotDetailsTagsView.swift */; };
+		F7FF1F0922170079008BE8C3 /* GTMSessionFetcher.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F7FF1F0722170079008BE8C3 /* GTMSessionFetcher.framework */; };
+		F7FF1F0A22170079008BE8C3 /* FirebaseFunctions.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F7FF1F0822170079008BE8C3 /* FirebaseFunctions.framework */; };
+		F7FF1F0C221703A0008BE8C3 /* FirebaseAuth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F7FF1F0B2217039F008BE8C3 /* FirebaseAuth.framework */; };
 		FB2B65752209ED28003349E1 /* STRatingControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB2B65742209ED27003349E1 /* STRatingControl.swift */; };
 		FB2B65772209ED80003349E1 /* ChatBotDescriptionRateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB2B65762209ED80003349E1 /* ChatBotDescriptionRateView.swift */; };
 		FB31301621D80DF0004870C2 /* ObjC.h in Headers */ = {isa = PBXBuildFile; fileRef = FB31301421D80DF0004870C2 /* ObjC.h */; };
@@ -2269,6 +2272,9 @@
 		F7F28FCE21CD1DB3008DC5A4 /* ChatBotsInputStorePane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotsInputStorePane.swift; sourceTree = "<group>"; };
 		F7F28FD021CD1E2D008DC5A4 /* ChatBotsInputSuggestionsPane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotsInputSuggestionsPane.swift; sourceTree = "<group>"; };
 		F7F5F87A22099AB400D8DD4C /* ChatBotDetailsTagsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotDetailsTagsView.swift; sourceTree = "<group>"; };
+		F7FF1F0722170079008BE8C3 /* GTMSessionFetcher.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GTMSessionFetcher.framework; path = "third-party/GTMSessionFetcher.framework"; sourceTree = "<group>"; };
+		F7FF1F0822170079008BE8C3 /* FirebaseFunctions.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FirebaseFunctions.framework; path = "third-party/FirebaseFunctions.framework"; sourceTree = "<group>"; };
+		F7FF1F0B2217039F008BE8C3 /* FirebaseAuth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FirebaseAuth.framework; path = "third-party/FirebaseAuth.framework"; sourceTree = "<group>"; };
 		FB2B65742209ED27003349E1 /* STRatingControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STRatingControl.swift; sourceTree = "<group>"; };
 		FB2B65762209ED80003349E1 /* ChatBotDescriptionRateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotDescriptionRateView.swift; sourceTree = "<group>"; };
 		FB31301421D80DF0004870C2 /* ObjC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ObjC.h; sourceTree = "<group>"; };
@@ -2292,6 +2298,8 @@
 				F76439B021D66453005AC13C /* FirebaseMLModelInterpreter.framework in Frameworks */,
 				F76439B121D66453005AC13C /* FirebaseCore.framework in Frameworks */,
 				F76439B221D66453005AC13C /* FirebaseMLCommon.framework in Frameworks */,
+				F7FF1F0922170079008BE8C3 /* GTMSessionFetcher.framework in Frameworks */,
+				F7FF1F0A22170079008BE8C3 /* FirebaseFunctions.framework in Frameworks */,
 				F76439B321D66453005AC13C /* GoogleUtilities.framework in Frameworks */,
 				F76439B421D66453005AC13C /* tensorflow_lite.framework in Frameworks */,
 				F76439B621D6687A005AC13C /* FirebaseInstanceID.framework in Frameworks */,
@@ -2309,6 +2317,7 @@
 				D0EC6EA41EB9FB8000EBF1C3 /* libz.tbd in Frameworks */,
 				D0EC6EA31EB9FB7A00EBF1C3 /* SSignalKit.framework in Frameworks */,
 				D0EC6EA21EB9FAFA00EBF1C3 /* libopus.a in Frameworks */,
+				F7FF1F0C221703A0008BE8C3 /* FirebaseAuth.framework in Frameworks */,
 				D0EC6E9C1EB9F5E600EBF1C3 /* libwebp.a in Frameworks */,
 				D0EC6E981EB9F5D000EBF1C3 /* libavcodec.a in Frameworks */,
 				D0EC6E991EB9F5D000EBF1C3 /* libavformat.a in Frameworks */,
@@ -3273,6 +3282,9 @@
 		D08D45281D5E340200A7428A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				F7FF1F0B2217039F008BE8C3 /* FirebaseAuth.framework */,
+				F7FF1F0822170079008BE8C3 /* FirebaseFunctions.framework */,
+				F7FF1F0722170079008BE8C3 /* GTMSessionFetcher.framework */,
 				F76439B521D66879005AC13C /* FirebaseInstanceID.framework */,
 				F76439AB21D66452005AC13C /* FirebaseCore.framework */,
 				F76439AC21D66453005AC13C /* FirebaseMLCommon.framework */,

@@ -26,7 +26,10 @@ class ChatBotDescriptionView: UIView {
     }()
 
     private lazy var pointInfoView: ChatBotDescriptionInfoPointView = {
-        let model = ChatBotInfoPointModel(numberOfFeedbacks: 591, rating: 4.3, numberOfInstalls: 280, numberOfThemes: 63, numberOfSentences: 1205)
+        let details = ChatBotsManager.shared.botDetails(self.bot)
+        let model = ChatBotInfoPointModel(numberOfFeedbacks: details.votings, rating: details.rating,
+                                          numberOfInstalls: details.installation, numberOfThemes: details.theme,
+                                          numberOfSentences: details.phrase)
         let view = ChatBotDescriptionInfoPointView(model: model)
         return view
     }()

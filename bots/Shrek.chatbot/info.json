@@ -9,5 +9,8 @@
         "men"
     ],
     "next": "scooby_doo",
-    "price": 0
+    "price": 0,
+    "addDate": "06.02.2019",
+    "updateDate": "15.02.2019",
+    "developer": "AiGram Messenger"
 }
