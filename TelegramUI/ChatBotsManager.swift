@@ -242,24 +242,33 @@ public final class ChatBotsManager {
         return true
     }
     
-    public func deleteBot(_ bot: ChatBot) {
-        let fm = FileManager.default
-        guard var botUrl = fm.urls(for: .documentDirectory, in: .userDomainMask).first else { return }
-        botUrl.appendPathComponent("chatbots", isDirectory: true)
-        botUrl.appendPathComponent("\(bot.fileNameComponents.0).\(bot.fileNameComponents.1)", isDirectory: true)
-        try? fm.removeItem(at: botUrl)
-    }
+//    public func deleteBot(_ bot: ChatBot) {
+//        let fm = FileManager.default
+//        guard var botUrl = fm.urls(for: .documentDirectory, in: .userDomainMask).first else { return }
+//        botUrl.appendPathComponent("chatbots", isDirectory: true)
+//        botUrl.appendPathComponent("\(bot.fileNameComponents.0).\(bot.fileNameComponents.1)", isDirectory: true)
+//        try? fm.removeItem(at: botUrl)
+//    }
     
-    public func enableBot(_ bot: ChatBot, enabled: Bool) {
+    public func enableBot(_ bot: ChatBot, enabled: Bool, userId: Int64) {
         var botEnableStates: [ChatBot.ChatBotId: Bool] = (UserDefaults.standard.value(forKey: "EnabledBots") as? [ChatBot.ChatBotId: Bool]) ?? [:]
         botEnableStates[bot.name] = enabled
         UserDefaults.standard.setValue(botEnableStates, forKey: "EnabledBots")
         UserDefaults.standard.synchronize()
+        self.sendEnablingBot(bot, enabled: enabled, userId: userId)
     }
     
     public func isBotEnabled(_ bot: ChatBot) -> Bool {
         let botEnableStates: [ChatBot.ChatBotId: Bool] = (UserDefaults.standard.value(forKey: "EnabledBots") as? [ChatBot.ChatBotId: Bool]) ?? [:]
         return botEnableStates[bot.name] ?? true
+    }
+    
+    func sendEnablingBot(_ bot: ChatBot, enabled: Bool, userId: Int64) {
+        let type = enabled ? 1 : 2
+        let url: URL! = URL(string: "https://us-central1-api-7231730271161646241-853730.cloudfunctions.net/installDeleteBot?bot_id=\(bot.name)&type=\(type)&user_id=\(userId)")
+        self.session.dataTask(with: url) { (data, response, error) in
+            print("\(error) \(data) \(response)")
+        }.resume()
     }
 }
 

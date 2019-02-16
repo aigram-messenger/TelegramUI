@@ -18,6 +18,8 @@ public final class BotsStoreManager: NSObject {
     private var productsCompletion: (() -> Void)?
     private var buyCompletions: [String: (Bool) -> Void] = [:]
     
+    public var userId: Int64!
+    
     private override init() {
         super.init()
         
@@ -63,7 +65,7 @@ public final class BotsStoreManager: NSObject {
     public func botPrice(bot: ChatBot) -> Float {
         let id = self.idOfBot(bot)
         guard let product = self.products.first(where: { $0.productIdentifier == id }) else { return 0 }
-        return Float(product.price)
+        return Float(truncating: product.price)
     }
     
     public func botPriceString(bot: ChatBot, defaultValue: String = "ПОЛУЧИТЬ") -> String {
@@ -90,6 +92,9 @@ extension BotsStoreManager: SKPaymentTransactionObserver {
                 guard let bot = ChatBotsManager.shared.loadedBotsInStore.first(where: { $0.name == name }) else { break }
                 DispatchQueue.global().async { [weak self] in
                     let copied = ChatBotsManager.shared.copyBot(bot)
+                    if copied, let self = self {
+                        ChatBotsManager.shared.sendEnablingBot(bot, enabled: true, userId: self.userId)
+                    }
                     DispatchQueue.main.async { [weak self] in
                         self?.buyCompletions[transaction.payment.productIdentifier]?(copied)
                         self?.buyCompletions.removeValue(forKey: transaction.payment.productIdentifier)
