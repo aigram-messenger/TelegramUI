@@ -1046,8 +1046,8 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
         }, automaticMediaDownloadSettings: self.automaticMediaDownloadSettings,
            handleMessagesWithBots: { [weak self] messages, byUserInitiating in
             self?.requestHandlingLastMessages(messages, byUserInitiating: byUserInitiating)
-        }, showBotDetails: { [weak self] bot in
-            self?.showBotDetailsAlert(bot)
+        }, showBotDetails: { [weak self] bot, completion in
+            self?.showBotDetailsAlert(bot, completion: completion)
         }, buyBot: { [weak self] bot, completion in
             BotsStoreManager.shared.buyBot(bot) { [weak self] (bought) in
                 print("BOT \(bot.title) BOUGHT \(bought)")
@@ -1064,8 +1064,8 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
                 }
                 completion(bought)
             }
-        }, showBotActions: { [weak self] bot in
-            self?.showBotActions(bot)
+        }, showBotActions: { [weak self] bot, completion in
+            self?.showBotActions(bot, completion: completion)
         }, handleSuggestionTap: { [weak self] suggestion in
             self?.updateText(suggestion)
         })
@@ -1521,13 +1521,13 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
         }
     }
 
-    private func showBotActions(_ bot: ChatBot) {
+    private func showBotActions(_ bot: ChatBot, completion: @escaping () -> Void) {
         let actionSheet = ActionSheetController(presentationTheme: self.presentationData.theme)
         var items: [ActionSheetItem] = []
 
         items.append(ActionSheetButtonItem(title: "Подробно о боте", color: .accent, action: { [weak self, weak actionSheet] in
             actionSheet?.dismissAnimated()
-            self?.showBotDetailsAlert(bot)
+            self?.showBotDetailsAlert(bot, completion: completion)
         }))
         items.append(ActionSheetButtonItem(title: "Поделиться в чат", color: .accent, action: { [weak self, weak actionSheet] in
             actionSheet?.dismissAnimated()
@@ -1535,9 +1535,7 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
         }))
         items.append(ActionSheetButtonItem(title: "Отключить бота", color: .destructive, action: { [weak self, weak actionSheet] in
             guard let self = self else { return }
-            ChatBotsManager.shared.enableBot(bot, enabled: false, userId: self.account.id.int64, completion: {
-                //TODO: обновить в магазине
-            })
+            ChatBotsManager.shared.enableBot(bot, enabled: false, userId: self.account.id.int64, completion: completion)
             actionSheet?.dismissAnimated()
             self.controllerInteraction?.handleMessagesWithBots(nil, false)
         }))
@@ -1551,7 +1549,7 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
         self.present(actionSheet, in: .window(.root))
     }
     
-    private func showBotDetailsAlert(_ bot: ChatBot) {
+    private func showBotDetailsAlert(_ bot: ChatBot, completion: @escaping () -> Void) {
         let actionSheet = ActionSheetController(presentationTheme: self.presentationData.theme)
         var items: [ActionSheetItem] = []
         
@@ -1577,7 +1575,7 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
             items.append(ActionSheetButtonItem(title: title, color: .accent, action: { [weak self] in
                 self?.controllerInteraction?.buyBot(bot) { [weak actionSheet] bought in
                     guard bought else { return }
-                    //TODO: обновить в магазине
+                    completion()
                     actionSheet?.dismissAnimated()
                     self?.controllerInteraction?.handleMessagesWithBots(nil, false)
                 }
@@ -1588,10 +1586,7 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
             let color = enabled ? ActionSheetButtonColor.destructive : .accent
             let action = { [weak self, weak actionSheet] in
                 guard let self = self else { return }
-                ChatBotsManager.shared.enableBot(bot, enabled: !enabled, userId: self.account.id.int64, completion: {
-                    //TODO: обновить в магазине
-                    //TODO: обвноить в деталях
-                })
+                ChatBotsManager.shared.enableBot(bot, enabled: !enabled, userId: self.account.id.int64, completion: completion)
                 actionSheet?.dismissAnimated()
                 self.controllerInteraction?.handleMessagesWithBots(nil, false)
             }

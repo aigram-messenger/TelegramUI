@@ -104,9 +104,9 @@ class ThemeSettingsChatPreviewItemNode: ListViewItemNode {
         }, cancelInteractiveKeyboardGestures: {
         }, automaticMediaDownloadSettings: AutomaticMediaDownloadSettings.defaultSettings,
            handleMessagesWithBots: { _, _ in },
-           showBotDetails: { _ in },
+           showBotDetails: { _, _ in },
            buyBot: { _, _ in },
-           showBotActions: { _ in },
+           showBotActions: { _, _ in },
            handleSuggestionTap: { _ in })
         
         super.init(layerBacked: false, dynamicBounce: false)

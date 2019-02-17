@@ -49,7 +49,6 @@ class ChatBotDescriptionView: UIView {
         let view = ChatBotDescriptionRateView { [weak self] rate in
             guard let self = self else { return }
             ChatBotsManager.shared.rateBot(self.bot, rating: rate, userId: self.account.id.int64) { [weak self] error in
-                //TODO: обновить вьюху с деталями
                 self?.rateCompletion?(error)
             }
         }

@@ -140,7 +140,9 @@ final class ChatSuggestionsInputNode: ChatInputNode {
             self.controllerInteraction.handleMessagesWithBots(nil, false)
         }, botDetails: { [weak self] bot in
             self?.storeByUser = true
-            self?.controllerInteraction.showBotDetails(bot)
+            self?.controllerInteraction.showBotDetails(bot) { [weak self] in
+                self?.updateStorePane(for: bot)
+            }
         }, toggleSearch: { [weak self] value in
             if let strongSelf = self {
                 strongSelf.controllerInteraction.updateInputMode { current in
@@ -157,7 +159,9 @@ final class ChatSuggestionsInputNode: ChatInputNode {
                 }
             }
         }, botActions: { [weak self] bot in
-            self?.controllerInteraction.showBotActions(bot)
+            self?.controllerInteraction.showBotActions(bot) {[weak self] in
+                self?.updateStorePane(for: bot)
+            }
         })
 
         self.backgroundColor = theme.chat.inputMediaPanel.stickersBackgroundColor

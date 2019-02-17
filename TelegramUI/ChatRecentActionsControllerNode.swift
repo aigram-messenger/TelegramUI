@@ -354,9 +354,9 @@ final class ChatRecentActionsControllerNode: ViewControllerTracingNode {
         }, cancelInteractiveKeyboardGestures: {
         }, automaticMediaDownloadSettings: self.automaticMediaDownloadSettings,
            handleMessagesWithBots: { _, _ in },
-           showBotDetails: { _ in },
+           showBotDetails: { _, _ in },
            buyBot: { _, _ in },
-           showBotActions: { _ in },
+           showBotActions: { _, _ in },
            handleSuggestionTap: { _ in })
         self.controllerInteraction = controllerInteraction
         
