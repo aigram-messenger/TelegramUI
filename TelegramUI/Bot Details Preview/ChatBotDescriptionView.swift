@@ -49,6 +49,7 @@ class ChatBotDescriptionView: UIView {
         let view = ChatBotDescriptionRateView { [weak self] rate in
             guard let self = self else { return }
             ChatBotsManager.shared.rateBot(self.bot, rating: rate, userId: self.account.id.int64) { [weak self] error in
+                //TODO: обновить вьюху с деталями
                 self?.rateCompletion?(error)
             }
         }
@@ -75,10 +76,21 @@ class ChatBotDescriptionView: UIView {
     init(account: Account, bot: ChatBot, rateCompletion: ((Error?) -> Void)?) {
         self.bot = bot
         self.account = account
-        self.rateCompletion = rateCompletion
         
         super.init(frame: .zero)
         setup()
+        
+        self.rateCompletion = { [weak self] error in
+            if error == nil, let self = self {
+                let details = ChatBotsManager.shared.botDetails(self.bot)
+                let model = ChatBotInfoPointModel(numberOfFeedbacks: details.votings, rating: details.rating,
+                                                  numberOfInstalls: details.installation, numberOfThemes: details.theme,
+                                                  numberOfSentences: details.phrase)
+                self.pointInfoView.updateModel(model)
+            }
+            
+            rateCompletion?(error)
+        }
     }
 
     required init?(coder aDecoder: NSCoder) {

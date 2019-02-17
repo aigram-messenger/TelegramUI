@@ -79,6 +79,17 @@ private extension ChatBotDescriptionInfoPointView {
             updateFrame()
         }
         
+        func update(caption: String, mark: String, image: UIImage?) {
+            self.caption = caption
+            self.mark = mark
+            self.image = image
+            
+            self.imageView.image = image
+            self.markLabel.text = mark
+            self.captionLabel.text = caption
+            self.updateFrame()
+        }
+        
         private func updateFrame() {
             captionLabel.frame = CGRect(x: 4, y: bounds.midY + 2, width: bounds.width - 4 - 4, height: captionLabel.frame.height)
             var markX = bounds.midX
@@ -99,7 +110,7 @@ private extension ChatBotDescriptionInfoPointView {
 
 class ChatBotDescriptionInfoPointView: UIView {
     private var constraintsUpdated: Bool = false
-    private let model: ChatBotInfoPointModel
+    private var model: ChatBotInfoPointModel
     
     //MARK: -
 
@@ -139,6 +150,16 @@ class ChatBotDescriptionInfoPointView: UIView {
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    public func updateModel(_ model: ChatBotInfoPointModel) {
+        self.model = model
+        
+        let caption = "\(model.numberOfFeedbacks) оценок"
+        self.ratingView.update(caption: caption, mark: model.rating, image: UIImage(bundleImageName: "Chat/Input/Media/raitingFilledStar"))
+        self.installsView.update(caption: "Установок", mark: model.numberOfInstalls, image: nil)
+        self.themesView.update(caption: "Тем", mark: model.numberOfThemes, image: nil)
+        self.sentencesView.update(caption: "Фраз", mark: model.numberOfSentences, image: nil)
     }
     
     override var frame: CGRect {

@@ -250,12 +250,12 @@ public final class ChatBotsManager {
 //        try? fm.removeItem(at: botUrl)
 //    }
     
-    public func enableBot(_ bot: ChatBot, enabled: Bool, userId: Int64) {
+    public func enableBot(_ bot: ChatBot, enabled: Bool, userId: Int64, completion: @escaping () -> Void) {
         var botEnableStates: [ChatBot.ChatBotId: Bool] = (UserDefaults.standard.value(forKey: "EnabledBots") as? [ChatBot.ChatBotId: Bool]) ?? [:]
         botEnableStates[bot.name] = enabled
         UserDefaults.standard.setValue(botEnableStates, forKey: "EnabledBots")
         UserDefaults.standard.synchronize()
-        self.sendEnablingBot(bot, enabled: enabled, userId: userId)
+        self.sendEnablingBot(bot, enabled: enabled, userId: userId, completion: completion)
     }
     
     public func isBotEnabled(_ bot: ChatBot) -> Bool {
@@ -266,29 +266,55 @@ public final class ChatBotsManager {
     public func sendFirstStartIfNeeded(userId: Int64) {
         guard UserDefaults.standard.value(forKey: "WasStartedBefore") == nil else { return }
         let url: URL! = URL(string: "https://us-central1-api-7231730271161646241-853730.cloudfunctions.net/installDeleteApp?app_id=telegram_client&type=1&user_id=\(userId)")
-        self.session.dataTask(with: url) { (data, response, error) in
+        self.session.dataTask(with: url) { [weak self] (data, response, error) in
             print("\(error) \(data) \(response)")
             if error == nil {
                 UserDefaults.standard.setValue(true, forKey: "WasStartedBefore")
                 UserDefaults.standard.synchronize()
+                self?.getTreshovieBots { [weak self] result in
+                    DispatchQueue.main.async {
+                        self?.botsDetailsFromBack = result
+                    }
+                }
             }
         }.resume()
     }
     
     public func rateBot(_ bot: ChatBot, rating: Int, userId: Int64, completion: @escaping (Error?) -> Void) {
         let url: URL! = URL(string: "https://us-central1-api-7231730271161646241-853730.cloudfunctions.net/voteBot?user_id=\(userId)&bot_id=\(bot.name)&rating=\(rating)")
-        self.session.dataTask(with: url) { (_, _, error) in
-            DispatchQueue.main.async {
-                completion(error)
+        self.session.dataTask(with: url) { [weak self] (_, _, error) in
+            if let error = error {
+                DispatchQueue.main.async {
+                    completion(error)
+                }
+            } else {
+                self?.getTreshovieBots { [weak self] result in
+                    DispatchQueue.main.async {
+                        self?.botsDetailsFromBack = result
+                        completion(nil)
+                    }
+                }
             }
         }.resume()
     }
     
-    func sendEnablingBot(_ bot: ChatBot, enabled: Bool, userId: Int64) {
+    func sendEnablingBot(_ bot: ChatBot, enabled: Bool, userId: Int64, completion: @escaping (() -> Void)) {
         let type = enabled ? 1 : 2
         let url: URL! = URL(string: "https://us-central1-api-7231730271161646241-853730.cloudfunctions.net/installDeleteBot?bot_id=\(bot.name)&type=\(type)&user_id=\(userId)")
-        self.session.dataTask(with: url) { (data, response, error) in
+        self.session.dataTask(with: url) { [weak self] (data, response, error) in
             print("\(error) \(data) \(response)")
+            if error == nil {
+                self?.getTreshovieBots { [weak self] result in
+                    DispatchQueue.main.async {
+                        self?.botsDetailsFromBack = result
+                        completion()
+                    }
+                }
+            } else {
+                DispatchQueue.main.async {
+                    completion()
+                }
+            }
         }.resume()
     }
 }
@@ -305,9 +331,11 @@ extension ChatBotsManager {
     
     private func getTreshovieBots(success: @escaping ([ChatBot.ChatBotId: ChatBotBackDetails]) -> Void) {
         let url: URL! = URL(string: "https://us-central1-api-7231730271161646241-853730.cloudfunctions.net/getBotsInfo")
-        let dataTask = self.session.dataTask(with: url) { (data, response, error) in
+        let dataTask = self.session.dataTask(with: url) { [weak self] (data, response, error) in
             print("\(error)")
+            guard let self = self else { return }
             var result: [ChatBot.ChatBotId: ChatBotBackDetails] = [:]
+            var error = error
             if let data = data {
                 let decoder = JSONDecoder()
                 do {
@@ -315,11 +343,15 @@ extension ChatBotsManager {
                     for detail in temp.payload {
                         result[detail.name] = detail
                     }
-                } catch {
-                    print("\(error)")
+                } catch let err {
+                    error = err
+                    print("\(err)")
                 }
             }
             DispatchQueue.main.async {
+                if error != nil {
+                    result = self.botsDetailsFromBack
+                }
                 success(result)
             }
         }

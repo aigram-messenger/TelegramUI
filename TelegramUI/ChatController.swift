@@ -1535,8 +1535,9 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
         }))
         items.append(ActionSheetButtonItem(title: "Отключить бота", color: .destructive, action: { [weak self, weak actionSheet] in
             guard let self = self else { return }
-            ChatBotsManager.shared.enableBot(bot, enabled: false, userId: self.account.id.int64)
-            //TODO: обновить в магазине
+            ChatBotsManager.shared.enableBot(bot, enabled: false, userId: self.account.id.int64, completion: {
+                //TODO: обновить в магазине
+            })
             actionSheet?.dismissAnimated()
             self.controllerInteraction?.handleMessagesWithBots(nil, false)
         }))
@@ -1587,8 +1588,10 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
             let color = enabled ? ActionSheetButtonColor.destructive : .accent
             let action = { [weak self, weak actionSheet] in
                 guard let self = self else { return }
-                ChatBotsManager.shared.enableBot(bot, enabled: !enabled, userId: self.account.id.int64)
-                //TODO: обновить в магазине
+                ChatBotsManager.shared.enableBot(bot, enabled: !enabled, userId: self.account.id.int64, completion: {
+                    //TODO: обновить в магазине
+                    //TODO: обвноить в деталях
+                })
                 actionSheet?.dismissAnimated()
                 self.controllerInteraction?.handleMessagesWithBots(nil, false)
             }

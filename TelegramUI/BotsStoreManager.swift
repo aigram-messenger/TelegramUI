@@ -93,11 +93,15 @@ extension BotsStoreManager: SKPaymentTransactionObserver {
                 DispatchQueue.global().async { [weak self] in
                     let copied = ChatBotsManager.shared.copyBot(bot)
                     if copied, let self = self {
-                        ChatBotsManager.shared.sendEnablingBot(bot, enabled: true, userId: self.userId)
-                    }
-                    DispatchQueue.main.async { [weak self] in
-                        self?.buyCompletions[transaction.payment.productIdentifier]?(copied)
-                        self?.buyCompletions.removeValue(forKey: transaction.payment.productIdentifier)
+                        ChatBotsManager.shared.sendEnablingBot(bot, enabled: true, userId: self.userId, completion: { [weak self] in
+                            self?.buyCompletions[transaction.payment.productIdentifier]?(copied)
+                            self?.buyCompletions.removeValue(forKey: transaction.payment.productIdentifier)
+                        })
+                    } else {
+                        DispatchQueue.main.async { [weak self] in
+                            self?.buyCompletions[transaction.payment.productIdentifier]?(copied)
+                            self?.buyCompletions.removeValue(forKey: transaction.payment.productIdentifier)
+                        }
                     }
                 }
             case .failed:
