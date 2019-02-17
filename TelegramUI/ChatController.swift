@@ -1644,10 +1644,7 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
                             if case .none = current { return ChatInputMode.text }
                         } else {
                             if case let .suggestions(_, expanded, userInitiated) = current {
-                                if userInitiated || byUserInitiating {
-                                    return ChatInputMode.suggestions(responses: responses, expanded: expanded, userInitiated: userInitiated || byUserInitiating)
-                                }
-                                return ChatInputMode.text
+                                return ChatInputMode.suggestions(responses: responses, expanded: expanded, userInitiated: userInitiated || byUserInitiating)
                             } else if byUserInitiating {
                                 return ChatInputMode.suggestions(responses: responses, expanded: nil, userInitiated: true)
                             }
