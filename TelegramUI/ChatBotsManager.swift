@@ -147,8 +147,8 @@ public final class ChatBotsManager {
         }
         storeBotsLoadingCompletions.append(completion)
         guard !storeBotsLoadingStarted else { return }
+        self.storeBotsLoadingStarted = true
         DispatchQueue.global().asyncAfter(deadline: .now()) {
-            self.storeBotsLoadingStarted = true
             var result: [ChatBot] = []
             
             let bundle = Bundle(for: ChatBotsManager.self)
@@ -186,9 +186,9 @@ public final class ChatBotsManager {
             }
             
             BotsStoreManager.shared.loadProducts(for: result) { [weak self] in
-                self?.loadedBotsInStore = result
-                self?.loadedBotsFlag = true
                 DispatchQueue.main.async {
+                    self?.loadedBotsInStore = result
+                    self?.loadedBotsFlag = true
                     self?.storeBotsLoadingCompletions.forEach({ (block) in
                         block(.success(result))
                     })
