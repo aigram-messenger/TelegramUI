@@ -88,7 +88,7 @@ extension BotsStoreManager: SKPaymentTransactionObserver {
             case .purchased:
                 SKPaymentQueue.default().finishTransaction(transaction)
                 guard let nameSeq = transaction.payment.productIdentifier.split(separator: ".").last else { break }
-                guard let name = BotsStoreManager.idsMap[String(nameSeq)] else { break }
+                let name = BotsStoreManager.idsMap[String(nameSeq)] ?? String(nameSeq)
                 guard let bot = ChatBotsManager.shared.loadedBotsInStore.first(where: { $0.name == name }) else { break }
                 DispatchQueue.global().async { [weak self] in
                     let copied = ChatBotsManager.shared.copyBot(bot)
