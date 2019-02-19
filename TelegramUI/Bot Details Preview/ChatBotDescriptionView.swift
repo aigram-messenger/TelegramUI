@@ -48,9 +48,24 @@ class ChatBotDescriptionView: UIView {
     private lazy var rateView: ChatBotDescriptionRateView = {
         let view = ChatBotDescriptionRateView { [weak self] rate in
             guard let self = self else { return }
-            ChatBotsManager.shared.rateBot(self.bot, rating: rate, userId: self.account.id.int64) { [weak self] error in
+            ChatBotsManager.shared.rateBot(self.bot, rating: rate, userId: self.account.peerId.id) { [weak self] error in
                 self?.rateCompletion?(error)
             }
+            ChatBotsManager.shared.isBotRatedBy(self.account.peerId.id, bot: self.bot) { [weak self] result in
+                var rating: Int?
+                if let result = result {
+                    rating = Int(result.rating)
+                }
+                self?.rateView.updateRateState(userRate: rating, shouldZero: false)
+            }
+        }
+        view.updateRateState(userRate: nil)
+        ChatBotsManager.shared.isBotRatedBy(self.account.peerId.id, bot: self.bot) { [weak self] result in
+            var rating: Int?
+            if let result = result {
+                rating = Int(result.rating)
+            }
+            self?.rateView.updateRateState(userRate: rating, shouldZero: false)
         }
 
         return view

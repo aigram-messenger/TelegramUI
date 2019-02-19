@@ -237,7 +237,7 @@ public final class ChatBotsManager {
 //        try? fm.removeItem(at: botUrl)
 //    }
     
-    public func enableBot(_ bot: ChatBot, enabled: Bool, userId: Int64, completion: @escaping () -> Void) {
+    public func enableBot(_ bot: ChatBot, enabled: Bool, userId: Int32, completion: @escaping () -> Void) {
         var botEnableStates: [ChatBot.ChatBotId: Bool] = (UserDefaults.standard.value(forKey: "EnabledBots") as? [ChatBot.ChatBotId: Bool]) ?? [:]
         botEnableStates[bot.name] = enabled
         UserDefaults.standard.setValue(botEnableStates, forKey: "EnabledBots")
@@ -250,7 +250,7 @@ public final class ChatBotsManager {
         return botEnableStates[bot.name] ?? true
     }
     
-    public func sendFirstStartIfNeeded(userId: Int64) {
+    public func sendFirstStartIfNeeded(userId: Int32) {
         guard UserDefaults.standard.value(forKey: "WasStartedBefore") == nil else { return }
         let url: URL! = URL(string: "https://us-central1-api-7231730271161646241-853730.cloudfunctions.net/installDeleteApp?app_id=telegram_client&type=1&user_id=\(userId)")
         self.session.dataTask(with: url) { [weak self] (data, response, error) in
@@ -267,7 +267,7 @@ public final class ChatBotsManager {
         }.resume()
     }
     
-    public func rateBot(_ bot: ChatBot, rating: Int, userId: Int64, completion: @escaping (Error?) -> Void) {
+    public func rateBot(_ bot: ChatBot, rating: Int, userId: Int32, completion: @escaping (Error?) -> Void) {
         let url: URL! = URL(string: "https://us-central1-api-7231730271161646241-853730.cloudfunctions.net/voteBot?user_id=\(userId)&bot_id=\(bot.name)&rating=\(rating)")
         self.session.dataTask(with: url) { [weak self] (_, _, error) in
             if let error = error {
@@ -285,7 +285,7 @@ public final class ChatBotsManager {
         }.resume()
     }
     
-    func sendEnablingBot(_ bot: ChatBot, enabled: Bool, userId: Int64, completion: @escaping (() -> Void)) {
+    func sendEnablingBot(_ bot: ChatBot, enabled: Bool, userId: Int32, completion: @escaping (() -> Void)) {
         let type = enabled ? 1 : 2
         let url: URL! = URL(string: "https://us-central1-api-7231730271161646241-853730.cloudfunctions.net/installDeleteBot?bot_id=\(bot.name)&type=\(type)&user_id=\(userId)")
         self.session.dataTask(with: url) { [weak self] (data, response, error) in
@@ -304,6 +304,26 @@ public final class ChatBotsManager {
             }
         }.resume()
     }
+    
+    public func isBotRatedBy(_ userId: Int32, bot: ChatBot, completion: @escaping (ChatBotDetailsRated?) -> Void) {
+        let url: URL! = URL(string: "https://us-central1-api-7231730271161646241-853730.cloudfunctions.net/getBotVoting?user_id=\(userId)&bot_id=\(bot.name)")
+        self.session.dataTask(with: url) { (data, response, error) in
+            print("\(error) \(data) \(response)")
+            var result: ChatBotDetailsRated?
+            if let data = data {
+                let decoder = JSONDecoder()
+                do {
+                    let temp = try decoder.decode(TempBackDetails<ChatBotDetailsRated>.self, from: data)
+                    result = temp.payload.first
+                } catch {
+                    print("\(error)")
+                }
+            }
+            DispatchQueue.main.async {
+                completion(result)
+            }
+        }.resume()
+    }
 }
 
 extension ChatBotsManager {
@@ -312,8 +332,8 @@ extension ChatBotsManager {
         return nil
     }
     
-    private struct TempBackDetails: Codable {
-        let payload: [ChatBotBackDetails]
+    private struct TempBackDetails<T: Codable>: Codable {
+        let payload: [T]
     }
     
     private func freeBots() -> [ChatBot] {
@@ -360,7 +380,7 @@ extension ChatBotsManager {
             if let data = data {
                 let decoder = JSONDecoder()
                 do {
-                    let temp = try decoder.decode(TempBackDetails.self, from: data)
+                    let temp = try decoder.decode(TempBackDetails<ChatBotBackDetails>.self, from: data)
                     for detail in temp.payload {
                         result[detail.name] = detail
                     }

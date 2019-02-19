@@ -135,7 +135,7 @@ final class ChatSuggestionsInputNode: ChatInputNode {
         }, enableBot: { [weak self] bot, enabled in
             guard let self = self else { return }
             self.storeByUser = true
-            ChatBotsManager.shared.enableBot(bot, enabled: enabled, userId: self.account.id.int64, completion: {})
+            ChatBotsManager.shared.enableBot(bot, enabled: enabled, userId: self.account.peerId.id, completion: {})
             self.updateStorePane(for: bot)
             self.controllerInteraction.handleMessagesWithBots(nil, false)
         }, botDetails: { [weak self] bot in

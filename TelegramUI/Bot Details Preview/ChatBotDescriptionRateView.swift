@@ -8,6 +8,7 @@
 
 import UIKit
 import Display
+import TelegramCore
 
 class ChatBotDescriptionRateView: UIView {
     private lazy var titleLabel: UILabel = {
@@ -29,6 +30,7 @@ class ChatBotDescriptionRateView: UIView {
         view.filledStarImage = UIImage(bundleImageName: "Chat/Input/Media/raitingFilledStar")
         view.emptyStarImage = UIImage(bundleImageName: "Chat/Input/Media/raitingEmptyStar")
         view.spacing = 0
+        view.isUserInteractionEnabled = false
 
         addSubview(view)
 
@@ -52,6 +54,18 @@ class ChatBotDescriptionRateView: UIView {
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    func updateRateState(userRate: Int?, shouldZero: Bool = true) {
+        if let userRate = userRate {
+            self.rateView.rating = userRate
+            self.rateView.isUserInteractionEnabled = false
+        } else {
+            if shouldZero {
+                self.rateView.rating = 0
+            }
+            self.rateView.isUserInteractionEnabled = true
+        }
     }
 
     override func sizeThatFits(_ size: CGSize) -> CGSize {

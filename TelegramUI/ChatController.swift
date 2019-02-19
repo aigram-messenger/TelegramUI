@@ -1070,6 +1070,8 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
             self?.updateText(suggestion)
         })
         
+        BotsStoreManager.shared.userId = self.account.peerId.id
+        
         self.controllerInteraction = controllerInteraction
         
         self.chatTitleView = ChatTitleView(account: self.account, theme: self.presentationData.theme, strings: self.presentationData.strings, dateTimeFormat: self.presentationData.dateTimeFormat)
@@ -1535,7 +1537,7 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
         }))
         items.append(ActionSheetButtonItem(title: "Отключить бота", color: .destructive, action: { [weak self, weak actionSheet] in
             guard let self = self else { return }
-            ChatBotsManager.shared.enableBot(bot, enabled: false, userId: self.account.id.int64, completion: completion)
+            ChatBotsManager.shared.enableBot(bot, enabled: false, userId: self.account.peerId.id, completion: completion)
             actionSheet?.dismissAnimated()
             self.controllerInteraction?.handleMessagesWithBots(nil, false)
         }))
@@ -1586,7 +1588,7 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
             let color = enabled ? ActionSheetButtonColor.destructive : .accent
             let action = { [weak self, weak actionSheet] in
                 guard let self = self else { return }
-                ChatBotsManager.shared.enableBot(bot, enabled: !enabled, userId: self.account.id.int64, completion: completion)
+                ChatBotsManager.shared.enableBot(bot, enabled: !enabled, userId: self.account.peerId.id, completion: completion)
                 actionSheet?.dismissAnimated()
                 self.controllerInteraction?.handleMessagesWithBots(nil, false)
             }

@@ -94,6 +94,18 @@ public struct ChatBotBackDetails: Codable {
     public let votings: String
 }
 
+public struct ChatBotDetailsRated: Codable {
+    let userId: String
+    let botId: ChatBot.ChatBotId
+    let rating: String
+    
+    private enum CodingKeys: String, CodingKey {
+        case userId = "user_id"
+        case botId = "bot_id"
+        case rating
+    }
+}
+
 public struct ChatBot {
     public typealias ChatBotId = String
     static let botExtension: String = "chatbot"

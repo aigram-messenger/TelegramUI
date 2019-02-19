@@ -18,7 +18,7 @@ public final class BotsStoreManager: NSObject {
     private var productsCompletion: (() -> Void)?
     private var buyCompletions: [String: (Bool) -> Void] = [:]
     
-    public var userId: Int64!
+    public var userId: Int32!
     
     private override init() {
         super.init()
