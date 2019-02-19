@@ -37,12 +37,12 @@ public final class ChatBotsManager {
         }
     }
     public var inviteUrl: String {
-        return "https://aigram.app"
+        return "https://aigram.app/dl"
     }
     public var shareText: String {
         return """
             Привет, я общаюсь здесь с тобой используя нейроботов – помощников для переписок. Скачай AiGram – мессенджер с Искусственным интеллектом и продолжай общаться с пользователями Telegram в новом формате!
-            https://aigram.app
+            https://aigram.app/dl
             """
     }
     
