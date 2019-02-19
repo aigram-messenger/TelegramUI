@@ -88,7 +88,7 @@ extension BotsStoreManager: SKPaymentTransactionObserver {
             case .purchased:
                 SKPaymentQueue.default().finishTransaction(transaction)
                 guard let nameSeq = transaction.payment.productIdentifier.split(separator: ".").last else { break }
-                let name = String(nameSeq)
+                guard let name = BotsStoreManager.idsMap[String(nameSeq)] else { break }
                 guard let bot = ChatBotsManager.shared.loadedBotsInStore.first(where: { $0.name == name }) else { break }
                 DispatchQueue.global().async { [weak self] in
                     let copied = ChatBotsManager.shared.copyBot(bot)
@@ -125,14 +125,20 @@ extension BotsStoreManager: SKProductsRequestDelegate {
 }
 
 extension BotsStoreManager {
-    private static let nameMaps: [ChatBot.ChatBotId: String] = [
+    private static let namesMap: [ChatBot.ChatBotId: String] = [
         "celentano": "Celentano",
         "lannister": "tyrion",
         "spongebob": "sponge_bob"
     ]
     
+    private static let idsMap: [String: ChatBot.ChatBotId] = [
+        "Celentano": "celentano",
+        "tyrion": "lannister",
+        "sponge_bob": "spongebob"
+    ]
+    
     private func idOfBot(_ bot: ChatBot) -> String {
-        let name = BotsStoreManager.nameMaps[bot.name] ?? bot.name
+        let name = BotsStoreManager.namesMap[bot.name] ?? bot.name
         let result: String = self.prefix + name
         return result
     }
