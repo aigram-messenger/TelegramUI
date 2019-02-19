@@ -55,20 +55,9 @@ public final class ChatBotsManager {
         searchQueue = OperationQueue()
         searchQueue.maxConcurrentOperationCount = 1
         
-        let fm = FileManager.default
-        guard var chatBotsUrl = fm.urls(for: .documentDirectory, in: .userDomainMask).first else { return }
-        chatBotsUrl.appendPathComponent("chatbots", isDirectory: true)
-        if !((try? chatBotsUrl.checkResourceIsReachable()) ?? false) {
-            try? fm.createDirectory(at: chatBotsUrl, withIntermediateDirectories: true, attributes: nil)
-        }
-        
-        print("BOTS LOCAL URL \(chatBotsUrl)")
-        let urls = (try? fm.contentsOfDirectory(at: chatBotsUrl, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles])) ?? []
-//        if let tb = self.targetBot { bots = [tb] }
-        for url in urls {
-            guard let bot = try? ChatBot(url: url) else { continue }
-            bots.append(bot)
-        }
+        let free = self.freeBots()
+        let local = self.localBots()
+        self.bots = free + local
         
         self.getTreshovieBots { result in
             self.botsDetailsFromBack = result
@@ -159,9 +148,6 @@ public final class ChatBotsManager {
                 do {
                     let bot = try ChatBot(url: url)
                     guard !bot.isTarget else { continue }
-                    if bot.tags.contains(String(describing: ChatBotTag.free)), !bot.isLocal {
-                        _ = self.copyBot(bot)
-                    }
                     tempBots[bot.name] = bot
                     if let nextName = bot.nextBotId {
                         linkedNames.insert(nextName)
@@ -215,6 +201,7 @@ public final class ChatBotsManager {
     }
     
     public func copyBot(_ bot: ChatBot) -> Bool {
+        guard !bot.tags.contains(String(describing: ChatBotTag.free)) else { return true }
         let fm = FileManager.default
         guard var destinationUrl = fm.urls(for: .documentDirectory, in: .userDomainMask).first else { return false }
         
@@ -327,6 +314,40 @@ extension ChatBotsManager {
     
     private struct TempBackDetails: Codable {
         let payload: [ChatBotBackDetails]
+    }
+    
+    private func freeBots() -> [ChatBot] {
+        let bundle = Bundle(for: ChatBotsManager.self)
+        let urls = bundle.urls(forResourcesWithExtension: ChatBot.botExtension, subdirectory: "bots") ?? []
+        var result: [ChatBot] = []
+        for url in urls {
+            do {
+                let bot = try ChatBot(url: url)
+                guard bot.tags.contains(String(describing: ChatBotTag.free)) else { continue }
+                result.append(bot)
+            } catch {
+                print("ERROR INIT BOT \(error)")
+            }
+        }
+        return result
+    }
+    
+    private func localBots() -> [ChatBot] {
+        let fm = FileManager.default
+        guard var chatBotsUrl = fm.urls(for: .documentDirectory, in: .userDomainMask).first else { return [] }
+        var result: [ChatBot] = []
+        chatBotsUrl.appendPathComponent("chatbots", isDirectory: true)
+        if !((try? chatBotsUrl.checkResourceIsReachable()) ?? false) {
+            try? fm.createDirectory(at: chatBotsUrl, withIntermediateDirectories: true, attributes: nil)
+        }
+        
+        print("BOTS LOCAL URL \(chatBotsUrl)")
+        let urls = (try? fm.contentsOfDirectory(at: chatBotsUrl, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles])) ?? []
+        for url in urls {
+            guard let bot = try? ChatBot(url: url) else { continue }
+            result.append(bot)
+        }
+        return result
     }
     
     private func getTreshovieBots(success: @escaping ([ChatBot.ChatBotId: ChatBotBackDetails]) -> Void) {

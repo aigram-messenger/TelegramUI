@@ -9,7 +9,24 @@
 import Foundation
 import UIKit
 
-public typealias BotResponse = [String: String]
+public struct BotResponse: Codable, Equatable {
+    let response: [String]
+    let tag: String
+    
+    public init(response: [String], tag: String) {
+        self.response = response
+        self.tag = tag
+    }
+    
+    public init() {
+        self.response = []
+        self.tag = ""
+    }
+    
+    public static func == (lhs: BotResponse, rhs: BotResponse) -> Bool {
+        return lhs.tag == rhs.tag && lhs.response == rhs.response
+    }
+}
 
 public enum ChatBotError: Error {
     case modelFileNotExists
@@ -109,6 +126,7 @@ public struct ChatBot {
     public let preview: UIImage
     
     public var isLocal: Bool {
+        guard !self.tags.contains(String(describing: ChatBotTag.free)) else { return true }
         let fm = FileManager.default
         guard var destinationUrl = fm.urls(for: .documentDirectory, in: .userDomainMask).first else { return false }
         destinationUrl.appendPathComponent("chatbots", isDirectory: true)

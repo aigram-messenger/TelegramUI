@@ -76,15 +76,9 @@ private class InterpreterOperation: Operation {
     private func constructResponses(with response: BotResponse) -> [BotResponse] {
         var result: [BotResponse] = []
         
-        if let responseString = response["response"] {
-            let splitted = responseString.split(whereSeparator: { $0 == "\r\n" })
-            for splittedValue in splitted {
-                var newResponse = response
-                newResponse["response"] = String(splittedValue).replacingOccurrences(of: "\"", with: "")
-                result.append(newResponse)
-            }
-        } else {
-            result.append(response)
+        for string in response.response {
+            var temp = BotResponse(response: [string], tag: response.tag)
+            result.append(temp)
         }
         
         return result

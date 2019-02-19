@@ -71,7 +71,7 @@ struct ChatSuggestionListItem: ListViewItem, ItemListItem {
     }
     
     func selected(listView: ListView) {
-        guard let message = self.response["response"] else { return }
+        guard let message = self.response.response.first else { return }
         self.inputNodeInteraction.sendMessage(message)
     }
 }
@@ -130,7 +130,7 @@ private class ChatSuggestionItemNode: ListViewItemNode {
     func asyncLayout() -> (_ item: ChatSuggestionListItem, _ params: ListViewItemLayoutParams, _ neighbors: ItemListNeighbors) -> (ListViewItemNodeLayout, () -> Void) {
         let makeTextLayout = TextNode.asyncLayout(self.textNode)
         return { item, params, neighbors in
-            let text = item.response["response"] ?? ""
+            let text = item.response.response.first ?? ""
             let textColor: UIColor = item.theme.chat.bubble.outgoingPrimaryTextColor
             
             let textInsets = UIEdgeInsetsMake(5, 8, 5, 14)
