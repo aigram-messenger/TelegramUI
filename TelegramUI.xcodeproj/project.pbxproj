@@ -1059,43 +1059,26 @@
 		D0FE4DE61F0BA58A00E8A0B3 /* OverlayMediaItemNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0FE4DE51F0BA58A00E8A0B3 /* OverlayMediaItemNode.swift */; };
 		D0FFF7F61F55B82500BEBC01 /* InstantPageAudioItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0FFF7F51F55B82500BEBC01 /* InstantPageAudioItem.swift */; };
 		D0FFF7F81F55B83600BEBC01 /* InstantPageAudioNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0FFF7F71F55B83600BEBC01 /* InstantPageAudioNode.swift */; };
+		F7173BD9221D63E60029D97C /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7173BD8221D63E60029D97C /* Extensions.swift */; };
+		F7173BDB221D65E00029D97C /* AiGramLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F7173BDA221D65E00029D97C /* AiGramLib.framework */; };
 		F73095DF21D0F06900343BD5 /* ChatBotsStoreItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F73095DE21D0F06900343BD5 /* ChatBotsStoreItem.swift */; };
 		F73095E121D11AE900343BD5 /* ChatBotsInputNodeInteraction.swift in Sources */ = {isa = PBXBuildFile; fileRef = F73095E021D11AE900343BD5 /* ChatBotsInputNodeInteraction.swift */; };
-		F731702821D4B34E001850D8 /* BotProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F731702721D4B34E001850D8 /* BotProcessor.swift */; };
 		F74912A72201A5E30052A600 /* ChatBotStoreSearchPlaceholderListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F74912A62201A5E30052A600 /* ChatBotStoreSearchPlaceholderListItem.swift */; };
 		F74912A92201A5EB0052A600 /* ChatBotStoreSearchPlaceholderListItemNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = F74912A82201A5EB0052A600 /* ChatBotStoreSearchPlaceholderListItemNode.swift */; };
 		F74912AB2201CDD70052A600 /* ChatBotsSearchContainerNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = F74912AA2201CDD70052A600 /* ChatBotsSearchContainerNode.swift */; };
 		F74912AD2202E7D90052A600 /* ChatBotsStoreSearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = F74912AC2202E7D90052A600 /* ChatBotsStoreSearchBar.swift */; };
-		F74BA4A221E6246100DD7CAB /* BotsStoreManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F74BA4A121E6246100DD7CAB /* BotsStoreManager.swift */; };
 		F75D3FE221EF6C7600003189 /* ChatBotsSuggestionsHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75D3FE121EF6C7600003189 /* ChatBotsSuggestionsHeader.swift */; };
 		F75D3FE421EF6D7D00003189 /* ChatBotSuggestionsItems.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75D3FE321EF6D7D00003189 /* ChatBotSuggestionsItems.swift */; };
 		F75D3FE621F068CC00003189 /* ChatMessageAdsBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75D3FE521F068CC00003189 /* ChatMessageAdsBackground.swift */; };
 		F75D3FE821F06BAE00003189 /* ChatBotsAdsListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75D3FE721F06BAE00003189 /* ChatBotsAdsListItem.swift */; };
-		F75D3FEA21F091E300003189 /* Entities.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75D3FE921F091E300003189 /* Entities.swift */; };
 		F75D3FED21F0B30500003189 /* ChatBotsStoreListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75D3FEC21F0B30500003189 /* ChatBotsStoreListItem.swift */; };
 		F75D3FEF21F0B51000003189 /* ChatBotsStoreItemNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75D3FEE21F0B51000003189 /* ChatBotsStoreItemNode.swift */; };
-		F75D3FF121F0B66400003189 /* UIImage+Sizes.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75D3FF021F0B66400003189 /* UIImage+Sizes.swift */; };
-		F76439AF21D66453005AC13C /* nanopb.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F76439A921D66452005AC13C /* nanopb.framework */; };
-		F76439B021D66453005AC13C /* FirebaseMLModelInterpreter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F76439AA21D66452005AC13C /* FirebaseMLModelInterpreter.framework */; };
-		F76439B121D66453005AC13C /* FirebaseCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F76439AB21D66452005AC13C /* FirebaseCore.framework */; };
-		F76439B221D66453005AC13C /* FirebaseMLCommon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F76439AC21D66453005AC13C /* FirebaseMLCommon.framework */; };
-		F76439B321D66453005AC13C /* GoogleUtilities.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F76439AD21D66453005AC13C /* GoogleUtilities.framework */; };
-		F76439B421D66453005AC13C /* tensorflow_lite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F76439AE21D66453005AC13C /* tensorflow_lite.framework */; };
-		F76439B621D6687A005AC13C /* FirebaseInstanceID.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F76439B521D66879005AC13C /* FirebaseInstanceID.framework */; };
-		F76439BA21D77A16005AC13C /* bots in Resources */ = {isa = PBXBuildFile; fileRef = F76439B921D77A15005AC13C /* bots */; };
 		F7C2BF7421FB17BA005DA6C9 /* ChatBotDetailsItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7C2BF7321FB17BA005DA6C9 /* ChatBotDetailsItem.swift */; };
-		F7E0F2E121D2270100974C76 /* ChatBotsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7E0F2E021D2270100974C76 /* ChatBotsManager.swift */; };
 		F7F28FCF21CD1DB3008DC5A4 /* ChatBotsInputStorePane.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7F28FCE21CD1DB3008DC5A4 /* ChatBotsInputStorePane.swift */; };
 		F7F28FD121CD1E2D008DC5A4 /* ChatBotsInputSuggestionsPane.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7F28FD021CD1E2D008DC5A4 /* ChatBotsInputSuggestionsPane.swift */; };
 		F7F5F87B22099AB400D8DD4C /* ChatBotDetailsTagsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7F5F87A22099AB400D8DD4C /* ChatBotDetailsTagsView.swift */; };
-		F7FF1F0922170079008BE8C3 /* GTMSessionFetcher.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F7FF1F0722170079008BE8C3 /* GTMSessionFetcher.framework */; };
-		F7FF1F0A22170079008BE8C3 /* FirebaseFunctions.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F7FF1F0822170079008BE8C3 /* FirebaseFunctions.framework */; };
-		F7FF1F0C221703A0008BE8C3 /* FirebaseAuth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F7FF1F0B2217039F008BE8C3 /* FirebaseAuth.framework */; };
 		FB2B65752209ED28003349E1 /* STRatingControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB2B65742209ED27003349E1 /* STRatingControl.swift */; };
 		FB2B65772209ED80003349E1 /* ChatBotDescriptionRateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB2B65762209ED80003349E1 /* ChatBotDescriptionRateView.swift */; };
-		FB31301621D80DF0004870C2 /* ObjC.h in Headers */ = {isa = PBXBuildFile; fileRef = FB31301421D80DF0004870C2 /* ObjC.h */; };
-		FB31301721D80DF0004870C2 /* ObjC.m in Sources */ = {isa = PBXBuildFile; fileRef = FB31301521D80DF0004870C2 /* ObjC.m */; };
-		FB31301921D80E87004870C2 /* TelegramUI-Bridging-Header.h in Headers */ = {isa = PBXBuildFile; fileRef = FB31301821D80E87004870C2 /* TelegramUI-Bridging-Header.h */; };
 		FB32415B21D169C00023532E /* ChatBotsBotItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB32415A21D169C00023532E /* ChatBotsBotItem.swift */; };
 		FB73A51021FA5B0200032CFF /* ChatBotDescrptionFullDescriptionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB73A50A21FA5B0200032CFF /* ChatBotDescrptionFullDescriptionView.swift */; };
 		FB73A51121FA5B0200032CFF /* ChatBotDescriptionMetaInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB73A50B21FA5B0200032CFF /* ChatBotDescriptionMetaInfoView.swift */; };
@@ -2243,43 +2226,26 @@
 		D0FE4DE51F0BA58A00E8A0B3 /* OverlayMediaItemNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OverlayMediaItemNode.swift; sourceTree = "<group>"; };
 		D0FFF7F51F55B82500BEBC01 /* InstantPageAudioItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstantPageAudioItem.swift; sourceTree = "<group>"; };
 		D0FFF7F71F55B83600BEBC01 /* InstantPageAudioNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstantPageAudioNode.swift; sourceTree = "<group>"; };
+		F7173BD8221D63E60029D97C /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		F7173BDA221D65E00029D97C /* AiGramLib.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = AiGramLib.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F73095DE21D0F06900343BD5 /* ChatBotsStoreItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotsStoreItem.swift; sourceTree = "<group>"; };
 		F73095E021D11AE900343BD5 /* ChatBotsInputNodeInteraction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotsInputNodeInteraction.swift; sourceTree = "<group>"; };
-		F731702721D4B34E001850D8 /* BotProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BotProcessor.swift; sourceTree = "<group>"; };
 		F74912A62201A5E30052A600 /* ChatBotStoreSearchPlaceholderListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotStoreSearchPlaceholderListItem.swift; sourceTree = "<group>"; };
 		F74912A82201A5EB0052A600 /* ChatBotStoreSearchPlaceholderListItemNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotStoreSearchPlaceholderListItemNode.swift; sourceTree = "<group>"; };
 		F74912AA2201CDD70052A600 /* ChatBotsSearchContainerNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotsSearchContainerNode.swift; sourceTree = "<group>"; };
 		F74912AC2202E7D90052A600 /* ChatBotsStoreSearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotsStoreSearchBar.swift; sourceTree = "<group>"; };
-		F74BA4A121E6246100DD7CAB /* BotsStoreManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BotsStoreManager.swift; sourceTree = "<group>"; };
 		F75D3FE121EF6C7600003189 /* ChatBotsSuggestionsHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotsSuggestionsHeader.swift; sourceTree = "<group>"; };
 		F75D3FE321EF6D7D00003189 /* ChatBotSuggestionsItems.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotSuggestionsItems.swift; sourceTree = "<group>"; };
 		F75D3FE521F068CC00003189 /* ChatMessageAdsBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessageAdsBackground.swift; sourceTree = "<group>"; };
 		F75D3FE721F06BAE00003189 /* ChatBotsAdsListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotsAdsListItem.swift; sourceTree = "<group>"; };
-		F75D3FE921F091E300003189 /* Entities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Entities.swift; sourceTree = "<group>"; };
 		F75D3FEC21F0B30500003189 /* ChatBotsStoreListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotsStoreListItem.swift; sourceTree = "<group>"; };
 		F75D3FEE21F0B51000003189 /* ChatBotsStoreItemNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotsStoreItemNode.swift; sourceTree = "<group>"; };
-		F75D3FF021F0B66400003189 /* UIImage+Sizes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Sizes.swift"; sourceTree = "<group>"; };
-		F76439A921D66452005AC13C /* nanopb.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = nanopb.framework; path = "third-party/nanopb.framework"; sourceTree = "<group>"; };
-		F76439AA21D66452005AC13C /* FirebaseMLModelInterpreter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FirebaseMLModelInterpreter.framework; path = "third-party/FirebaseMLModelInterpreter.framework"; sourceTree = "<group>"; };
-		F76439AB21D66452005AC13C /* FirebaseCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FirebaseCore.framework; path = "third-party/FirebaseCore.framework"; sourceTree = "<group>"; };
-		F76439AC21D66453005AC13C /* FirebaseMLCommon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FirebaseMLCommon.framework; path = "third-party/FirebaseMLCommon.framework"; sourceTree = "<group>"; };
-		F76439AD21D66453005AC13C /* GoogleUtilities.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GoogleUtilities.framework; path = "third-party/GoogleUtilities.framework"; sourceTree = "<group>"; };
-		F76439AE21D66453005AC13C /* tensorflow_lite.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = tensorflow_lite.framework; path = "third-party/tensorflow_lite.framework"; sourceTree = "<group>"; };
-		F76439B521D66879005AC13C /* FirebaseInstanceID.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FirebaseInstanceID.framework; path = "third-party/FirebaseInstanceID.framework"; sourceTree = "<group>"; };
-		F76439B921D77A15005AC13C /* bots */ = {isa = PBXFileReference; lastKnownFileType = folder; path = bots; sourceTree = "<group>"; };
 		F7C2BF7321FB17BA005DA6C9 /* ChatBotDetailsItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotDetailsItem.swift; sourceTree = "<group>"; };
-		F7E0F2E021D2270100974C76 /* ChatBotsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotsManager.swift; sourceTree = "<group>"; };
 		F7F28FCE21CD1DB3008DC5A4 /* ChatBotsInputStorePane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotsInputStorePane.swift; sourceTree = "<group>"; };
 		F7F28FD021CD1E2D008DC5A4 /* ChatBotsInputSuggestionsPane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotsInputSuggestionsPane.swift; sourceTree = "<group>"; };
 		F7F5F87A22099AB400D8DD4C /* ChatBotDetailsTagsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotDetailsTagsView.swift; sourceTree = "<group>"; };
-		F7FF1F0722170079008BE8C3 /* GTMSessionFetcher.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GTMSessionFetcher.framework; path = "third-party/GTMSessionFetcher.framework"; sourceTree = "<group>"; };
-		F7FF1F0822170079008BE8C3 /* FirebaseFunctions.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FirebaseFunctions.framework; path = "third-party/FirebaseFunctions.framework"; sourceTree = "<group>"; };
-		F7FF1F0B2217039F008BE8C3 /* FirebaseAuth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FirebaseAuth.framework; path = "third-party/FirebaseAuth.framework"; sourceTree = "<group>"; };
 		FB2B65742209ED27003349E1 /* STRatingControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STRatingControl.swift; sourceTree = "<group>"; };
 		FB2B65762209ED80003349E1 /* ChatBotDescriptionRateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotDescriptionRateView.swift; sourceTree = "<group>"; };
-		FB31301421D80DF0004870C2 /* ObjC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ObjC.h; sourceTree = "<group>"; };
-		FB31301521D80DF0004870C2 /* ObjC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ObjC.m; sourceTree = "<group>"; };
-		FB31301821D80E87004870C2 /* TelegramUI-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TelegramUI-Bridging-Header.h"; sourceTree = "<group>"; };
 		FB32415A21D169C00023532E /* ChatBotsBotItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBotsBotItem.swift; sourceTree = "<group>"; };
 		FB73A50A21FA5B0200032CFF /* ChatBotDescrptionFullDescriptionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatBotDescrptionFullDescriptionView.swift; sourceTree = "<group>"; };
 		FB73A50B21FA5B0200032CFF /* ChatBotDescriptionMetaInfoView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatBotDescriptionMetaInfoView.swift; sourceTree = "<group>"; };
@@ -2294,15 +2260,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F76439AF21D66453005AC13C /* nanopb.framework in Frameworks */,
-				F76439B021D66453005AC13C /* FirebaseMLModelInterpreter.framework in Frameworks */,
-				F76439B121D66453005AC13C /* FirebaseCore.framework in Frameworks */,
-				F76439B221D66453005AC13C /* FirebaseMLCommon.framework in Frameworks */,
-				F7FF1F0922170079008BE8C3 /* GTMSessionFetcher.framework in Frameworks */,
-				F7FF1F0A22170079008BE8C3 /* FirebaseFunctions.framework in Frameworks */,
-				F76439B321D66453005AC13C /* GoogleUtilities.framework in Frameworks */,
-				F76439B421D66453005AC13C /* tensorflow_lite.framework in Frameworks */,
-				F76439B621D6687A005AC13C /* FirebaseInstanceID.framework in Frameworks */,
+				F7173BDB221D65E00029D97C /* AiGramLib.framework in Frameworks */,
 				091BEAB3214552D9003AEA30 /* Vision.framework in Frameworks */,
 				D0C45E9F213FFAFD00988156 /* Lottie.framework in Frameworks */,
 				D00ACA4B20222C280045D427 /* libtgvoip.framework in Frameworks */,
@@ -2317,7 +2275,6 @@
 				D0EC6EA41EB9FB8000EBF1C3 /* libz.tbd in Frameworks */,
 				D0EC6EA31EB9FB7A00EBF1C3 /* SSignalKit.framework in Frameworks */,
 				D0EC6EA21EB9FAFA00EBF1C3 /* libopus.a in Frameworks */,
-				F7FF1F0C221703A0008BE8C3 /* FirebaseAuth.framework in Frameworks */,
 				D0EC6E9C1EB9F5E600EBF1C3 /* libwebp.a in Frameworks */,
 				D0EC6E981EB9F5D000EBF1C3 /* libavcodec.a in Frameworks */,
 				D0EC6E991EB9F5D000EBF1C3 /* libavformat.a in Frameworks */,
@@ -2748,7 +2705,6 @@
 		D0471B521EFD8EBC0074D609 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				F76439B921D77A15005AC13C /* bots */,
 				D0955FB32191278C00F89427 /* PresentationStrings.mapping */,
 				09310D13213BC5DE0020033A /* Animations */,
 				092F368B2154AAD6001A9F49 /* Fonts */,
@@ -3282,16 +3238,7 @@
 		D08D45281D5E340200A7428A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				F7FF1F0B2217039F008BE8C3 /* FirebaseAuth.framework */,
-				F7FF1F0822170079008BE8C3 /* FirebaseFunctions.framework */,
-				F7FF1F0722170079008BE8C3 /* GTMSessionFetcher.framework */,
-				F76439B521D66879005AC13C /* FirebaseInstanceID.framework */,
-				F76439AB21D66452005AC13C /* FirebaseCore.framework */,
-				F76439AC21D66453005AC13C /* FirebaseMLCommon.framework */,
-				F76439AA21D66452005AC13C /* FirebaseMLModelInterpreter.framework */,
-				F76439AD21D66453005AC13C /* GoogleUtilities.framework */,
-				F76439A921D66452005AC13C /* nanopb.framework */,
-				F76439AE21D66453005AC13C /* tensorflow_lite.framework */,
+				F7173BDA221D65E00029D97C /* AiGramLib.framework */,
 				D0C45E9E213FFAFD00988156 /* Lottie.framework */,
 				D02DADBE2138D76F00116225 /* Vision.framework */,
 				D00ACA4C20222C280045D427 /* libtgvoip.framework */,
@@ -4673,7 +4620,6 @@
 		D0FC40751D5B8E7400261D9D = {
 			isa = PBXGroup;
 			children = (
-				FB31301821D80E87004870C2 /* TelegramUI-Bridging-Header.h */,
 				D0EB42041F3143AB00838FE6 /* LegacyComponentsResources.bundle */,
 				D0F69DB91D6B88190046BCD6 /* TelegramUI.xcconfig */,
 				D0AB0BBA1D6719B5002C78E7 /* Images.xcassets */,
@@ -4722,6 +4668,14 @@
 				D0FC408F1D5B8E7500261D9D /* Info.plist */,
 			);
 			path = TelegramUITests;
+			sourceTree = "<group>";
+		};
+		F7173BD7221D63D40029D97C /* Additional */ = {
+			isa = PBXGroup;
+			children = (
+				F7173BD8221D63E60029D97C /* Extensions.swift */,
+			);
+			name = Additional;
 			sourceTree = "<group>";
 		};
 		F71870972203160100B84678 /* Search */ = {
@@ -4777,25 +4731,11 @@
 			path = Additional;
 			sourceTree = "<group>";
 		};
-		F7E0F2DF21D226F100974C76 /* Additions */ = {
-			isa = PBXGroup;
-			children = (
-				F7E0F2E021D2270100974C76 /* ChatBotsManager.swift */,
-				F731702721D4B34E001850D8 /* BotProcessor.swift */,
-				FB31301421D80DF0004870C2 /* ObjC.h */,
-				FB31301521D80DF0004870C2 /* ObjC.m */,
-				F74BA4A121E6246100DD7CAB /* BotsStoreManager.swift */,
-				F75D3FE921F091E300003189 /* Entities.swift */,
-				F75D3FF021F0B66400003189 /* UIImage+Sizes.swift */,
-			);
-			name = Additions;
-			sourceTree = "<group>";
-		};
 		F7F28FCB21CD0E98008DC5A4 /* Bots */ = {
 			isa = PBXGroup;
 			children = (
+				F7173BD7221D63D40029D97C /* Additional */,
 				F75D3FDF21EF679A00003189 /* Panes */,
-				F7E0F2DF21D226F100974C76 /* Additions */,
 				FB32415921D160000023532E /* Panes List Items */,
 				FB929AD121BFE57C004000E0 /* ChatSuggestionsInputNode.swift */,
 				F73095E021D11AE900343BD5 /* ChatBotsInputNodeInteraction.swift */,
@@ -4835,7 +4775,6 @@
 			files = (
 				D0E9BA221F05577700F079A4 /* STPCard.h in Headers */,
 				096C98C021787C6700C211FF /* TGBridgeAudioEncoder.h in Headers */,
-				FB31301621D80DF0004870C2 /* ObjC.h in Headers */,
 				D0E9BA591F055A2200F079A4 /* STPWeakStrongMacros.h in Headers */,
 				D0E9BADE1F0574D800F079A4 /* STPBackendAPIAdapter.h in Headers */,
 				D0E9BAD11F0573C000F079A4 /* STPToken.h in Headers */,
@@ -4877,7 +4816,6 @@
 				D0E9BAC81F05738600F079A4 /* STPAPIClient+ApplePay.h in Headers */,
 				D0E9BA451F0559A500F079A4 /* STPAPIResponseDecodable.h in Headers */,
 				D0E9BA201F05577700F079A4 /* STPCardParams.h in Headers */,
-				FB31301921D80E87004870C2 /* TelegramUI-Bridging-Header.h in Headers */,
 				D0E9BA151F05574500F079A4 /* STPCardValidator.h in Headers */,
 				D0E9BA401F0558FE00F079A4 /* StripeError.h in Headers */,
 				D0E9BA191F05574500F079A4 /* STPPaymentCardTextField.h in Headers */,
@@ -5040,7 +4978,6 @@
 				D0E9BAB81F056F4C00F079A4 /* stp_card_visa_template@3x.png in Resources */,
 				D0E9BA9B1F056F4C00F079A4 /* stp_card_cvc_amex@2x.png in Resources */,
 				09310D30213ED5FB0020033A /* anim_unread.json in Resources */,
-				F76439BA21D77A16005AC13C /* bots in Resources */,
 				D0E9BAB61F056F4C00F079A4 /* stp_card_visa@3x.png in Resources */,
 				D0E9BAA61F056F4C00F079A4 /* stp_card_form_applepay@3x.png in Resources */,
 			);
@@ -5133,7 +5070,6 @@
 				D0EC6CCC1EB9F58800EBF1C3 /* ServiceSoundManager.swift in Sources */,
 				D0EC6CCD1EB9F58800EBF1C3 /* DeclareEncodables.swift in Sources */,
 				0958FBBD218B03CA00E0CBD8 /* InstantPageDetailsNode.swift in Sources */,
-				F75D3FEA21F091E300003189 /* Entities.swift in Sources */,
 				D02D60B1206C189900FEFE1E /* SecureIdPlaintextFormController.swift in Sources */,
 				F73095DF21D0F06900343BD5 /* ChatBotsStoreItem.swift in Sources */,
 				D0CFBB951FD8B05000B65C0D /* OverlayInstantVideoDecoration.swift in Sources */,
@@ -5228,7 +5164,6 @@
 				096C98BF21787C6700C211FF /* TGBridgeAudioEncoder.m in Sources */,
 				D01776B81F1D6FB30044446D /* RadialProgressContentNode.swift in Sources */,
 				D05D8B762195CD930064586F /* SetupTwoStepVerificationControllerNode.swift in Sources */,
-				F731702821D4B34E001850D8 /* BotProcessor.swift in Sources */,
 				D0EC6CFA1EB9F58800EBF1C3 /* ManagedAudioSession.swift in Sources */,
 				D0EB5ADF1F798033004E89B6 /* PeerMediaCollectionEmptyNode.swift in Sources */,
 				D0EC6CFB1EB9F58800EBF1C3 /* ManagedAudioRecorder.swift in Sources */,
@@ -5449,7 +5384,6 @@
 				D0C26D5E1FDF49E7004ABF18 /* DateFormat.swift in Sources */,
 				D0068FA821760FA300D1B315 /* StoreDownloadedMedia.swift in Sources */,
 				D0EC6D701EB9F58800EBF1C3 /* AuthorizationSequenceCodeEntryControllerNode.swift in Sources */,
-				F75D3FF121F0B66400003189 /* UIImage+Sizes.swift in Sources */,
 				D0E9BA4D1F0559C700F079A4 /* NSString+Stripe_CardBrands.m in Sources */,
 				D099D7511EEFF91E00A3128C /* GameControllerTitleView.swift in Sources */,
 				D0EC6D711EB9F58800EBF1C3 /* AuthorizationSequencePasswordEntryController.swift in Sources */,
@@ -5632,8 +5566,6 @@
 				D0EC6DC51EB9F58900EBF1C3 /* SoftwareVideoSource.swift in Sources */,
 				F75D3FEF21F0B51000003189 /* ChatBotsStoreItemNode.swift in Sources */,
 				D0EC6DC61EB9F58900EBF1C3 /* MultiplexedSoftwareVideoSourceManager.swift in Sources */,
-				FB31301721D80DF0004870C2 /* ObjC.m in Sources */,
-				F74BA4A221E6246100DD7CAB /* BotsStoreManager.swift in Sources */,
 				D0EC6DC71EB9F58900EBF1C3 /* SampleBufferPool.swift in Sources */,
 				D0EC6DC81EB9F58900EBF1C3 /* MultiplexedVideoNode.swift in Sources */,
 				D0EC6DC91EB9F58900EBF1C3 /* SoftwareVideoLayerFrameManager.swift in Sources */,
@@ -5641,7 +5573,6 @@
 				D0754D221EEDF89900884F6E /* ChatMessageInvoiceBubbleContentNode.swift in Sources */,
 				D0EC6DCB1EB9F58900EBF1C3 /* ChatMediaInputTrendingPane.swift in Sources */,
 				D0430B021FF4584100A35ADD /* WebControllerNode.swift in Sources */,
-				F7E0F2E121D2270100974C76 /* ChatBotsManager.swift in Sources */,
 				D0EC6DCC1EB9F58900EBF1C3 /* ChatButtonKeyboardInputNode.swift in Sources */,
 				D0CFBB861FD715E700B65C0D /* LegacyHTTPOperationImpl.swift in Sources */,
 				D06CF82920D0119500AC4CFF /* SecureIdAuthListFieldNode.swift in Sources */,
@@ -5830,6 +5761,7 @@
 				D00BED221F73F82400922292 /* SharePeersContainerNode.swift in Sources */,
 				D0EC55A3210231D600D1992C /* SearchPeerMembers.swift in Sources */,
 				D0EC6E331EB9F58900EBF1C3 /* CreateChannelController.swift in Sources */,
+				F7173BD9221D63E60029D97C /* Extensions.swift in Sources */,
 				D0AA29AE1F72770D00C050AC /* ChatListItemStrings.swift in Sources */,
 				D0EC6E341EB9F58900EBF1C3 /* ItemListItem.swift in Sources */,
 				D0EC6E351EB9F58900EBF1C3 /* ItemListAvatarAndNameItem.swift in Sources */,
@@ -6130,7 +6062,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
 				SWIFT_INSTALL_OBJC_HEADER = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "TelegramUI-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/third-party/FFmpeg-iOS/include";
@@ -6329,7 +6261,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
 				SWIFT_INSTALL_OBJC_HEADER = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "TelegramUI-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/third-party/FFmpeg-iOS/include";
@@ -6448,7 +6380,7 @@
 				SKIP_INSTALL = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_INSTALL_OBJC_HEADER = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "TelegramUI-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/third-party/FFmpeg-iOS/include";
@@ -6573,7 +6505,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
 				SWIFT_INSTALL_OBJC_HEADER = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "TelegramUI-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/third-party/FFmpeg-iOS/include";
@@ -6689,7 +6621,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
 				SWIFT_INSTALL_OBJC_HEADER = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "TelegramUI-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -6735,7 +6667,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
 				SWIFT_INSTALL_OBJC_HEADER = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "TelegramUI-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/third-party/FFmpeg-iOS/include";
@@ -6780,7 +6712,7 @@
 				SKIP_INSTALL = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_INSTALL_OBJC_HEADER = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "TelegramUI-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/third-party/FFmpeg-iOS/include";
@@ -6823,7 +6755,7 @@
 				SKIP_INSTALL = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_INSTALL_OBJC_HEADER = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "TelegramUI-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/third-party/FFmpeg-iOS/include";

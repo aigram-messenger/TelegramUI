@@ -12,6 +12,7 @@ import AsyncDisplayKit
 import Postbox
 import TelegramCore
 import SwiftSignalKit
+import AiGramLib
 
 enum ChatBotsInputPanelAuxiliaryNamespace: Int32 {
     case store = 8

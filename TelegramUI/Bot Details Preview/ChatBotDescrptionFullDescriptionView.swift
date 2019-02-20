@@ -8,6 +8,7 @@
 
 import UIKit
 import Display
+import AiGramLib
 
 class ChatBotDescrptionFullDescriptionView: UIView {
     private let botDescription: String

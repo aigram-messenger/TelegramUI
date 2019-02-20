@@ -11,6 +11,7 @@ import AsyncDisplayKit
 import Display
 import SwiftSignalKit
 import TelegramCore
+import AiGramLib
 
 final class ChatBotsPaneSearchContainerNode: ASDisplayNode {
     private let theme: PresentationTheme

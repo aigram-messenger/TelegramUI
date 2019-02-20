@@ -12,6 +12,7 @@ import AsyncDisplayKit
 import TelegramCore
 import SwiftSignalKit
 import Postbox
+import AiGramLib
 
 final class ChatBotsBotItem: ListViewItem {
     let inputNodeInteraction: ChatBotsInputNodeInteraction

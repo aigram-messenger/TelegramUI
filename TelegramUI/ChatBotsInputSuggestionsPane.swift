@@ -12,6 +12,7 @@ import Display
 import Postbox
 import TelegramCore
 import SwiftSignalKit
+import AiGramLib
 
 final class ChatBotsInputSuggestionsPane: ChatMediaInputPane, UIScrollViewDelegate {
     private var responses: [BotResponse]

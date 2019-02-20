@@ -3,6 +3,7 @@ import Display
 import Postbox
 import TelegramCore
 import SwiftSignalKit
+import AiGramLib
 
 public final class TelegramRootController: NavigationController {
     private let account: Account

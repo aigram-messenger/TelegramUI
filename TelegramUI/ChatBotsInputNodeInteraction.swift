@@ -12,6 +12,7 @@ import AsyncDisplayKit
 import Postbox
 import TelegramCore
 import SwiftSignalKit
+import AiGramLib
 
 final class ChatBotsInputNodeInteraction {
     let navigateToCollectionId: (ItemCollectionId) -> Void

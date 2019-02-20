@@ -4,6 +4,7 @@ import SwiftSignalKit
 import Postbox
 import TelegramCore
 import LegacyComponents
+import AiGramLib
 
 private final class SettingsItemIcons {
     static let autobots = UIImage(bundleImageName: "Settings/MenuIcons/Autobots")?.precomposed()

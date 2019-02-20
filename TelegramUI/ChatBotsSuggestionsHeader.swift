@@ -9,6 +9,7 @@
 import Foundation
 import AsyncDisplayKit
 import Display
+import AiGramLib
 
 final class ChatSuggestionListItemHeader: ListViewItemHeader {
     let id: ListViewItemHeaderId

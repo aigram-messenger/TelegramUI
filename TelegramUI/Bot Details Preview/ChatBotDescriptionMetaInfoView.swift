@@ -8,6 +8,7 @@
 
 import UIKit
 import Display
+import AiGramLib
 
 class ChatBotDescriptionMetaInfoView: UIView {
     private var constraintsUpdated: Bool = false

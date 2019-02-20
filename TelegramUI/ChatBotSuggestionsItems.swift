@@ -10,6 +10,7 @@ import Foundation
 import AsyncDisplayKit
 import Display
 import SwiftSignalKit
+import AiGramLib
 
 struct ChatSuggestionListItem: ListViewItem, ItemListItem {
     var sectionId: ItemListSectionId = 0

@@ -8,6 +8,7 @@
 
 import UIKit
 import TelegramCore
+import AiGramLib
 
 class ChatBotDescriptionView: UIView {
     private lazy var containerView: UIView = {

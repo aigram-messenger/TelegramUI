@@ -7,6 +7,7 @@ import AsyncDisplayKit
 import TelegramCore
 import SafariServices
 import MobileCoreServices
+import AiGramLib
 
 public enum ChatControllerPeekActions {
     case standard
