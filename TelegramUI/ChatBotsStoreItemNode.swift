@@ -106,6 +106,8 @@ class ChatStoreBotItemNode: ListViewItemNode {
         let bought = BotsStoreManager.shared.isBotBought(bot)
         self.installationActionNode.isHidden = bought
         self.enablingActionNode.isHidden = !bought
+        
+        self.installationActionNode.isUserInteractionEnabled = true
     }
     
     override func animateAdded(_ currentTimestamp: Double, duration: Double) {
@@ -167,7 +169,7 @@ class ChatStoreBotItemNode: ListViewItemNode {
     }
     
     @objc private func buyBotAction() {
-//        self.installationActionNode.isUserInteractionEnabled = false
+        self.installationActionNode.isUserInteractionEnabled = false
         self.item?.inputNodeInteraction.buyBot(self.bot)
     }
     

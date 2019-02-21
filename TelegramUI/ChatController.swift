@@ -1575,14 +1575,15 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
             if BotsStoreManager.shared.botPrice(bot: bot) > 0 {
                 title = "Купить за " + BotsStoreManager.shared.botPriceString(bot: bot, defaultValue: "")
             }
-            items.append(ActionSheetButtonItem(title: title, color: .accent, action: { [weak self] in
+            let item = ActionSheetButtonItem(title: title, color: .accent, action: { [weak self] in
                 self?.controllerInteraction?.buyBot(bot) { [weak actionSheet] bought in
                     guard bought else { return }
                     completion()
                     actionSheet?.dismissAnimated()
                     self?.controllerInteraction?.handleMessagesWithBots(nil, false)
                 }
-            }))
+            })
+            items.append(item)
         } else {
             let enabled = ChatBotsManager.shared.isBotEnabled(bot)
             let title = enabled ? "Отключить" : "Включить"
