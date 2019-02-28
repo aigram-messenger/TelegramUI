@@ -109,40 +109,42 @@ private extension ChatBotDescriptionInfoPointView {
 }
 
 class ChatBotDescriptionInfoPointView: UIView {
+    private let strings: PresentationStrings
     private var constraintsUpdated: Bool = false
     private var model: ChatBotInfoPointModel
     
     //MARK: -
 
     private lazy var ratingView: PointView = {
-        var caption = "\(model.numberOfFeedbacks) оценок"
+        var caption = "\(model.numberOfFeedbacks) \(self.strings.Bot_RatingsCount)"
         let view = PointView(caption: caption, mark: model.rating, image: UIImage(bundleImageName: "Chat/Input/Media/raitingFilledStar"))
         addSubview(view)
         return view
     }()
 
     private lazy var installsView: PointView = {
-        let view = PointView(caption: "Установок", mark: model.numberOfInstalls, image: nil)
+        let view = PointView(caption: self.strings.Bot_InstallationsCount, mark: model.numberOfInstalls, image: nil)
         addSubview(view)
         return view
     }()
 
     private lazy var themesView: PointView = {
-        let view = PointView(caption: "Тем", mark: model.numberOfThemes, image: nil)
+        let view = PointView(caption: self.strings.Bot_ThemesCount, mark: model.numberOfThemes, image: nil)
         addSubview(view)
         return view
     }()
 
     private lazy var sentencesView: PointView = {
-        let view = PointView(caption: "Фраз", mark: model.numberOfSentences, image: nil)
+        let view = PointView(caption: self.strings.Bot_PhrasesCount, mark: model.numberOfSentences, image: nil)
         addSubview(view)
         return view
     }()
     
     //MARK: -
 
-    init(model: ChatBotInfoPointModel) {
+    init(model: ChatBotInfoPointModel, strings: PresentationStrings) {
         self.model = model
+        self.strings = strings
         super.init(frame: .zero)
         self.translatesAutoresizingMaskIntoConstraints = false
         self.backgroundColor = UIColor(argb: 0xfff5f6f7)
@@ -155,11 +157,11 @@ class ChatBotDescriptionInfoPointView: UIView {
     public func updateModel(_ model: ChatBotInfoPointModel) {
         self.model = model
         
-        let caption = "\(model.numberOfFeedbacks) оценок"
+        let caption = "\(model.numberOfFeedbacks) \(strings.Bot_RatingsCount)"
         self.ratingView.update(caption: caption, mark: model.rating, image: UIImage(bundleImageName: "Chat/Input/Media/raitingFilledStar"))
-        self.installsView.update(caption: "Установок", mark: model.numberOfInstalls, image: nil)
-        self.themesView.update(caption: "Тем", mark: model.numberOfThemes, image: nil)
-        self.sentencesView.update(caption: "Фраз", mark: model.numberOfSentences, image: nil)
+        self.installsView.update(caption: strings.Bot_InstallationsCount, mark: model.numberOfInstalls, image: nil)
+        self.themesView.update(caption: strings.Bot_ThemesCount, mark: model.numberOfThemes, image: nil)
+        self.sentencesView.update(caption: strings.Bot_PhrasesCount, mark: model.numberOfSentences, image: nil)
     }
     
     override var frame: CGRect {

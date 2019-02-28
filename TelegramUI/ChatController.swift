@@ -1056,10 +1056,11 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
                 if bought {
                     self?.requestHandlingLastMessages(nil)
                 } else {
+                    let strings = strongSelf.presentationData.strings
                     let actions = [TextAlertAction(type: .defaultAction, title: strongSelf.presentationData.strings.Common_OK, action: {})]
                     strongSelf.present(standardTextAlertController(theme: AlertControllerTheme(presentationTheme: strongSelf.presentationData.theme),
-                                                                   title: "Ошибка покупки",
-                                                                   text: "Не удалось купить бота \"\(bot.title)\".\nВероятно, надо войти под другой записью в AppStore либо выйти из нее.",
+                                                                   title: strings.Bot_PurchaseError,
+                                                                   text: strings.BotPurchaseErrorDetails(bot.title),
                                                                    actions: actions),
                                        in: .window(.root))
                 }
@@ -1527,16 +1528,17 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
     private func showBotActions(_ bot: ChatBot, completion: @escaping () -> Void) {
         let actionSheet = ActionSheetController(presentationTheme: self.presentationData.theme)
         var items: [ActionSheetItem] = []
+        let strings = presentationData.strings
 
-        items.append(ActionSheetButtonItem(title: "Подробно о боте", color: .accent, action: { [weak self, weak actionSheet] in
+        items.append(ActionSheetButtonItem(title: strings.Bot_GetBotDescription, color: .accent, action: { [weak self, weak actionSheet] in
             actionSheet?.dismissAnimated()
             self?.showBotDetailsAlert(bot, completion: completion)
         }))
-        items.append(ActionSheetButtonItem(title: "Поделиться в чат", color: .accent, action: { [weak self, weak actionSheet] in
+        items.append(ActionSheetButtonItem(title: strings.Bot_ShareToChat, color: .accent, action: { [weak self, weak actionSheet] in
             actionSheet?.dismissAnimated()
             self?.updateText(ChatBotsManager.shared.shareText)
         }))
-        items.append(ActionSheetButtonItem(title: "Отключить бота", color: .destructive, action: { [weak self, weak actionSheet] in
+        items.append(ActionSheetButtonItem(title: strings.Bot_DisableBot, color: .destructive, action: { [weak self, weak actionSheet] in
             guard let self = self else { return }
             ChatBotsManager.shared.enableBot(bot, enabled: false, userId: self.account.peerId.id, completion: completion)
             actionSheet?.dismissAnimated()
@@ -1555,14 +1557,15 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
     private func showBotDetailsAlert(_ bot: ChatBot, completion: @escaping () -> Void) {
         let actionSheet = ActionSheetController(presentationTheme: self.presentationData.theme)
         var items: [ActionSheetItem] = []
+        let strings = presentationData.strings
         
         items.append(ChatBotDetailsItem(account: self.account, bot: bot) { [weak self] error in
             guard let strongSelf = self else { return }
             var title: String?
-            var text = "Ваш голос учтен"
+            var text = strings.Bot_RateCompleted
             if error != nil {
-                title = "Ошибка"
-                text = "Не удалось сохранить вашу оценку"
+                title = strings.Bot_RateErrorTitle
+                text = strings.Bot_RateErrorDescription
             }
             let actions = [TextAlertAction(type: .defaultAction, title: strongSelf.presentationData.strings.Common_OK, action: {})]
             strongSelf.present(standardTextAlertController(theme: AlertControllerTheme(presentationTheme: strongSelf.presentationData.theme),
@@ -1571,9 +1574,9 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
                                                            actions: actions), in: .window(.root))
         })
         if !BotsStoreManager.shared.isBotBought(bot) {
-            var title = "Получить"
+            var title = strings.Bot_Get
             if BotsStoreManager.shared.botPrice(bot: bot) > 0 {
-                title = "Купить за " + BotsStoreManager.shared.botPriceString(bot: bot, defaultValue: "")
+                title = strings.Bot_Buy(for: BotsStoreManager.shared.botPriceString(bot: bot, defaultValue: ""))
             }
             let item = ActionSheetButtonItem(title: title, color: .accent, action: { [weak self] in
                 self?.controllerInteraction?.buyBot(bot) { [weak actionSheet] bought in
@@ -1586,7 +1589,7 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
             items.append(item)
         } else {
             let enabled = ChatBotsManager.shared.isBotEnabled(bot)
-            let title = enabled ? "Отключить" : "Включить"
+            let title = enabled ? strings.Bot_DetailsDisable : strings.Bot_DetailsEnable
             let color = enabled ? ActionSheetButtonColor.destructive : .accent
             let action = { [weak self, weak actionSheet] in
                 guard let self = self else { return }

@@ -32,7 +32,7 @@ class ChatBotDescriptionView: UIView {
         let model = ChatBotInfoPointModel(numberOfFeedbacks: details.votings, rating: details.rating,
                                           numberOfInstalls: details.installation, numberOfThemes: details.theme,
                                           numberOfSentences: details.phrase)
-        let view = ChatBotDescriptionInfoPointView(model: model)
+        let view = ChatBotDescriptionInfoPointView(model: model, strings: self.strings)
         return view
     }()
 
@@ -42,12 +42,12 @@ class ChatBotDescriptionView: UIView {
     }()
 
     private lazy var metaInfoView: ChatBotDescriptionMetaInfoView = {
-        let view = ChatBotDescriptionMetaInfoView(bot: self.bot)
+        let view = ChatBotDescriptionMetaInfoView(bot: self.bot, strings: strings)
         return view
     }()
 
     private lazy var rateView: ChatBotDescriptionRateView = {
-        let view = ChatBotDescriptionRateView { [weak self] rate in
+        let view = ChatBotDescriptionRateView(strings: self.strings) { [weak self] rate in
             guard let self = self else { return }
             ChatBotsManager.shared.rateBot(self.bot, rating: rate, userId: self.account.peerId.id) { [weak self] error in
                 self?.rateCompletion?(error)
@@ -78,6 +78,7 @@ class ChatBotDescriptionView: UIView {
     
     private let bot: ChatBot
     private let account: Account
+    private let strings: PresentationStrings
     private var rateCompletion: ((Error?) -> Void)?
     
     override var frame: CGRect {
@@ -91,6 +92,7 @@ class ChatBotDescriptionView: UIView {
     init(account: Account, bot: ChatBot, rateCompletion: ((Error?) -> Void)?) {
         self.bot = bot
         self.account = account
+        self.strings = account.telegramApplicationContext.currentPresentationData.with { $0 }.strings
         
         super.init(frame: .zero)
         setup()

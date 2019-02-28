@@ -18,18 +18,25 @@ struct ChatBotsStoreListItem: ListViewItem, ItemListItem {
     let bot: ChatBot
     let inputNodeInteraction: ChatBotsInputNodeInteraction
     let theme: PresentationTheme
+    let strings: PresentationStrings
     
     var selectable: Bool { return true }
     
-    init(bot: ChatBot, inputNodeInteraction: ChatBotsInputNodeInteraction, theme: PresentationTheme) {
+    init(
+        bot: ChatBot, inputNodeInteraction:
+        ChatBotsInputNodeInteraction,
+        theme: PresentationTheme,
+        strings: PresentationStrings
+    ) {
         self.bot = bot
         self.inputNodeInteraction = inputNodeInteraction
         self.theme = theme
+        self.strings = strings
     }
     
     func nodeConfiguredForParams(async: @escaping (@escaping () -> Void) -> Void, params: ListViewItemLayoutParams, previousItem: ListViewItem?, nextItem: ListViewItem?, completion: @escaping (ListViewItemNode, @escaping () -> (Signal<Void, NoError>?, () -> Void)) -> Void) {
         async {
-            let node = ChatStoreBotItemNode(bot: self.bot)
+            let node = ChatStoreBotItemNode(bot: self.bot, strings: self.strings)
             let (layout, apply) = node.asyncLayout()(self, params, itemListNeighbors(item: self, topItem: previousItem as? ItemListItem, bottomItem: nextItem as? ItemListItem))
             
             var size = layout.contentSize

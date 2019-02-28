@@ -16,7 +16,7 @@ class ChatBotDescriptionRateView: UIView {
         view.translatesAutoresizingMaskIntoConstraints = false
         view.font = Font.medium(14)
         view.textColor = UIColor(argb: 0xff8a8a8a)
-        view.text = "Оцените бота"
+        view.text = self.strings.Bot_Rate
 
         addSubview(view)
 
@@ -38,13 +38,15 @@ class ChatBotDescriptionRateView: UIView {
     }()
 
     private let rateBlock: (Int) -> Void
+    private let strings: PresentationStrings
 
     override var frame: CGRect {
         didSet { updateFrame() }
     }
 
-    init(rate: @escaping (Int) -> Void) {
+    init(strings: PresentationStrings, rate: @escaping (Int) -> Void) {
         self.rateBlock = rate
+        self.strings = strings
 
         super.init(frame: .zero)
 

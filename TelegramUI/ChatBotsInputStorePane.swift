@@ -66,7 +66,12 @@ final class ChatBotsInputStorePane: ChatMediaInputPane, UIScrollViewDelegate {
         
         var index = 0
         let insertItems: [ListViewInsertItem] = bots.map {
-            let itemNode = ChatBotsStoreListItem(bot: $0, inputNodeInteraction: self.inputNodeInteraction, theme: self.theme)
+            let itemNode = ChatBotsStoreListItem(
+                bot: $0,
+                inputNodeInteraction: self.inputNodeInteraction,
+                theme: self.theme,
+                strings: self.strings
+            )
             let item = ListViewInsertItem(index: index, previousIndex: nil, item: itemNode, directionHint: nil)
             index += 1
             return item

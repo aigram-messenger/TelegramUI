@@ -291,7 +291,12 @@ final class ChatBotsPaneSearchContainerNode: ASDisplayNode {
     private func insertListItems(with inserts: ([(Int, ChatBot, Int?)])) -> [ListViewInsertItem] {
         var result: [ListViewInsertItem] = []
         for insert in inserts {
-            let itemNode = ChatBotsStoreListItem(bot: insert.1, inputNodeInteraction: self.inputNodeInteraction, theme: self.theme)
+            let itemNode = ChatBotsStoreListItem(
+                bot: insert.1,
+                inputNodeInteraction: self.inputNodeInteraction,
+                theme: self.theme,
+                strings: self.strings
+            )
             result.append(ListViewInsertItem(index: insert.0, previousIndex: insert.2, item: itemNode, directionHint: nil))
         }
         return result
@@ -300,7 +305,12 @@ final class ChatBotsPaneSearchContainerNode: ASDisplayNode {
     private func updateListItems(with updates: ([(Int, ChatBot, Int)])) -> [ListViewUpdateItem] {
         var result = [ListViewUpdateItem]()
         for update in updates {
-            let itemNode = ChatBotsStoreListItem(bot: update.1, inputNodeInteraction: self.inputNodeInteraction, theme: self.theme)
+            let itemNode = ChatBotsStoreListItem(
+                bot: update.1,
+                inputNodeInteraction: self.inputNodeInteraction,
+                theme: self.theme,
+                strings: self.strings
+            )
             result.append(ListViewUpdateItem(index: update.0, previousIndex: update.2, item: itemNode, directionHint: nil))
         }
         return result

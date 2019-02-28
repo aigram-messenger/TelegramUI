@@ -18,6 +18,7 @@ private let smallFont = Font.regular(12.0)
 
 class ChatStoreBotItemNode: ListViewItemNode {
     private(set) var bot: ChatBot
+    private let strings: PresentationStrings
     private var theme: PresentationTheme?
     private let titleNode: ASTextNode
     private let typeNode: ASTextNode
@@ -29,8 +30,9 @@ class ChatStoreBotItemNode: ListViewItemNode {
     
     private var item: ChatBotsStoreListItem?
     
-    init(bot: ChatBot) {
+    init(bot: ChatBot, strings: PresentationStrings) {
         self.bot = bot
+        self.strings = strings
         
         self.titleNode = ASTextNode()
         self.titleNode.isLayerBacked = true
@@ -53,14 +55,14 @@ class ChatStoreBotItemNode: ListViewItemNode {
         self.installationActionNode = HighlightableButtonNode()
         self.installationActionNode.backgroundColor = UIColor(argb: 0xff50a8eb)
         self.installationActionNode.cornerRadius = 4
-        let priceString = BotsStoreManager.shared.botPriceString(bot: bot)
+        let priceString = BotsStoreManager.shared.botPriceString(bot: bot, defaultValue: strings.Bot_GetUppercased)
         self.installationActionNode.setAttributedTitle(NSAttributedString(string: priceString, font: buttonTitleFont, textColor: .white), for: .normal)
         
         self.enablingActionNode = HighlightableButtonNode()
         self.enablingActionNode.cornerRadius = 4
         self.enablingActionNode.borderWidth = 1
         let botIsEnabled = ChatBotsManager.shared.isBotEnabled(bot)
-        let title = botIsEnabled ? "ОТКЛЮЧИТЬ" : "ВКЛЮЧИТЬ"
+        let title = botIsEnabled ? strings.Bot_Disable : strings.Bot_Enable
         let color = botIsEnabled ? UIColor(argb: 0xff848d99) : UIColor(argb: 0xff50a8eb)
         self.enablingActionNode.borderColor = color.cgColor
         self.enablingActionNode.setAttributedTitle(NSAttributedString(string: title, font: buttonTitleFont, textColor: color), for: .normal)
@@ -93,12 +95,12 @@ class ChatStoreBotItemNode: ListViewItemNode {
         }
         self.titleNode.attributedText = NSAttributedString(string: bot.title.capitalized, font: titleFont, textColor: UIColor.black)
         self.descriptionNode.attributedText = NSAttributedString(string: bot.shortDescription, font: smallFont, textColor: UIColor(argb: 0xff8a8a8a))
-        let priceString = BotsStoreManager.shared.botPriceString(bot: bot)
+        let priceString = BotsStoreManager.shared.botPriceString(bot: bot, defaultValue: strings.Bot_GetUppercased)
         self.installationActionNode.setAttributedTitle(NSAttributedString(string: priceString, font: buttonTitleFont, textColor: .white), for: .normal)
         self.previewImageNode.image = bot.preview
         
         let botIsEnabled = ChatBotsManager.shared.isBotEnabled(bot)
-        let title = botIsEnabled ? "ОТКЛЮЧИТЬ" : "ВКЛЮЧИТЬ"
+        let title = botIsEnabled ? strings.Bot_Disable : strings.Bot_Enable
         let color = botIsEnabled ? UIColor(argb: 0xff848d99) : UIColor(argb: 0xff50a8eb)
         self.enablingActionNode.borderColor = color.cgColor
         self.enablingActionNode.setAttributedTitle(NSAttributedString(string: title, font: buttonTitleFont, textColor: color), for: .normal)

@@ -3451,6 +3451,163 @@ public final class PresentationStrings {
         }
         return "Автоматические боты"
     }
+    
+    public var Bot_Disable: String {
+        if self.baseLanguageCode == "en" {
+            return "DISABLE"
+        }
+        return "ОТКЛЮЧИТЬ"
+    }
+    
+    public var Bot_DetailsDisable: String {
+        if self.baseLanguageCode == "en" {
+            return "Disable"
+        }
+        return "Отключить"
+    }
+    
+    public var Bot_Enable: String {
+        if self.baseLanguageCode == "en" {
+            return "ENABLE"
+        }
+        return "ВКЛЮЧИТЬ"
+    }
+    
+    public var Bot_DetailsEnable: String {
+        if self.baseLanguageCode == "en" {
+            return "Enable"
+        }
+        return "Включить"
+    }
+    
+    public var Bot_RatingsCount: String {
+        if self.baseLanguageCode == "en" {
+            return "ratings"
+        }
+        return "оценок"
+    }
+    
+    public var Bot_InstallationsCount: String {
+        if self.baseLanguageCode == "en" {
+            return "Installations"
+        }
+        return "Установок"
+    }
+    
+    public var Bot_ThemesCount: String {
+        if self.baseLanguageCode == "en" {
+            return "Themes"
+        }
+        return "Тем"
+    }
+    
+    public var Bot_PhrasesCount: String {
+        if self.baseLanguageCode == "en" {
+            return "Phrases"
+        }
+        return "Фраз"
+    }
+    
+    public var Bot_Rate: String {
+        if self.baseLanguageCode == "en" {
+            return "Rate the bot"
+        }
+        return "Оцените бота"
+    }
+    
+    public var Bot_RateCompleted: String {
+        if self.baseLanguageCode == "en" {
+            return "Your vote has been counted"
+        }
+        return "Ваш голос учтен"
+    }
+    
+    public var Bot_RateErrorTitle: String {
+        if self.baseLanguageCode == "en" {
+            return "Error"
+        }
+        return "Ошибка"
+    }
+    
+    public var Bot_RateErrorDescription: String {
+        if self.baseLanguageCode == "en" {
+            return "Error"
+        }
+        return "Failed to save your rating"
+    }
+    
+    public var Bot_Get: String {
+        if self.baseLanguageCode == "en" {
+            return "Get"
+        }
+        return "Получить"
+    }
+    
+    public var Bot_GetUppercased: String {
+        if self.baseLanguageCode == "en" {
+            return "GET"
+        }
+        return "ПОЛУЧИТЬ"
+    }
+    
+    public var Bot_GetBotDescription: String {
+        if self.baseLanguageCode == "en" {
+            return "Details about the bot"
+        }
+        return "Подробно о боте"
+    }
+    
+    public var Bot_ShareToChat: String {
+        if self.baseLanguageCode == "en" {
+            return "Share to chat"
+        }
+        return "Поделиться в чат"
+    }
+    
+    public var Bot_DisableBot: String {
+        if self.baseLanguageCode == "en" {
+            return "Disable bot"
+        }
+        return "Отключить бота"
+    }
+    
+    public var Bot_PurchaseError: String {
+        if self.baseLanguageCode == "en" {
+            return "Purchase error"
+        }
+        return "Ошибка покупки"
+    }
+    
+    public func BotPurchaseErrorDetails(_ title: String) -> String {
+        if self.baseLanguageCode == "en" {
+            return "Could not buy \(title) bot. Probably, you need to log in under another account in the AppStore or exit it."
+        }
+        return "Не удалось купить бота \"\(title)\".\nВероятно, надо войти под другой записью в AppStore либо выйти из нее."
+    }
+    
+    public func Bot_Buy(for price: String) -> String {
+        if self.baseLanguageCode == "en" {
+            return "Buy for \(price)"
+        }
+        return "Купить за \(price)"
+    }
+    
+    public func BotDetails_MetaInfo(addDate: String, updateDate: String, developer: String) -> String {
+        let addDateTitle: String
+        let updateDateTitle: String
+        let developereTitle: String
+        if baseLanguageCode == "en" {
+            addDateTitle = "Added"
+            updateDateTitle = "Updated"
+            developereTitle = "Developer"
+        } else {
+            addDateTitle = "Добавлен"
+            updateDateTitle = "Обновлен"
+            developereTitle = "Разработчик"
+        }
+        
+        return "\(addDateTitle): \(addDate)\n\(updateDateTitle): \(updateDate)\n\(developereTitle): \(developer)"
+    }
         
     init(primaryComponent: PresentationStringsComponent, secondaryComponent: PresentationStringsComponent?) {
         self.primaryComponent = primaryComponent
