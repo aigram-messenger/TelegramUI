@@ -25,19 +25,27 @@ public final class TelegramRootController: NavigationController {
         
         super.init(mode: .automaticMasterDetail, theme: NavigationControllerTheme(presentationTheme: self.presentationData.theme))
         
-        ChatBotsManager.shared.botsInStore(completion: { _ in })
         ChatBotsManager.shared.sendFirstStartIfNeeded(userId: self.account.peerId.id)
+        ChatBotsManager.shared.updateLanguageCodeAndLoadBots(presentationData.strings.baseLanguageCode)
             
         self.presentationDataDisposable = (account.telegramApplicationContext.presentationData
             |> deliverOnMainQueue).start(next: { [weak self] presentationData in
-            if let strongSelf = self {
+                ChatBotsManager.shared.updateLanguageCodeAndLoadBots(presentationData.strings.baseLanguageCode)
+                
+                guard let strongSelf = self else {
+                    return
+                }
+                
                 let previousTheme = strongSelf.presentationData.theme
                 strongSelf.presentationData = presentationData
                 if previousTheme !== presentationData.theme {
-                    strongSelf.rootTabController?.updateTheme(navigationBarPresentationData: NavigationBarPresentationData(presentationData: presentationData), theme: TabBarControllerTheme(rootControllerTheme: presentationData.theme))
+                    strongSelf.rootTabController?.updateTheme(
+                        navigationBarPresentationData: NavigationBarPresentationData(presentationData: presentationData),
+                        theme: TabBarControllerTheme(rootControllerTheme:
+                            presentationData.theme)
+                    )
                     strongSelf.rootTabController?.statusBar.statusBarStyle = presentationData.theme.rootController.statusBar.style.style
                 }
-            }
         })
     }
     
