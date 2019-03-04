@@ -309,7 +309,7 @@ public final class PresentationStrings {
     public var Passport_Language_ne: String { return self._s[110]! }
     public var Channel_MessagePhotoUpdated: String { return self._s[111]! }
     public var Passport_Address_OneOfTypePassportRegistration: String { return self._s[112]! }
-    public var Cache_Help: String { return self._s[113]! }
+    public var Cache_Help: String { return self._s[113]!.replacedTelegramToAiGram }
     public var SocksProxySetup_ProxyStatusConnected: String { return self._s[115]! }
     public func Login_EmailPhoneBody(_ _0: String, _ _1: String, _ _2: String) -> (String, [(Int, NSRange)]) {
         return formatWithArgumentRanges(self._s[116]!, self._r[116]!, [_0, _1, _2])
@@ -2248,7 +2248,7 @@ public final class PresentationStrings {
     public var Channel_Setup_TypePublicHelp: String { return self._s[1970]! }
     public var GroupInfo_InviteLink_RevokeAlert_Success: String { return self._s[1973]! }
     public var Channel_Setup_PublicNoLink: String { return self._s[1974]! }
-    public var Privacy_Calls_P2PHelp: String { return self._s[1975]! }
+    public var Privacy_Calls_P2PHelp: String { return self._s[1975]!.replacedTelegramToAiGram }
     public var Conversation_Info: String { return self._s[1976]! }
     public func Time_TodayAt(_ _0: String) -> (String, [(Int, NSRange)]) {
         return formatWithArgumentRanges(self._s[1978]!, self._r[1978]!, [_0])
@@ -2631,7 +2631,7 @@ public final class PresentationStrings {
     public var WebSearch_Images: String { return self._s[2322]! }
     public var Conversation_typing: String { return self._s[2323]! }
     public var Common_Back: String { return self._s[2324]! }
-    public var PrivacySettings_DataSettingsHelp: String { return self._s[2326]! }
+    public var PrivacySettings_DataSettingsHelp: String { return self._s[2326]!.replacedTelegramToAiGram }
     public var Passport_Language_es: String { return self._s[2327]! }
     public var Common_Search: String { return self._s[2328]! }
     public func CancelResetAccount_Success(_ _0: String) -> (String, [(Int, NSRange)]) {
@@ -2917,7 +2917,9 @@ public final class PresentationStrings {
     public var Passport_Address_AddRentalAgreement: String { return self._s[2583]! }
     public var Wallpaper_PhotoLibrary: String { return self._s[2584]! }
     public var Settings_About: String { return self._s[2585]! }
-    public var Privacy_Calls_IntegrationHelp: String { return self._s[2586]! }
+    public var Privacy_Calls_IntegrationHelp: String {
+        return self._s[2586]!.replacedTelegramToAiGram
+    }
     public var ContactInfo_Job: String { return self._s[2587]! }
     public func CHAT_LEFT(_ _1: String, _ _2: String) -> (String, [(Int, NSRange)]) {
         return formatWithArgumentRanges(self._s[2588]!, self._r[2588]!, [_1, _2])
@@ -3065,7 +3067,9 @@ public final class PresentationStrings {
     public var MediaPicker_Videos: String { return self._s[2707]! }
     public var Notification_PassportValueProofOfIdentity: String { return self._s[2708]! }
     public var BlockedUsers_AddNew: String { return self._s[2709]! }
-    public var Notifications_DisplayNamesOnLockScreenInfo: String { return self._s[2710]! }
+    public var Notifications_DisplayNamesOnLockScreenInfo: String {
+        return self._s[2710]!.replacedTelegramToAiGram
+    }
     public var StickerPacksSettings_StickerPacksSection: String { return self._s[2711]! }
     public var Channel_NotificationLoading: String { return self._s[2712]! }
     public var Passport_Language_da: String { return self._s[2714]! }
@@ -3661,3 +3665,8 @@ public final class PresentationStrings {
     }
 }
 
+extension String {
+    fileprivate var replacedTelegramToAiGram: String {
+        return self.replacingOccurrences(of: "Telegram", with: "AiGram")
+    }
+}

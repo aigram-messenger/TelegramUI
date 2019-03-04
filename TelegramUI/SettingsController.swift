@@ -431,8 +431,9 @@ private func settingsEntries(presentationData: PresentationData, state: Settings
             entries.append(.watch(presentationData.theme, SettingsItemIcons.watch, presentationData.strings.Settings_AppleWatch, ""))
         }
         
-        entries.append(.askAQuestion(presentationData.theme, SettingsItemIcons.support, presentationData.strings.Settings_Support))
-        entries.append(.faq(presentationData.theme, SettingsItemIcons.faq, presentationData.strings.Settings_FAQ))
+//        NOTE: In AiGram this fields are not available
+//        entries.append(.askAQuestion(presentationData.theme, SettingsItemIcons.support, presentationData.strings.Settings_Support))
+//        entries.append(.faq(presentationData.theme, SettingsItemIcons.faq, presentationData.strings.Settings_FAQ))
     }
     
     return entries
