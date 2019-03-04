@@ -23,8 +23,8 @@ struct ChatBotsStoreListItem: ListViewItem, ItemListItem {
     var selectable: Bool { return true }
     
     init(
-        bot: ChatBot, inputNodeInteraction:
-        ChatBotsInputNodeInteraction,
+        bot: ChatBot,
+        inputNodeInteraction: ChatBotsInputNodeInteraction,
         theme: PresentationTheme,
         strings: PresentationStrings
     ) {
