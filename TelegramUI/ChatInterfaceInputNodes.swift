@@ -7,6 +7,7 @@ func inputNodeForChatPresentationIntefaceState(_ chatPresentationInterfaceState:
     if !(inputPanelNode is ChatTextInputPanelNode) {
         return nil
     }
+    
     switch chatPresentationInterfaceState.inputMode {
         case .media:
             if let currentNode = currentNode as? ChatMediaInputNode {
@@ -49,7 +50,8 @@ func inputNodeForChatPresentationIntefaceState(_ chatPresentationInterfaceState:
                 currentNode.set(botResponses: responses)
                 return currentNode
             } else {
-                let inputNode = ChatSuggestionsInputNode(account: account, controllerInteraction: controllerInteraction, theme: chatPresentationInterfaceState.theme, strings: chatPresentationInterfaceState.strings)
+                let presentationData = account.telegramApplicationContext.currentPresentationData.with { $0 }
+                let inputNode = ChatSuggestionsInputNode(account: account, controllerInteraction: controllerInteraction, theme: chatPresentationInterfaceState.theme, strings: chatPresentationInterfaceState.strings, dynamicBounceEnabled: !presentationData.disableAnimations)
                 inputNode.interfaceInteraction = interfaceInteraction
                 inputNode.set(botResponses: responses)
                 return inputNode

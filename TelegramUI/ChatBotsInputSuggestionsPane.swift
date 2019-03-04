@@ -21,12 +21,19 @@ final class ChatBotsInputSuggestionsPane: ChatMediaInputPane, UIScrollViewDelega
     
     var theme: PresentationTheme
     
-    init(bot: ChatBot, responses: [BotResponse], inputNodeInteraction: ChatBotsInputNodeInteraction, theme: PresentationTheme) {
+    init(
+        bot: ChatBot,
+        responses: [BotResponse],
+        inputNodeInteraction: ChatBotsInputNodeInteraction,
+        theme: PresentationTheme,
+        dynamicBounceEnabled: Bool
+    ) {
         self.responses = responses
         self.inputNodeInteraction = inputNodeInteraction
         self.theme = theme
         
         self.listView = ListView()
+        self.listView.dynamicBounceEnabled = dynamicBounceEnabled
         
         super.init()
         

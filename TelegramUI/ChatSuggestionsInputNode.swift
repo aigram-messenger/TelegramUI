@@ -87,6 +87,7 @@ final class ChatSuggestionsInputNode: ChatInputNode {
     private var bots: [ChatBot] = []
 
     private var theme: PresentationTheme?
+    private let dynamicBounceEnabled: Bool
     
     private var inputNodeInteraction: ChatBotsInputNodeInteraction!
     private var paneArrangement: ChatBotsInputPaneArrangement
@@ -97,11 +98,18 @@ final class ChatSuggestionsInputNode: ChatInputNode {
     private var strings: PresentationStrings
     private var storeByUser: Bool = false
 
-    init(account: Account, controllerInteraction: ChatControllerInteraction, theme: PresentationTheme, strings: PresentationStrings) {
+    init(
+        account: Account,
+        controllerInteraction: ChatControllerInteraction,
+        theme: PresentationTheme,
+        strings: PresentationStrings,
+        dynamicBounceEnabled: Bool
+    ) {
         self.account = account
         self.controllerInteraction = controllerInteraction
         self.theme = theme
         self.strings = strings
+        self.dynamicBounceEnabled = dynamicBounceEnabled
         
         self.botsListContainer = ASDisplayNode()
         self.botsListContainer.clipsToBounds = true
@@ -277,10 +285,10 @@ final class ChatSuggestionsInputNode: ChatInputNode {
         for paneType in toArrangements {
             switch paneType {
             case .store:
-                self.panesAndAnimatingOut.append((storePane ?? ChatBotsInputStorePane(inputNodeInteraction: self.inputNodeInteraction, theme: self.theme!, strings: self.strings), false))
+                self.panesAndAnimatingOut.append((storePane ?? ChatBotsInputStorePane(inputNodeInteraction: self.inputNodeInteraction, theme: self.theme!, strings: self.strings, dynamicBounceEnabled: self.dynamicBounceEnabled), false))
             case .bot(let botId):
                 let bot = results.first(where: { $0.bot.id == botId })!.bot
-                self.panesAndAnimatingOut.append((ChatBotsInputSuggestionsPane(bot: bot, responses: results[resultIndex].responses, inputNodeInteraction: self.inputNodeInteraction, theme: self.theme!), false))
+                self.panesAndAnimatingOut.append((ChatBotsInputSuggestionsPane(bot: bot, responses: results[resultIndex].responses, inputNodeInteraction: self.inputNodeInteraction, theme: self.theme!, dynamicBounceEnabled: self.dynamicBounceEnabled), false))
                 resultIndex += 1
             }
         }

@@ -22,12 +22,18 @@ final class ChatBotsInputStorePane: ChatMediaInputPane, UIScrollViewDelegate {
     
     var theme: PresentationTheme
     
-    init(inputNodeInteraction: ChatBotsInputNodeInteraction, theme: PresentationTheme, strings: PresentationStrings) {
+    init(
+        inputNodeInteraction: ChatBotsInputNodeInteraction,
+        theme: PresentationTheme,
+        strings: PresentationStrings,
+        dynamicBounceEnabled: Bool
+    ) {
         self.inputNodeInteraction = inputNodeInteraction
         self.theme = theme
         self.strings = strings
         
         self.listView = ListView()
+        listView.dynamicBounceEnabled = dynamicBounceEnabled
         
         super.init()
         self.backgroundColor = UIColor(argb: 0xffe7ebef)
