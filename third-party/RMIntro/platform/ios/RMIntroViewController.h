@@ -33,14 +33,15 @@
 
 @end
 
-@interface RMIntroViewController : UIViewController<UIScrollViewDelegate, GLKViewDelegate>
+@interface RMIntroViewController : UIViewController<UIScrollViewDelegate>
 {
     EAGLContext *context;
     
-    GLKView *_glkView;
+    UIImageView *_glkView;
     
     NSArray *_headlines;
     NSArray *_descriptions;
+    NSArray *_imageNames;
     
     NSMutableArray *_pageViews;
     

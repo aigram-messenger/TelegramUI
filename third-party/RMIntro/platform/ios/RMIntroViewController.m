@@ -93,6 +93,7 @@ static void TGDispatchOnMainThread(dispatch_block_t block) {
     
     SVariable *_alternativeLocalization;
     NSDictionary<NSString *, NSString *> *_englishStrings;
+    CGFloat imageViewDiffSize;
 }
 @end
 
@@ -152,6 +153,14 @@ static void TGDispatchOnMainThread(dispatch_block_t block) {
         _descriptions = @[_englishStrings[@"Tour.Text1"], _englishStrings[@"Tour.Text2"], _englishStrings[@"Tour.Text3"], _englishStrings[@"Tour.Text4"],
                           _englishStrings[@"Tour.Text5"], /*_englishStrings[@"Tour.Text6"]*/];
         
+        _imageNames = @[
+                    @"onboard_first",
+                    @"onboard_fast",
+                    @"onboard_smart",
+                    @"onboard_secure",
+                    @"onboard_cloud"
+                    ];
+        
         __weak RMIntroViewController *weakSelf = self;
         _didEnterBackgroundObserver = [[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationDidEnterBackgroundNotification object:nil queue:nil usingBlock:^(__unused NSNotification *notification)
         {
@@ -200,93 +209,16 @@ static void TGDispatchOnMainThread(dispatch_block_t block) {
 }
 
 - (void)startTimer
-{
-    if (_updateAndRenderTimer == nil)
-    {
-        _updateAndRenderTimer = [NSTimer timerWithTimeInterval:1.0f / 60.0f target:self selector:@selector(updateAndRender) userInfo:nil repeats:true];
-        [[NSRunLoop mainRunLoop] addTimer:_updateAndRenderTimer forMode:NSRunLoopCommonModes];
-    }
-}
+{}
 
 - (void)stopTimer
-{
-    if (_updateAndRenderTimer != nil)
-    {
-        [_updateAndRenderTimer invalidate];
-        _updateAndRenderTimer = nil;
-    }
-}
-
-
-- (void)loadView
-{
-    [super loadView];
-}
+{}
 
 - (void)loadGL
-{
-    if (/*[[UIApplication sharedApplication] applicationState] != UIApplicationStateBackground*/true && !_isOpenGLLoaded)
-    {
-        context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
-        if (!context)
-            NSLog(@"Failed to create ES context");
-        
-        bool isIpad = ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad);
-        
-        CGFloat size = 200;
-        if (isIpad)
-            size *= 1.2;
-        
-        int height = 50;
-        if (isIpad)
-            height += 138 / 2;
-        
-        _glkView = [[GLKView alloc] initWithFrame:CGRectMake(self.view.bounds.size.width / 2 - size / 2, height, size, size) context:context];
-        //_glkView.backgroundColor = _backgroundColor;
-        _glkView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
-        _glkView.drawableDepthFormat = GLKViewDrawableDepthFormat24;
-        _glkView.drawableMultisample = GLKViewDrawableMultisample4X;
-        _glkView.enableSetNeedsDisplay = false;
-        _glkView.userInteractionEnabled = false;
-        _glkView.delegate = self;
-        
-        int patchHalfWidth = 1;
-        UIView *v1 = [[UIView alloc] initWithFrame:CGRectMake(-patchHalfWidth, -patchHalfWidth, _glkView.frame.size.width + patchHalfWidth * 2, patchHalfWidth * 2)];
-        UIView *v2 = [[UIView alloc] initWithFrame:CGRectMake(-patchHalfWidth, -patchHalfWidth, patchHalfWidth * 2, _glkView.frame.size.height + patchHalfWidth * 2)];
-        UIView *v3 = [[UIView alloc] initWithFrame:CGRectMake(-patchHalfWidth, -patchHalfWidth + _glkView.frame.size.height, _glkView.frame.size.width + patchHalfWidth * 2, patchHalfWidth * 2)];
-        UIView *v4 = [[UIView alloc] initWithFrame:CGRectMake(-patchHalfWidth + _glkView.frame.size.width, -patchHalfWidth, patchHalfWidth * 2, _glkView.frame.size.height + patchHalfWidth * 2)];
-        
-        v1.backgroundColor = v2.backgroundColor = v3.backgroundColor = v4.backgroundColor = _backgroundColor;
-        
-        //[_glkView addSubview:v1];
-        //[_glkView addSubview:v2];
-        //[_glkView addSubview:v3];
-        //[_glkView addSubview:v4];
-        
-        [self setupGL];
-        [self.view addSubview:_glkView];
-        
-        [self startTimer];
-        _isOpenGLLoaded = true;
-    }
-}
+{}
 
 - (void)freeGL
-{
-    if (!_isOpenGLLoaded)
-        return;
-
-    [self stopTimer];
-    
-    if ([EAGLContext currentContext] == _glkView.context)
-        [EAGLContext setCurrentContext:nil];
-
-    _glkView.context = nil;
-    context = nil;
-    [_glkView removeFromSuperview];
-    _glkView = nil;
-    _isOpenGLLoaded = false;
-}
+{}
 
 - (void)viewDidLoad
 {
@@ -295,6 +227,26 @@ static void TGDispatchOnMainThread(dispatch_block_t block) {
     self.view.backgroundColor = _backgroundColor;
     
     [self loadGL];
+    bool isIpad = ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad);
+    
+    CGFloat size = 136;
+    CGFloat oldSize = 200;
+    if (isIpad) {
+        size *= 1.2;
+        oldSize *= 1.2;
+    }
+    int height = 50;
+    if (isIpad)
+        height += 138 / 2;
+    
+    imageViewDiffSize = oldSize - size;
+    [_glkView removeFromSuperview];
+    _glkView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.bounds.size.width / 2 - size / 2, height, size, size)];
+    _glkView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
+    _glkView.userInteractionEnabled = false;
+    _glkView.image = [UIImage imageNamed:_imageNames[_currentPage]];
+    
+    [self.view addSubview:_glkView];
     
     _pageScrollView = [[UIScrollView alloc]initWithFrame:self.view.bounds];
     _pageScrollView.clipsToBounds = true;
@@ -512,6 +464,7 @@ static void TGDispatchOnMainThread(dispatch_block_t block) {
         startButtonY += languageButtonSpread;
     }
     
+    glViewY += imageViewDiffSize / 2;
     _pageControl.frame = CGRectMake(0, pageControlY, self.view.bounds.size.width, 7);
     _glkView.frame = CGRectChangedOriginY(_glkView.frame, glViewY - statusBarHeight);
     
@@ -554,7 +507,7 @@ static void TGDispatchOnMainThread(dispatch_block_t block) {
 
 - (void)updateAndRender
 {
-    [_glkView display];
+//    [_glkView display];
 }
 
 - (void)dealloc
@@ -566,41 +519,7 @@ static void TGDispatchOnMainThread(dispatch_block_t block) {
 }
 
 - (void)setupGL
-{
-    [EAGLContext setCurrentContext:_glkView.context];
-    
-    
-    set_telegram_textures(setup_texture(@"telegram_sphere.png"), setup_texture(@"telegram_plane1.png"));
-    
-    set_ic_textures(setup_texture(@"ic_bubble_dot.png"), setup_texture(@"ic_bubble.png"), setup_texture(@"ic_cam_lens.png"), setup_texture(@"ic_cam.png"), setup_texture(@"ic_pencil.png"), setup_texture(@"ic_pin.png"), setup_texture(@"ic_smile_eye.png"), setup_texture(@"ic_smile.png"), setup_texture(@"ic_videocam.png"));
-    
-    set_fast_textures(setup_texture(@"fast_body.png"), setup_texture(@"fast_spiral.png"), setup_texture(@"fast_arrow.png"), setup_texture(@"fast_arrow_shadow.png"));
-    
-    set_free_textures(setup_texture(@"knot_up1.png"), setup_texture(@"knot_down.png"));
-    
-    set_powerful_textures(setup_texture(@"powerful_mask.png"), setup_texture(@"powerful_star.png"), setup_texture(@"powerful_infinity.png"), setup_texture(@"powerful_infinity_white.png"));
-    
-     set_private_textures(setup_texture(@"private_door.png"), setup_texture(@"private_screw.png"));
-    
-    
-    set_need_pages(0);
-    
-    
-    on_surface_created();
-    on_surface_changed(200, 200, 1, 0,0,0,0,0);
-}
-
-#pragma mark - GLKView delegate methods
-
-- (void)glkView:(GLKView *)__unused view drawInRect:(CGRect)__unused rect
-{
-    double time = CFAbsoluteTimeGetCurrent();
-    
-    set_page((int)_currentPage);
-    set_date(time);
-    
-    on_draw_frame();
-}
+{}
 
 static CGFloat x;
 static bool justEndDragging;
@@ -615,9 +534,7 @@ NSInteger _current_page_end;
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
-    CGFloat offset = (scrollView.contentOffset.x - _currentPage * scrollView.frame.size.width) / self.view.frame.size.width;
-    
-    set_scroll_offset((float)offset);
+    NSInteger currentPageSnapshot = _currentPage;
     
     if (justEndDragging)
     {
@@ -638,7 +555,8 @@ NSInteger _current_page_end;
                 _currentPage--;
         }
         
-        _currentPage = MAX(0, MIN(_headlines.count - 1, _currentPage));
+        NSInteger count = _headlines.count - 1;
+        _currentPage = MAX(0, MIN(count, _currentPage));
         _current_page_end = _currentPage;
     }
     else
@@ -661,6 +579,9 @@ NSInteger _current_page_end;
     }
     
     [_pageControl setCurrentPage:_currentPage];
+    if (currentPageSnapshot != _currentPage) {
+        _glkView.image = [UIImage imageNamed:_imageNames[_currentPage]];
+    }
 }
 
 - (void)alternativeLanguageButtonPressed {
