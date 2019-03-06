@@ -36,7 +36,7 @@ class ChatBotDescriptionMetaInfoView: UIView {
     
     //MARK: -
     
-    init(bot: ChatBot, strings: PresentationStrings) {
+    init(bot: AiGramBot, strings: PresentationStrings) {
         self.metaInfo = strings.BotDetails_MetaInfo(
             addDate: bot.addDate,
             updateDate: bot.updateDate,

@@ -22,7 +22,7 @@ final class ChatBotsInputSuggestionsPane: ChatMediaInputPane, UIScrollViewDelega
     var theme: PresentationTheme
     
     init(
-        bot: ChatBot,
+        bot: AiGramBot,
         responses: [BotResponse],
         inputNodeInteraction: ChatBotsInputNodeInteraction,
         theme: PresentationTheme,

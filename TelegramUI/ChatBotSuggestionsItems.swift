@@ -22,7 +22,7 @@ struct ChatSuggestionListItem: ListViewItem, ItemListItem {
     var selectable: Bool { return true }
     var header: ListViewItemHeader
     
-    init(bot: ChatBot, response: BotResponse, inputNodeInteraction: ChatBotsInputNodeInteraction, theme: PresentationTheme) {
+    init(bot: AiGramBot, response: BotResponse, inputNodeInteraction: ChatBotsInputNodeInteraction, theme: PresentationTheme) {
         self.response = response
         self.inputNodeInteraction = inputNodeInteraction
         self.theme = theme

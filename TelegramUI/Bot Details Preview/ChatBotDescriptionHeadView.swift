@@ -62,11 +62,11 @@ class ChatBotDescriptionHeadView: UIView {
     
     //MARK: -
     
-    init(bot: ChatBot) {
+    init(bot: AiGramBot) {
         self.botName = bot.title
-        self.botType = bot.type
+        self.botType = bot.typeDesciption
         self.botImage = bot.preview
-        self.botTags = bot.tags.map { $0.capitalized }.sorted(by: { $0 < $1 })
+        self.botTags = bot.tagsDescriptions.map { $0.capitalized }.sorted(by: { $0 < $1 })
         
         super.init(frame: .zero)
         

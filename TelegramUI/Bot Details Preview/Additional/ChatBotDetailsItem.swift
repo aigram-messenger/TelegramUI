@@ -14,11 +14,11 @@ import TelegramCore
 import AiGramLib
 
 final class ChatBotDetailsItem: ActionSheetItem {
-    private let bot: ChatBot
+    private let bot: AiGramBot
     private let account: Account
     private var rateCompletion: ((Error?) -> Void)?
     
-    init(account: Account, bot: ChatBot, rateCompletion: ((Error?) -> Void)?) {
+    init(account: Account, bot: AiGramBot, rateCompletion: ((Error?) -> Void)?) {
         self.account = account
         self.bot = bot
         self.rateCompletion = rateCompletion
@@ -34,11 +34,11 @@ final class ChatBotDetailsItem: ActionSheetItem {
 
 private final class ChatBotDetailsItemNode: ActionSheetItemNode {
     private let theme: ActionSheetControllerTheme
-    private let bot: ChatBot
+    private let bot: AiGramBot
     
     private let descriptionView: ChatBotDescriptionView
     
-    init(account: Account, bot: ChatBot, theme: ActionSheetControllerTheme, rateCompletion: ((Error?) -> Void)?) {
+    init(account: Account, bot: AiGramBot, theme: ActionSheetControllerTheme, rateCompletion: ((Error?) -> Void)?) {
         self.bot = bot
         self.theme = theme
         

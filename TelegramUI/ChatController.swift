@@ -1525,7 +1525,7 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
         }
     }
 
-    private func showBotActions(_ bot: ChatBot, completion: @escaping () -> Void) {
+    private func showBotActions(_ bot: AiGramBot, completion: @escaping () -> Void) {
         let actionSheet = ActionSheetController(presentationTheme: self.presentationData.theme)
         var items: [ActionSheetItem] = []
         let strings = presentationData.strings
@@ -1554,7 +1554,7 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
         self.present(actionSheet, in: .window(.root))
     }
     
-    private func showBotDetailsAlert(_ bot: ChatBot, completion: @escaping () -> Void) {
+    private func showBotDetailsAlert(_ bot: AiGramBot, completion: @escaping () -> Void) {
         let actionSheet = ActionSheetController(presentationTheme: self.presentationData.theme)
         var items: [ActionSheetItem] = []
         let strings = presentationData.strings

@@ -84,7 +84,7 @@ final class ChatSuggestionsInputNode: ChatInputNode {
     private let botsListContainer: ASDisplayNode
     private let botsListView: ListView
 
-    private var bots: [ChatBot] = []
+    private var bots: [AiGramBot] = []
 
     private var theme: PresentationTheme?
     private let dynamicBounceEnabled: Bool
@@ -211,7 +211,7 @@ final class ChatSuggestionsInputNode: ChatInputNode {
         self.updateBotsResults(botResponses, previous: previous)
     }
     
-    func updateStorePane(for bot: ChatBot) {
+    func updateStorePane(for bot: AiGramBot) {
         guard let pane = self.panesAndAnimatingOut.first?.0 as? ChatBotsInputStorePane else { return }
         pane.reloadData(for: bot)
     }

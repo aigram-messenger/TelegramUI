@@ -76,7 +76,7 @@ class ChatBotDescriptionView: UIView {
     
     //MARK: -
     
-    private let bot: ChatBot
+    private let bot: AiGramBot
     private let account: Account
     private let strings: PresentationStrings
     private var rateCompletion: ((Error?) -> Void)?
@@ -89,7 +89,7 @@ class ChatBotDescriptionView: UIView {
     
     //MARK: -
     
-    init(account: Account, bot: ChatBot, rateCompletion: ((Error?) -> Void)?) {
+    init(account: Account, bot: AiGramBot, rateCompletion: ((Error?) -> Void)?) {
         self.bot = bot
         self.account = account
         self.strings = account.telegramApplicationContext.currentPresentationData.with { $0 }.strings

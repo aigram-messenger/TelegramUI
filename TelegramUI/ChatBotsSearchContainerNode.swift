@@ -24,7 +24,7 @@ final class ChatBotsPaneSearchContainerNode: ASDisplayNode {
     private let notFoundNode: ASImageNode
     private let notFoundLabel: ImmediateTextNode
     
-    private var bots: [ChatBot] = []
+    private var bots: [AiGramBot] = []
     
     private var validLayout: CGSize?
     
@@ -273,22 +273,26 @@ final class ChatBotsPaneSearchContainerNode: ASDisplayNode {
         self.deactivate()
     }
     
-    private func updateBots(_ bots: [ChatBot]) {
-        let srcBots = self.bots
+    private func updateBots(_ bots: [AiGramBot]) {
+        let srcBots = self.bots.map { $0.toComparable() }
         self.bots = bots
-        let endBots: [ChatBot] = bots
+        let endBots: [AnyBotComparable] = bots.map { $0.toComparable() }
         
         let (deletes, inserts, updates) = mergeListsStableWithUpdates(leftList: srcBots, rightList: endBots)
 
         let deleteListItems = deletes.map { ListViewDeleteItem(index: $0, directionHint: nil) }
-        let insertListItems = self.insertListItems(with: inserts)
-        let updateListItems = self.updateListItems(with: updates)
-        
+        let insertListItems = self.insertListItems(
+            with: inserts.map { ($0.0, $0.1.value, $0.2) }
+        )
+        let updateListItems = self.updateListItems(
+            with: updates.map { ($0.0, $0.1.value, $0.2) }
+        )
+
         let updateSizeAndInsets = ListViewUpdateSizeAndInsets(size: self.bounds.size, insets: UIEdgeInsets(), duration: 0, curve: .Spring(duration: 0))
         self.listView.transaction(deleteIndices: deleteListItems, insertIndicesAndItems: insertListItems, updateIndicesAndItems: updateListItems, options: [.Synchronous, .AnimateInsertion], scrollToItem: nil, updateSizeAndInsets: updateSizeAndInsets, stationaryItemRange: nil, updateOpaqueState: nil, completion: { _ in })
     }
     
-    private func insertListItems(with inserts: ([(Int, ChatBot, Int?)])) -> [ListViewInsertItem] {
+    private func insertListItems(with inserts: ([(Int, AiGramBot, Int?)])) -> [ListViewInsertItem] {
         var result: [ListViewInsertItem] = []
         for insert in inserts {
             let itemNode = ChatBotsStoreListItem(
@@ -302,7 +306,7 @@ final class ChatBotsPaneSearchContainerNode: ASDisplayNode {
         return result
     }
     
-    private func updateListItems(with updates: ([(Int, ChatBot, Int)])) -> [ListViewUpdateItem] {
+    private func updateListItems(with updates: ([(Int, AiGramBot, Int)])) -> [ListViewUpdateItem] {
         var result = [ListViewUpdateItem]()
         for update in updates {
             let itemNode = ChatBotsStoreListItem(

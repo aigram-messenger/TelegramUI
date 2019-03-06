@@ -21,7 +21,7 @@ struct ChatBotsAdsListItem: ListViewItem, ItemListItem {
     var selectable: Bool { return true }
     var header: ListViewItemHeader
     
-    init(bot: ChatBot, inputNodeInteraction: ChatBotsInputNodeInteraction, theme: PresentationTheme) {
+    init(bot: AiGramBot, inputNodeInteraction: ChatBotsInputNodeInteraction, theme: PresentationTheme) {
         self.inputNodeInteraction = inputNodeInteraction
         self.theme = theme
         self.header = ChatSuggestionListItemHeader(bot: bot, theme: self.theme)

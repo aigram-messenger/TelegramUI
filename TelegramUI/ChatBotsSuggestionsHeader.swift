@@ -16,9 +16,9 @@ final class ChatSuggestionListItemHeader: ListViewItemHeader {
     var stickDirection: ListViewItemHeaderStickDirection { return .top }
     let height: CGFloat = 26
     let theme: PresentationTheme
-    let bot: ChatBot
+    let bot: AiGramBot
     
-    init(bot: ChatBot, theme: PresentationTheme) {
+    init(bot: AiGramBot, theme: PresentationTheme) {
         self.bot = bot
         self.id = ListViewItemHeaderId(bot.id)
         self.theme = theme

@@ -17,7 +17,7 @@ private let buttonTitleFont = Font.medium(13.0)
 private let smallFont = Font.regular(12.0)
 
 class ChatStoreBotItemNode: ListViewItemNode {
-    private(set) var bot: ChatBot
+    private(set) var bot: AiGramBot
     private let strings: PresentationStrings
     private var theme: PresentationTheme?
     private let titleNode: ASTextNode
@@ -30,7 +30,7 @@ class ChatStoreBotItemNode: ListViewItemNode {
     
     private var item: ChatBotsStoreListItem?
     
-    init(bot: ChatBot, strings: PresentationStrings) {
+    init(bot: AiGramBot, strings: PresentationStrings) {
         self.bot = bot
         self.strings = strings
         
@@ -42,7 +42,7 @@ class ChatStoreBotItemNode: ListViewItemNode {
         
         self.typeNode = ASTextNode()
         self.typeNode.isLayerBacked = true
-        self.typeNode.attributedText = NSAttributedString(string: bot.type, font: smallFont, textColor: UIColor(argb: 0xff8a8a8a))
+        self.typeNode.attributedText = NSAttributedString(string: bot.typeDesciption, font: smallFont, textColor: UIColor(argb: 0xff8a8a8a))
         self.typeNode.maximumNumberOfLines = 1
         self.typeNode.truncationMode = .byTruncatingTail
         
@@ -88,7 +88,7 @@ class ChatStoreBotItemNode: ListViewItemNode {
         self.enablingActionNode.addTarget(self, action: #selector(self.enableBotAction), forControlEvents: .touchUpInside)
     }
     
-    func update(bot: ChatBot, theme: PresentationTheme) {
+    func update(bot: AiGramBot, theme: PresentationTheme) {
         self.bot = bot
         if theme != self.theme {
             self.theme = theme

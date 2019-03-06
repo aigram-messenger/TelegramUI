@@ -17,7 +17,7 @@ import AiGramLib
 final class ChatBotsInputStorePane: ChatMediaInputPane, UIScrollViewDelegate {
     private let inputNodeInteraction: ChatBotsInputNodeInteraction
     let listView: ListView
-    private var bots: [ChatBot] = []
+    private var bots: [AiGramBot] = []
     private var strings: PresentationStrings
     
     var theme: PresentationTheme
@@ -60,14 +60,14 @@ final class ChatBotsInputStorePane: ChatMediaInputPane, UIScrollViewDelegate {
         self.listView.transaction(deleteIndices: [], insertIndicesAndItems: [], updateIndicesAndItems: [], options: [.Synchronous, .LowLatency], scrollToItem: nil, updateSizeAndInsets: updateSizeAndInsets, stationaryItemRange: nil, updateOpaqueState: nil, completion: { _ in })
     }
     
-    func reloadData(for bot: ChatBot) {
+    func reloadData(for bot: AiGramBot) {
         self.listView.forEachItemNode { node in
-            guard let node = node as? ChatStoreBotItemNode, node.bot == bot else { return }
+            guard let node = node as? ChatStoreBotItemNode, node.bot.isEqual(bot) else { return }
             node.update(bot: bot, theme: self.theme)
         }
     }
     
-    private func updateBots(_ bots: [ChatBot]) {
+    private func updateBots(_ bots: [AiGramBot]) {
         self.bots = bots
         
         var index = 0

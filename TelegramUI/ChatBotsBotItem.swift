@@ -18,12 +18,12 @@ final class ChatBotsBotItem: ListViewItem {
     let inputNodeInteraction: ChatBotsInputNodeInteraction
     let selectedItem: () -> Void
     let theme: PresentationTheme
-    let bot: ChatBot
+    let bot: AiGramBot
     let collectionId: ItemCollectionId
 
     var selectable: Bool { return true }
 
-    init(inputNodeInteraction: ChatBotsInputNodeInteraction, theme: PresentationTheme, bot: ChatBot, selected: @escaping () -> Void) {
+    init(inputNodeInteraction: ChatBotsInputNodeInteraction, theme: PresentationTheme, bot: AiGramBot, selected: @escaping () -> Void) {
         self.inputNodeInteraction = inputNodeInteraction
         self.selectedItem = selected
         self.theme = theme
@@ -74,7 +74,7 @@ final class ChatBotsBotItemNode: ListViewItemNode {
     var inputNodeInteraction: ChatBotsInputNodeInteraction?
     var currentCollectionId: ItemCollectionId?
     
-    private var currentItem: ChatBot?
+    private var currentItem: AiGramBot?
     private var theme: PresentationTheme?
 
     init() {
@@ -110,14 +110,14 @@ final class ChatBotsBotItemNode: ListViewItemNode {
     deinit {
     }
 
-    func updateBot(item: ChatBot?, theme: PresentationTheme, collectionId: ItemCollectionId) {
+    func updateBot(item: AiGramBot?, theme: PresentationTheme, collectionId: ItemCollectionId) {
         self.currentCollectionId = collectionId
         
         if self.theme !== theme {
             self.theme = theme
         }
 
-        if self.currentItem != item {
+        if self.currentItem?.toComparable() != item?.toComparable() {
             self.currentItem = item
             
             if let item = item {

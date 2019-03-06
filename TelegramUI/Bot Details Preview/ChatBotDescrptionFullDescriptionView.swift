@@ -31,7 +31,7 @@ class ChatBotDescrptionFullDescriptionView: UIView {
         }
     }
     
-    init(bot: ChatBot) {
+    init(bot: AiGramBot) {
         self.botDescription = bot.fullDescription
         super.init(frame: .zero)
         

@@ -15,7 +15,7 @@ import AiGramLib
 struct ChatBotsStoreListItem: ListViewItem, ItemListItem {
     var sectionId: ItemListSectionId = 0
     
-    let bot: ChatBot
+    let bot: AiGramBot
     let inputNodeInteraction: ChatBotsInputNodeInteraction
     let theme: PresentationTheme
     let strings: PresentationStrings
@@ -23,7 +23,7 @@ struct ChatBotsStoreListItem: ListViewItem, ItemListItem {
     var selectable: Bool { return true }
     
     init(
-        bot: ChatBot,
+        bot: AiGramBot,
         inputNodeInteraction: ChatBotsInputNodeInteraction,
         theme: PresentationTheme,
         strings: PresentationStrings
