@@ -53,7 +53,7 @@ class ChatStoreBotItemNode: ListViewItemNode {
         self.descriptionNode.truncationMode = .byTruncatingTail
         
         self.installationActionNode = HighlightableButtonNode()
-        self.installationActionNode.backgroundColor = UIColor(argb: 0xff50a8eb)
+        self.installationActionNode.backgroundColor = UIColor(rgb: 0x34d2cd)
         self.installationActionNode.cornerRadius = 4
         let priceString = BotsStoreManager.shared.botPriceString(bot: bot, defaultValue: strings.Bot_GetUppercased)
         self.installationActionNode.setAttributedTitle(NSAttributedString(string: priceString, font: buttonTitleFont, textColor: .white), for: .normal)
@@ -63,7 +63,7 @@ class ChatStoreBotItemNode: ListViewItemNode {
         self.enablingActionNode.borderWidth = 1
         let botIsEnabled = ChatBotsManager.shared.isBotEnabled(bot)
         let title = botIsEnabled ? strings.Bot_Disable : strings.Bot_Enable
-        let color = botIsEnabled ? UIColor(argb: 0xff848d99) : UIColor(argb: 0xff50a8eb)
+        let color = botIsEnabled ? UIColor(argb: 0xff848d99) : UIColor(rgb: 0x34d2cd)
         self.enablingActionNode.borderColor = color.cgColor
         self.enablingActionNode.setAttributedTitle(NSAttributedString(string: title, font: buttonTitleFont, textColor: color), for: .normal)
         
@@ -101,7 +101,7 @@ class ChatStoreBotItemNode: ListViewItemNode {
         
         let botIsEnabled = ChatBotsManager.shared.isBotEnabled(bot)
         let title = botIsEnabled ? strings.Bot_Disable : strings.Bot_Enable
-        let color = botIsEnabled ? UIColor(argb: 0xff848d99) : UIColor(argb: 0xff50a8eb)
+        let color = botIsEnabled ? UIColor(argb: 0xff848d99) : UIColor(rgb: 0x34d2cd)
         self.enablingActionNode.borderColor = color.cgColor
         self.enablingActionNode.setAttributedTitle(NSAttributedString(string: title, font: buttonTitleFont, textColor: color), for: .normal)
         

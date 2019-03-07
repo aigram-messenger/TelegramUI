@@ -7,7 +7,7 @@ private func makeDefaultPresentationTheme(accentColor: UIColor, day: Bool) -> Pr
     let secretColor: UIColor = UIColor(rgb: 0x00B12C)
     
     let rootStatusBar = PresentationThemeRootNavigationStatusBar(
-        style: .black
+        style: .white
     )
     
     let rootTabBar = PresentationThemeRootTabBar(
@@ -23,14 +23,14 @@ private func makeDefaultPresentationTheme(accentColor: UIColor, day: Bool) -> Pr
     )
     
     let rootNavigationBar = PresentationThemeRootNavigationBar(
-        buttonColor: accentColor,
+        buttonColor: .white,
         disabledButtonColor: UIColor(rgb: 0xd0d0d0),
-        primaryTextColor: .black,
-        secondaryTextColor: UIColor(rgb: 0x787878),
+        primaryTextColor: .white,
+        secondaryTextColor: UIColor(argb: 0xb3ffffff),
         controlColor: UIColor(rgb: 0x758B89),
-        accentTextColor: accentColor,
-        backgroundColor: UIColor(red: 0.968626451, green: 0.968626451, blue: 0.968626451, alpha: 1.0),
-        separatorColor: UIColor(red: 0.6953125, green: 0.6953125, blue: 0.6953125, alpha: 1.0),
+        accentTextColor: .white,
+        backgroundColor: UIColor(rgb: 0x37cdcc),
+        separatorColor: UIColor(rgb: 0xd8d8d8),
         badgeBackgroundColor: UIColor(rgb: 0xff3b30),
         badgeStrokeColor: UIColor(rgb: 0xff3b30),
         badgeTextColor: .white

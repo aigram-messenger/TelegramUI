@@ -318,7 +318,7 @@ public func themeSettingsController(account: Account) -> ViewController {
                         case .nightAccent:
                             theme = defaultDarkAccentPresentationTheme
                         case .day:
-                            theme = makeDefaultDayPresentationTheme(accentColor: settings.themeAccentColor ?? defaultDayAccentColor)
+                            theme = makeDefaultDayPresentationTheme(accentColor: settings.themeAccentColor)
                 }
             }
             wallpaper = settings.chatWallpaper
