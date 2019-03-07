@@ -2,6 +2,7 @@
   "images" : [
     {
       "idiom" : "universal",
+      "filename" : "ConversationInputFieldKeyboardIcon.png",
       "scale" : "1x"
     },
     {
