@@ -307,8 +307,8 @@ private enum SettingsEntry: ItemListNodeEntry {
                 return ItemListDisclosureItem(theme: theme, icon: image, title: text, label: value, sectionId: ItemListSectionId(self.section), style: .blocks, action: {
                     arguments.openProxy()
                 })
-            case let .autosuggestions(theme, _, text):
-                return ItemListSwitchItem(theme: theme, title: text, value: ChatBotsManager.shared.autoOpenBots, enableInteractiveChanges: true, enabled: true, sectionId: ItemListSectionId(self.section), style: .blocks, updated: { value in
+            case let .autosuggestions(theme, icon, text):
+                return ItemListSwitchItem(theme: theme, icon: icon, title: text, value: ChatBotsManager.shared.autoOpenBots, enableInteractiveChanges: true, enabled: true, sectionId: ItemListSectionId(self.section), style: .blocks, updated: { value in
                     ChatBotsManager.shared.autoOpenBots = value
                 })
             case let .savedMessages(theme, image, text):
