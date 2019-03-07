@@ -16,7 +16,7 @@ import AiGramLib
 
 final class ChatBotsInputNodeInteraction {
     let navigateToCollectionId: (ItemCollectionId) -> Void
-    let sendMessage: (String) -> Void
+    let sendMessage: (String, AiGramBot.ChatBotId) -> Void
     let buyBot: (AiGramBot) -> Void
     let enableBot: (AiGramBot, Bool) -> Void
     let botDetails: (AiGramBot) -> Void
@@ -26,7 +26,7 @@ final class ChatBotsInputNodeInteraction {
     var highlightedItemCollectionId: ItemCollectionId?
     var appearanceTransition: CGFloat = 1.0
     
-    init(navigateToCollectionId: @escaping (ItemCollectionId) -> Void, sendMessage: @escaping (String) -> Void, buyBot: @escaping (AiGramBot) -> Void,
+    init(navigateToCollectionId: @escaping (ItemCollectionId) -> Void, sendMessage: @escaping (String, AiGramBot.ChatBotId) -> Void, buyBot: @escaping (AiGramBot) -> Void,
          enableBot: @escaping (AiGramBot, Bool) -> Void, botDetails: @escaping (AiGramBot) -> Void, toggleSearch: @escaping (Bool) -> Void, botActions: @escaping (AiGramBot) -> Void) {
         self.navigateToCollectionId = navigateToCollectionId
         self.sendMessage = sendMessage

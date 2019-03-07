@@ -25,6 +25,7 @@ public final class TelegramRootController: NavigationController {
         
         super.init(mode: .automaticMasterDetail, theme: NavigationControllerTheme(presentationTheme: self.presentationData.theme))
         
+        ChatBotsManager.shared.checkOldBotCongratulations()
         ChatBotsManager.shared.sendFirstStartIfNeeded(userId: self.account.peerId.id)
         ChatBotsManager.shared.updateLanguageCodeAndLoadBots(presentationData.strings.baseLanguageCode)
             

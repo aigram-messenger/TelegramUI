@@ -1068,8 +1068,16 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
             }
         }, showBotActions: { [weak self] bot, completion in
             self?.showBotActions(bot, completion: completion)
-        }, handleSuggestionTap: { [weak self] suggestion in
-            self?.updateText(suggestion)
+        }, handleSuggestionTap: { [weak self] suggestion, botId in
+            guard let self = self else { return }
+            if ChatBotsManager.shared.isHolidaysBot(botId) {
+                if let peerView = self.peerView, let peer = peerViewMainPeer(peerView) {
+                    if peer is TelegramUser {
+                        ChatBotsManager.shared.markAsCongratulatedPeer(at: peer.id.toInt64())
+                    }
+                }
+            }
+            self.updateText(suggestion)
         })
         
         BotsStoreManager.shared.userId = self.account.peerId.id
@@ -1635,7 +1643,7 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
         }
         if !self.chatDisplayNode.text.isEmpty { return }
         
-        ChatBotsManager.shared.handleMessages(messages, completion: { [weak self] responses in
+        ChatBotsManager.shared.handleMessages(messages, of: peerView?.peerId.toInt64(), completion: { [weak self] responses in
             guard let self = self, self.currentMessages == messages else { return }
             self.updateChatPresentationInterfaceState(animated: true, interactive: true, {
                 $0.updatedInputMode { current in

@@ -135,7 +135,7 @@ final class ChatSuggestionsInputNode: ChatInputNode {
         self.inputNodeInteraction = ChatBotsInputNodeInteraction(navigateToCollectionId: { [weak self] id in
             self?.navigateToCollection(withId: id)
         }, sendMessage: { [weak self] in
-            self?.controllerInteraction.handleSuggestionTap($0)
+            self?.controllerInteraction.handleSuggestionTap($0, $1)
         }, buyBot: { [weak self] bot in
             //TODO: обновить доступность кнопки
             self?.storeByUser = true

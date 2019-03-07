@@ -18,6 +18,7 @@ struct ChatSuggestionListItem: ListViewItem, ItemListItem {
     let response: BotResponse
     let inputNodeInteraction: ChatBotsInputNodeInteraction
     let theme: PresentationTheme
+    let botId: AiGramBot.ChatBotId
     
     var selectable: Bool { return true }
     var header: ListViewItemHeader
@@ -27,6 +28,7 @@ struct ChatSuggestionListItem: ListViewItem, ItemListItem {
         self.inputNodeInteraction = inputNodeInteraction
         self.theme = theme
         self.header = ChatSuggestionListItemHeader(bot: bot, theme: self.theme)
+        self.botId = bot.name
     }
     
     func nodeConfiguredForParams(async: @escaping (@escaping () -> Void) -> Void, params: ListViewItemLayoutParams, previousItem: ListViewItem?, nextItem: ListViewItem?, completion: @escaping (ListViewItemNode, @escaping () -> (Signal<Void, NoError>?, () -> Void)) -> Void) {
@@ -73,7 +75,7 @@ struct ChatSuggestionListItem: ListViewItem, ItemListItem {
     
     func selected(listView: ListView) {
         guard let message = self.response.response.first else { return }
-        self.inputNodeInteraction.sendMessage(message)
+        self.inputNodeInteraction.sendMessage(message, botId)
     }
 }
 
