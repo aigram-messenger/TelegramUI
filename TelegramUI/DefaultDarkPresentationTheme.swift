@@ -214,6 +214,7 @@ private let inputPanel = PresentationThemeChatInputPanel(
     panelBackgroundColor: UIColor(rgb: 0x1c1c1d),
     panelStrokeColor: UIColor(rgb: 0x000000),
     panelControlAccentColor: accentColor,
+    panelIconColor: accentColor,
     panelControlColor: UIColor(rgb: 0x808080),
     panelControlDisabledColor: UIColor(rgb: 0x808080, alpha: 0.5), //!!!
     panelControlDestructiveColor: UIColor(rgb: 0xff3b30), //!!!

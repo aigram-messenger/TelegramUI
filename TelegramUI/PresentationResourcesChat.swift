@@ -810,37 +810,37 @@ struct PresentationResourcesChat {
     
     static func chatTitlePanelInfoImage(_ theme: PresentationTheme) -> UIImage? {
         return theme.image(PresentationResourceKey.chatTitlePanelInfoImage.rawValue, { theme in
-            return generateTintedImage(image: UIImage(bundleImageName: "Chat/Title Panels/InfoIcon"), color: theme.chat.inputPanel.panelControlAccentColor)
+            return generateTintedImage(image: UIImage(bundleImageName: "Chat/Title Panels/InfoIcon"), color: theme.chat.inputPanel.panelIconColor)
         })
     }
     
     static func chatTitlePanelSearchImage(_ theme: PresentationTheme) -> UIImage? {
         return theme.image(PresentationResourceKey.chatTitlePanelSearchImage.rawValue, { theme in
-            return generateTintedImage(image: UIImage(bundleImageName: "Chat/Title Panels/SearchIcon"), color: theme.chat.inputPanel.panelControlAccentColor)
+            return generateTintedImage(image: UIImage(bundleImageName: "Chat/Title Panels/SearchIcon"), color: theme.chat.inputPanel.panelIconColor)
         })
     }
     
     static func chatTitlePanelMuteImage(_ theme: PresentationTheme) -> UIImage? {
         return theme.image(PresentationResourceKey.chatTitlePanelMuteImage.rawValue, { theme in
-            return generateTintedImage(image: UIImage(bundleImageName: "Chat List/RevealActionMuteIcon"), color: theme.chat.inputPanel.panelControlAccentColor)
+            return generateTintedImage(image: UIImage(bundleImageName: "Chat List/RevealActionMuteIcon"), color: theme.chat.inputPanel.panelIconColor)
         })
     }
     
     static func chatTitlePanelUnmuteImage(_ theme: PresentationTheme) -> UIImage? {
         return theme.image(PresentationResourceKey.chatTitlePanelUnmuteImage.rawValue, { theme in
-            return generateTintedImage(image: UIImage(bundleImageName: "Chat List/RevealActionUnmuteIcon"), color: theme.chat.inputPanel.panelControlAccentColor)
+            return generateTintedImage(image: UIImage(bundleImageName: "Chat List/RevealActionUnmuteIcon"), color: theme.chat.inputPanel.panelIconColor)
         })
     }
     
     static func chatTitlePanelCallImage(_ theme: PresentationTheme) -> UIImage? {
         return theme.image(PresentationResourceKey.chatTitlePanelCallImage.rawValue, { theme in
-            return generateTintedImage(image: UIImage(bundleImageName: "Chat/Info/CallButton"), color: theme.chat.inputPanel.panelControlAccentColor)
+            return generateTintedImage(image: UIImage(bundleImageName: "Chat/Info/CallButton"), color: theme.chat.inputPanel.panelIconColor)
         })
     }
     
     static func chatTitlePanelReportImage(_ theme: PresentationTheme) -> UIImage? {
         return theme.image(PresentationResourceKey.chatTitlePanelReportImage.rawValue, { theme in
-            return generateTintedImage(image: UIImage(bundleImageName: "Chat/Title Panels/ReportIcon"), color: theme.chat.inputPanel.panelControlAccentColor)
+            return generateTintedImage(image: UIImage(bundleImageName: "Chat/Title Panels/ReportIcon"), color: theme.chat.inputPanel.panelIconColor)
         })
     }
     
@@ -849,7 +849,7 @@ struct PresentationResourcesChat {
             return generateImage(CGSize(width: 32.0, height: 32.0), rotatedContext: { size, context in
                 context.clear(CGRect(origin: CGPoint(), size: size))
                 
-                if let image = generateTintedImage(image: UIImage(bundleImageName: "Chat List/RevealActionGroupIcon"), color: theme.chat.inputPanel.panelControlAccentColor) {
+                if let image = generateTintedImage(image: UIImage(bundleImageName: "Chat List/RevealActionGroupIcon"), color: theme.chat.inputPanel.panelIconColor) {
                     context.draw(image.cgImage!, in: CGRect(origin: CGPoint(x: floor((size.width - image.size.width) / 2.0), y: floor((size.height - image.size.height) / 2.0) - 3.0), size: image.size))
                 }
             })

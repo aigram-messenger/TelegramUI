@@ -18,7 +18,7 @@ final class InviteContactsCountPanelNode: ASDisplayNode {
         didSet {
             if self.badge != oldValue {
                 if let badge = self.badge {
-                    self.badgeLabel.attributedText = NSAttributedString(string: badge, font: Font.regular(14.0), textColor: self.theme.rootController.navigationBar.badgeTextColor, paragraphAlignment: .center)
+                    self.badgeLabel.attributedText = NSAttributedString(string: badge, font: Font.regular(14.0), textColor: self.theme.rootController.navigationBar.backgroundColor, paragraphAlignment: .center)
                 }
                 
                 if let (width, bottomInset) = self.validLayout {

@@ -310,6 +310,7 @@ private func makeDefaultPresentationTheme(accentColor: UIColor, day: Bool) -> Pr
         panelBackgroundColor: UIColor(rgb: 0xf7f7f7),
         panelStrokeColor: UIColor(rgb: 0xb2b2b2),
         panelControlAccentColor: accentColor,
+        panelIconColor: .white,
         panelControlColor: UIColor(rgb: 0x7B8F8D),
         panelControlDisabledColor: UIColor(rgb: 0x727b87, alpha: 0.5),
         panelControlDestructiveColor: UIColor(rgb: 0xff3b30),

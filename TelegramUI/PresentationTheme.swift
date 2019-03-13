@@ -624,6 +624,7 @@ public final class PresentationThemeChatInputPanelMediaRecordingControl {
 public final class PresentationThemeChatInputPanel {
     public let panelBackgroundColor: UIColor
     public let panelStrokeColor: UIColor
+    public let panelIconColor: UIColor
     public let panelControlAccentColor: UIColor
     public let panelControlColor: UIColor
     public let panelControlDisabledColor: UIColor
@@ -641,9 +642,10 @@ public final class PresentationThemeChatInputPanel {
     public let keyboardColor: PresentationThemeKeyboardColor
     public let mediaRecordingControl: PresentationThemeChatInputPanelMediaRecordingControl
     
-    public init(panelBackgroundColor: UIColor, panelStrokeColor: UIColor, panelControlAccentColor: UIColor, panelControlColor: UIColor, panelControlDisabledColor: UIColor, panelControlDestructiveColor: UIColor, inputBackgroundColor: UIColor, inputStrokeColor: UIColor, inputPlaceholderColor: UIColor, inputTextColor: UIColor, inputControlColor: UIColor, actionControlFillColor: UIColor, actionControlForegroundColor: UIColor, primaryTextColor: UIColor, secondaryTextColor: UIColor, mediaRecordingDotColor: UIColor, keyboardColor: PresentationThemeKeyboardColor, mediaRecordingControl: PresentationThemeChatInputPanelMediaRecordingControl) {
+    public init(panelBackgroundColor: UIColor, panelStrokeColor: UIColor, panelControlAccentColor: UIColor, panelIconColor: UIColor, panelControlColor: UIColor, panelControlDisabledColor: UIColor, panelControlDestructiveColor: UIColor, inputBackgroundColor: UIColor, inputStrokeColor: UIColor, inputPlaceholderColor: UIColor, inputTextColor: UIColor, inputControlColor: UIColor, actionControlFillColor: UIColor, actionControlForegroundColor: UIColor, primaryTextColor: UIColor, secondaryTextColor: UIColor, mediaRecordingDotColor: UIColor, keyboardColor: PresentationThemeKeyboardColor, mediaRecordingControl: PresentationThemeChatInputPanelMediaRecordingControl) {
         self.panelBackgroundColor = panelBackgroundColor
         self.panelStrokeColor = panelStrokeColor
+        self.panelIconColor = panelIconColor
         self.panelControlAccentColor = panelControlAccentColor
         self.panelControlColor = panelControlColor
         self.panelControlDisabledColor = panelControlDisabledColor
