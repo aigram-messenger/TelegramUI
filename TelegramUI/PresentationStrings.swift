@@ -2050,7 +2050,7 @@ public final class PresentationStrings {
     public func Watch_Time_ShortYesterdayAt(_ _0: String) -> (String, [(Int, NSRange)]) {
         return formatWithArgumentRanges(self._s[1771]!, self._r[1771]!, [_0])
     }
-    public var Contacts_InviteToTelegram: String { return self._s[1772]! }
+    public var Contacts_InviteToTelegram: String { return self._s[1772]!.replacedTelegramToAiGram }
     public func PINNED_DOC(_ _1: String) -> (String, [(Int, NSRange)]) {
         return formatWithArgumentRanges(self._s[1773]!, self._r[1773]!, [_1])
     }
@@ -3098,7 +3098,7 @@ public final class PresentationStrings {
     public var Username_Help: String { return self._s[2735]! }
     public var StickerSettings_ContextHide: String { return self._s[2736]! }
     public var Media_ShareThisPhoto: String { return self._s[2739]! }
-    public var Contacts_ShareTelegram: String { return self._s[2740]! }
+    public var Contacts_ShareTelegram: String { return self._s[2740]!.replacedTelegramToAiGram }
     public var AutoNightTheme_Scheduled: String { return self._s[2741]! }
     public var Weekday_Sunday: String { return self._s[2742]! }
     public var PrivacySettings_PasscodeAndFaceId: String { return self._s[2744]! }
