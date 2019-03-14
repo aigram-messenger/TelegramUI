@@ -31,14 +31,26 @@ struct ChatSuggestionListItem: ListViewItem, ItemListItem {
         self.botId = bot.name
     }
     
-    func nodeConfiguredForParams(async: @escaping (@escaping () -> Void) -> Void, params: ListViewItemLayoutParams, previousItem: ListViewItem?, nextItem: ListViewItem?, completion: @escaping (ListViewItemNode, @escaping () -> (Signal<Void, NoError>?, () -> Void)) -> Void) {
+    func nodeConfiguredForParams(
+        async: @escaping (@escaping () -> Void) -> Void,
+        params: ListViewItemLayoutParams,
+        previousItem: ListViewItem?,
+        nextItem: ListViewItem?,
+        completion: @escaping (
+            ListViewItemNode,
+            @escaping () -> (Signal<Void, NoError>?,
+            () -> Void)
+        ) -> Void
+    ) {
         async {
             let node = ChatSuggestionItemNode()
-            let (layout, apply) = node.asyncLayout()(self, params, itemListNeighbors(item: self, topItem: previousItem as? ItemListItem, bottomItem: nextItem as? ItemListItem))
+            let (layout, apply) = node.asyncLayout()(
+                self,
+                params,
+                itemListNeighbors(item: self, topItem: previousItem as? ItemListItem, bottomItem: nextItem as? ItemListItem)
+            )
             
-            var size = layout.contentSize
-            size.height = 10
-            node.contentSize = size
+            node.contentSize = layout.contentSize
             node.insets = layout.insets
             
             Queue.mainQueue().async {
@@ -52,7 +64,15 @@ struct ChatSuggestionListItem: ListViewItem, ItemListItem {
         }
     }
     
-    func updateNode(async: @escaping (@escaping () -> Void) -> Void, node: @escaping () -> ListViewItemNode, params: ListViewItemLayoutParams, previousItem: ListViewItem?, nextItem: ListViewItem?, animation: ListViewItemUpdateAnimation, completion: @escaping (ListViewItemNodeLayout, @escaping () -> Void) -> Void) {
+    func updateNode(
+        async: @escaping (@escaping () -> Void) -> Void,
+        node: @escaping () -> ListViewItemNode,
+        params: ListViewItemLayoutParams,
+        previousItem: ListViewItem?,
+        nextItem: ListViewItem?,
+        animation: ListViewItemUpdateAnimation,
+        completion: @escaping (ListViewItemNodeLayout, @escaping () -> Void) -> Void
+    ) {
         Queue.mainQueue().async {
             guard let nodeValue = node() as? ChatSuggestionItemNode else {
                 assertionFailure()
@@ -139,12 +159,45 @@ private class ChatSuggestionItemNode: ListViewItemNode {
             let textInsets = UIEdgeInsetsMake(5, 8, 5, 14)
             
             let entities = generateTextEntities(text, enabledTypes: [])
-            let string = stringWithAppliedEntities(text, entities: entities, baseColor: textColor, linkColor: item.theme.chat.bubble.outgoingAccentTextColor, baseFont: titleFont, linkFont: titleFont, boldFont: titleBoldFont, italicFont: titleItalicFont, fixedFont: titleFixedFont)
+            let string = stringWithAppliedEntities(
+                text,
+                entities: entities,
+                baseColor: textColor,
+                linkColor: item.theme.chat.bubble.outgoingAccentTextColor,
+                baseFont: titleFont,
+                linkFont: titleFont,
+                boldFont: titleBoldFont,
+                italicFont: titleItalicFont,
+                fixedFont: titleFixedFont
+            )
             
-            let textConstrainedSize = CGSize(width: params.width - params.leftInset - params.rightInset, height: CGFloat.greatestFiniteMagnitude)
-            let (titleLayout, titleApply) = makeTextLayout(TextNodeLayoutArguments(attributedString: string, backgroundColor: nil, maximumNumberOfLines: 0, truncationType: .end, constrainedSize: textConstrainedSize, alignment: .right, cutout: nil, insets: .init()))
+            let textConstrainedWidth: CGFloat
+            if params.width == 0 {
+                textConstrainedWidth = UIScreen.main.bounds.width
+            } else {
+                textConstrainedWidth = params.width - params.leftInset - params.rightInset
+            }
+            let textConstrainedSize = CGSize(
+                width: textConstrainedWidth,
+                height: CGFloat.greatestFiniteMagnitude
+            )
+            let (titleLayout, titleApply) = makeTextLayout(
+                TextNodeLayoutArguments(
+                    attributedString: string,
+                    backgroundColor: nil,
+                    maximumNumberOfLines: 0,
+                    truncationType: .end,
+                    constrainedSize: textConstrainedSize,
+                    alignment: .right,
+                    cutout: nil,
+                    insets: .init()
+                )
+            )
             
-            let contentSize = CGSize(width: params.width, height: titleLayout.size.height + textInsets.top + textInsets.bottom)
+            let contentSize = CGSize(
+                width: params.width,
+                height: titleLayout.size.height + textInsets.top + textInsets.bottom
+            )
             var insets = itemListNeighborsPlainInsets(neighbors)
             insets.top = 3
             if case ItemListNeighbor.none = neighbors.top {
@@ -161,7 +214,10 @@ private class ChatSuggestionItemNode: ListViewItemNode {
                     
                     let bubbleWidth = titleLayout.size.width + textInsets.left + textInsets.right
                     let x = strongSelf.bounds.maxX - params.rightInset - bubbleWidth
-                    let bubbleFrame = CGRect(origin: CGPoint(x: x, y: 0), size: CGSize(width: bubbleWidth, height: contentSize.height))
+                    let bubbleFrame = CGRect(
+                        origin: CGPoint(x: x, y: 0),
+                        size: CGSize(width: bubbleWidth, height: contentSize.height)
+                    )
                     strongSelf.backgroundNode.frame = bubbleFrame
                     var textNodeFrame = bubbleFrame
                     textNodeFrame.origin.x += textInsets.left
