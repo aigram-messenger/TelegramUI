@@ -14,6 +14,12 @@ final class AuthorizationSequencePhoneEntryController: ViewController {
     private let theme: AuthorizationTheme
     private let openUrl: (String) -> Void
     
+    var isProxyEnabled: Bool = true {
+        didSet {
+            (displayNode as? AuthorizationSequencePhoneEntryControllerNode)?.isProxyEnabled = isProxyEnabled
+        }
+    }
+    
     private var currentData: (Int32, String)?
     
     var inProgress: Bool = false {
@@ -28,12 +34,22 @@ final class AuthorizationSequencePhoneEntryController: ViewController {
         }
     }
     var loginWithNumber: ((String) -> Void)?
+    var proxyChanged: ((Bool) -> Void)? {
+        didSet {
+            (displayNode as? AuthorizationSequencePhoneEntryControllerNode)?.proxyChanged = proxyChanged
+        }
+    }
     
     private let termsDisposable = MetaDisposable()
     
     private let hapticFeedback = HapticFeedback()
     
-    init(network: Network, strings: PresentationStrings, theme: AuthorizationTheme, openUrl: @escaping (String) -> Void) {
+    init(
+        network: Network,
+        strings: PresentationStrings,
+        theme: AuthorizationTheme,
+        openUrl: @escaping (String) -> Void
+    ) {
         self.network = network
         self.strings = strings
         self.theme = theme
@@ -66,11 +82,16 @@ final class AuthorizationSequencePhoneEntryController: ViewController {
     }
     
     override public func loadDisplayNode() {
-        self.displayNode = AuthorizationSequencePhoneEntryControllerNode(strings: self.strings, theme: self.theme)
+        self.displayNode = AuthorizationSequencePhoneEntryControllerNode(
+            strings: self.strings,
+            theme: self.theme
+        )
         if let (code, number) = self.currentData {
             self.controllerNode.codeAndNumber = (code, number)
         }
         self.displayNodeDidLoad()
+        self.controllerNode.isProxyEnabled = isProxyEnabled
+        self.controllerNode.proxyChanged = proxyChanged
         self.controllerNode.selectCountryCode = { [weak self] in
             if let strongSelf = self {
                 let controller = AuthorizationSequenceCountrySelectionController(strings: strongSelf.strings, theme: AuthorizationSequenceCountrySelectionTheme(authorizationTheme: strongSelf.theme))

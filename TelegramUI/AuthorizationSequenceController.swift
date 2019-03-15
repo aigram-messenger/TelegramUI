@@ -117,9 +117,34 @@ public final class AuthorizationSequenceController: NavigationController {
         if let currentController = currentController {
             controller = currentController
         } else {
-            controller = AuthorizationSequencePhoneEntryController(network: self.account.network, strings: self.strings, theme: self.theme, openUrl: { [weak self] url in
+            controller = AuthorizationSequencePhoneEntryController(
+                network: self.account.network,
+                strings: self.strings,
+                theme: self.theme,
+                openUrl: { [weak self] url in
                 self?.openUrl(url)
             })
+            
+            actionDisposable.set(
+                (account.postbox.preferencesView(keys: [PreferencesKeys.proxySettings])
+                    |> take(1)
+                    |> map { preferencesView -> ProxySettings in
+                        let settings = preferencesView.values[PreferencesKeys.proxySettings] as? ProxySettings
+                        return settings ?? .defaultSettings
+                    }
+                    |> deliverOnMainQueue
+                    ).start(next: { [weak controller] in
+                        controller?.isProxyEnabled = $0.enabled
+                    })
+            )
+            
+            controller.proxyChanged = { [account] isProxyEnabled in
+                let _ = updateProxySettingsInteractively(postbox: account.postbox, network: account.network, { current in
+                    var current = current
+                    current.enabled = isProxyEnabled
+                    return current
+                }).start()
+            }
             controller.loginWithNumber = { [weak self, weak controller] number in
                 if let strongSelf = self {
                     controller?.inProgress = true

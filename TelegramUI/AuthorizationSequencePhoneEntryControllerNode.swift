@@ -158,6 +158,162 @@ private final class PhoneAndCountryNode: ASDisplayNode {
     }
 }
 
+private final class AuthProxyNode: ASDisplayNode {
+    private let titleNode: ASTextNode
+    private let switcherNode: AuthProxySwitcherNode
+    private let separatorNode: ASDisplayNode
+    
+    var valueUpdated: ((Bool) -> Void)? {
+        didSet {
+            switcherNode.valueUpdated = valueUpdated
+        }
+    }
+    var isEnabled: Bool {
+        get {
+            return switcherNode.isEnabled
+        }
+        set {
+            switcherNode.isEnabled = newValue
+        }
+    }
+    
+    init(
+        strings: PresentationStrings,
+        theme: AuthorizationTheme
+        ) {
+        self.titleNode = ASTextNode()
+        self.titleNode.isUserInteractionEnabled = false
+        self.titleNode.displaysAsynchronously = false
+        self.titleNode.maximumNumberOfLines = 2
+        self.titleNode.attributedText = NSAttributedString(
+            string: "If there is no connection then\ntry using a proxy",
+            font: Font.regular(15),
+            textColor: theme.primaryColor,
+            paragraphAlignment: .center
+        )
+        
+        self.switcherNode = AuthProxySwitcherNode(
+            strings: strings,
+            theme: theme
+        )
+        self.switcherNode.valueUpdated = valueUpdated
+        
+        self.separatorNode = ASDisplayNode()
+        self.separatorNode.backgroundColor = theme.separatorColor
+        
+        super.init()
+        
+        addSubnode(self.titleNode)
+        addSubnode(self.switcherNode)
+        addSubnode(self.separatorNode)
+    }
+    
+    override func layout() {
+        super.layout()
+        
+        let titleNodeSize = titleNode.measure(
+            CGSize(
+                width: bounds.width,
+                height: CGFloat.greatestFiniteMagnitude
+            )
+        )
+        let titleNodeVerticalMargin: CGFloat = 19
+        titleNode.frame = CGRect(
+            origin: CGPoint(
+                x: bounds.size.width / 2 - titleNodeSize.width / 2,
+                y: titleNodeVerticalMargin
+            ),
+            size: titleNodeSize
+        )
+        
+        switcherNode.frame = CGRect(
+            x: 0,
+            y: titleNode.frame.maxY + titleNodeVerticalMargin,
+            width: bounds.width,
+            height: 44
+        )
+        
+        separatorNode.frame = CGRect(
+            x: 15,
+            y: switcherNode.frame.minY - UIScreenPixel,
+            width: bounds.width - 15,
+            height: UIScreenPixel
+        )
+    }
+}
+
+private final class AuthProxySwitcherNode: ASDisplayNode {
+    private let descriptionNode: ASTextNode
+    private let switchNode: SwitchNode
+    private let descriptionHeight: CGFloat
+    
+    var valueUpdated: ((Bool) -> Void)? {
+        didSet {
+            switchNode.valueUpdated = valueUpdated
+        }
+    }
+    
+    var isEnabled: Bool {
+        get {
+            return switchNode.isOn
+        }
+        set {
+            switchNode.isOn = newValue
+        }
+    }
+    
+    init(
+        strings: PresentationStrings,
+        theme: AuthorizationTheme
+    ) {
+        self.descriptionNode = ASTextNode()
+        self.descriptionNode.isUserInteractionEnabled = false
+        self.descriptionNode.displaysAsynchronously = false
+        self.descriptionNode.maximumNumberOfLines = 1
+        let descriptionFont = Font.regular(18)
+        descriptionHeight = descriptionFont.lineHeight
+        self.descriptionNode.attributedText = NSAttributedString(
+            string: strings.ChatSettings_ConnectionType_UseProxy,
+            font: descriptionFont,
+            textColor: theme.primaryColor
+        )
+        
+        self.switchNode = SwitchNode()
+        
+        super.init()
+        
+        addSubnode(self.descriptionNode)
+        addSubnode(self.switchNode)
+    }
+    
+    override func layout() {
+        super.layout()
+        
+        let nodeSize = self.bounds.size
+        let halfOfNodeHeight = nodeSize.height / 2
+        
+        if switchNode.bounds.size.width.isZero {
+            switchNode.view.sizeToFit()
+        }
+        let switchSize = switchNode.view.bounds.size
+        switchNode.frame = CGRect(
+            origin: CGPoint(
+                x: nodeSize.width - 18 - switchSize.width,
+                y: halfOfNodeHeight - switchSize.height / 2
+            ),
+            size: switchSize
+        )
+        
+        descriptionNode.frame = CGRect(
+            x: 15,
+            y: halfOfNodeHeight - descriptionHeight / 2,
+            width: switchNode.frame.minX - 15,
+            height: descriptionHeight
+        )
+    }
+}
+
+
 final class AuthorizationSequencePhoneEntryControllerNode: ASDisplayNode {
     private let strings: PresentationStrings
     private let theme: AuthorizationTheme
@@ -166,6 +322,16 @@ final class AuthorizationSequencePhoneEntryControllerNode: ASDisplayNode {
     private let noticeNode: ASTextNode
     private let phoneAndCountryNode: PhoneAndCountryNode
     private let termsOfServiceNode: ImmediateTextNode
+    private let proxyHandlerNode: AuthProxyNode
+    
+    var isProxyEnabled: Bool {
+        get {
+            return proxyHandlerNode.isEnabled
+        }
+        set {
+            proxyHandlerNode.isEnabled = newValue
+        }
+    }
     
     var currentNumber: String {
         return self.phoneAndCountryNode.phoneInputNode.number
@@ -181,6 +347,11 @@ final class AuthorizationSequencePhoneEntryControllerNode: ASDisplayNode {
     
     var selectCountryCode: (() -> Void)?
     var checkPhone: (() -> Void)?
+    var proxyChanged: ((Bool) -> Void)? {
+        didSet {
+            proxyHandlerNode.valueUpdated = proxyChanged
+        }
+    }
     
     var inProgress: Bool = false {
         didSet {
@@ -190,7 +361,10 @@ final class AuthorizationSequencePhoneEntryControllerNode: ASDisplayNode {
         }
     }
     
-    init(strings: PresentationStrings, theme: AuthorizationTheme) {
+    init(
+        strings: PresentationStrings,
+        theme: AuthorizationTheme
+    ) {
         self.strings = strings
         self.theme = theme
         
@@ -219,6 +393,8 @@ final class AuthorizationSequencePhoneEntryControllerNode: ASDisplayNode {
         
         self.phoneAndCountryNode = PhoneAndCountryNode(strings: strings, theme: theme)
         
+        self.proxyHandlerNode = AuthProxyNode(strings: strings, theme: theme)
+        
         super.init()
         
         self.setViewBlock({
@@ -231,6 +407,7 @@ final class AuthorizationSequencePhoneEntryControllerNode: ASDisplayNode {
         //self.addSubnode(self.termsOfServiceNode)
         self.addSubnode(self.noticeNode)
         self.addSubnode(self.phoneAndCountryNode)
+        self.addSubnode(self.proxyHandlerNode)
         
         self.phoneAndCountryNode.selectCountryCode = { [weak self] in
             self?.selectCountryCode?()
@@ -268,9 +445,30 @@ final class AuthorizationSequencePhoneEntryControllerNode: ASDisplayNode {
         let termsOfServiceSize = self.termsOfServiceNode.updateLayout(CGSize(width: layout.size.width, height: CGFloat.greatestFiniteMagnitude))
         
         var items: [AuthorizationLayoutItem] = [
-            AuthorizationLayoutItem(node: self.titleNode, size: titleSize, spacingBefore: AuthorizationLayoutItemSpacing(weight: 0.0, maxValue: 0.0), spacingAfter: AuthorizationLayoutItemSpacing(weight: 0.0, maxValue: 0.0)),
-            AuthorizationLayoutItem(node: self.noticeNode, size: noticeSize, spacingBefore: AuthorizationLayoutItemSpacing(weight: 18.0, maxValue: 18.0), spacingAfter: AuthorizationLayoutItemSpacing(weight: 0.0, maxValue: 0.0)),
-            AuthorizationLayoutItem(node: self.phoneAndCountryNode, size: CGSize(width: layout.size.width, height: 115.0), spacingBefore: AuthorizationLayoutItemSpacing(weight: 44.0, maxValue: 44.0), spacingAfter: AuthorizationLayoutItemSpacing(weight: 0.0, maxValue: 0.0)),
+            AuthorizationLayoutItem(
+                node: self.titleNode,
+                size: titleSize,
+                spacingBefore: AuthorizationLayoutItemSpacing(weight: 0.0, maxValue: 0.0),
+                spacingAfter: AuthorizationLayoutItemSpacing(weight: 0.0, maxValue: 0.0)
+            ),
+            AuthorizationLayoutItem(
+                node: self.noticeNode,
+                size: noticeSize,
+                spacingBefore: AuthorizationLayoutItemSpacing(weight: 18.0, maxValue: 18.0),
+                spacingAfter: AuthorizationLayoutItemSpacing(weight: 0.0, maxValue: 0.0)
+            ),
+            AuthorizationLayoutItem(
+                node: self.phoneAndCountryNode,
+                size: CGSize(width: layout.size.width, height: 115.0),
+                spacingBefore: AuthorizationLayoutItemSpacing(weight: 44.0, maxValue: 44.0),
+                spacingAfter: AuthorizationLayoutItemSpacing(weight: 0.0, maxValue: 0.0)
+            ),
+            AuthorizationLayoutItem(
+                node: self.proxyHandlerNode,
+                size: CGSize(width: layout.size.width, height: 119.0),
+                spacingBefore: AuthorizationLayoutItemSpacing(weight: 0, maxValue: 0),
+                spacingAfter: AuthorizationLayoutItemSpacing(weight: 0.0, maxValue: 0.0)
+            ),
             //AuthorizationLayoutItem(node: self.termsOfServiceNode, size: termsOfServiceSize, spacingBefore: AuthorizationLayoutItemSpacing(weight: 90.0, maxValue: 90.0), spacingAfter: AuthorizationLayoutItemSpacing(weight: 0.0, maxValue: 0.0)),
         ]
         
