@@ -67,6 +67,7 @@ private let list = PresentationThemeList(
     itemSecondaryTextColor: UIColor(rgb: 0xffffff, alpha: 0.5),
     itemDisabledTextColor: UIColor(rgb: 0x4d4d4d), //!!!
     itemAccentColor: accentColor,
+    secondItemAccentColor: accentColor,
     itemHighlightedColor: UIColor(rgb: 0x28b772),
     itemDestructiveColor: destructiveColor,
     itemPlaceholderTextColor: UIColor(rgb: 0x4d4d4d), //!!!

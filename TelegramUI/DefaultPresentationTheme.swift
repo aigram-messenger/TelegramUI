@@ -67,6 +67,7 @@ private func makeDefaultPresentationTheme(accentColor: UIColor, day: Bool) -> Pr
         itemSecondaryTextColor: UIColor(rgb: 0x8A9190),
         itemDisabledTextColor: UIColor(rgb: 0x8A9190),
         itemAccentColor: accentColor,
+        secondItemAccentColor: .white,
         itemHighlightedColor: secretColor,
         itemDestructiveColor: destructiveColor,
         itemPlaceholderTextColor: UIColor(rgb: 0xBBC2C2),
