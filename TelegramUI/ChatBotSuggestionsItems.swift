@@ -95,7 +95,7 @@ struct ChatSuggestionListItem: ListViewItem, ItemListItem {
     
     func selected(listView: ListView) {
         guard let message = self.response.response.first else { return }
-        self.inputNodeInteraction.sendMessage(message, botId)
+        self.inputNodeInteraction.sendMessage(message, self.response.tag, botId)
     }
 }
 

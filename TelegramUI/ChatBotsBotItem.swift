@@ -121,7 +121,12 @@ final class ChatBotsBotItemNode: ListViewItemNode {
             self.currentItem = item
             
             if let item = item {
-                self.imageNode.image = item.icon
+                if item.type == .recent {
+                    self.imageNode.image = UIImage(bundleImageName: "Chat/Input/Media/RecentBotsIcon")
+                } else {
+                    self.imageNode.image = item.icon
+                }
+                
             }
 
             self.updateIsHighlighted()
