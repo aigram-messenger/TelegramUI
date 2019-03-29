@@ -1621,8 +1621,12 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
     
     private func requestHandlingLastMessages(_ messages: [String]?, byUserInitiating: Bool = false) {
         let hasReply = self.presentationInterfaceState.interfaceState.replyMessageId != nil
+        let hasForwardedMessages = presentationInterfaceState.interfaceState.forwardMessageIds.map { !$0.isEmpty } ?? false
 
-        guard audioRecorderValue == nil else { return }
+        guard
+            audioRecorderValue == nil,
+            !hasForwardedMessages || byUserInitiating
+        else { return }
 
         if case let .suggestions(_, _, userInitiated) = self.presentationInterfaceState.inputMode, userInitiated {
         } else if byUserInitiating {
