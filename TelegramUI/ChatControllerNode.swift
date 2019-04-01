@@ -268,8 +268,8 @@ class ChatControllerNode: ASDisplayNode, UIScrollViewDelegate {
             }
         }
         self.textInputPanelNode?.updateBotsResponses = { [weak self] in
-            let mapped = (self?.lastMessages ?? []).map { $0.text }
-            self?.controllerInteraction.handleMessagesWithBots(mapped, true)
+            let lastMessages = self?.lastMessages ?? []
+            self?.controllerInteraction.handleMessagesWithBots(lastMessages, true)
         }
         self.textInputPanelNode?.sendMessage = { [weak self] in
             if let strongSelf = self, let textInputPanelNode = strongSelf.inputPanelNode as? ChatTextInputPanelNode {
@@ -754,7 +754,7 @@ class ChatControllerNode: ASDisplayNode, UIScrollViewDelegate {
                     if let strongSelf = self, let accessoryPanelNode = accessoryPanelNode, strongSelf.accessoryPanelNode === accessoryPanelNode {
                         if let _ = accessoryPanelNode as? ReplyAccessoryPanelNode {
                             strongSelf.requestUpdateChatInterfaceState(true, { $0.withUpdatedReplyMessageId(nil) })
-                            strongSelf.controllerInteraction.handleMessagesWithBots(strongSelf.lastMessages.map { $0.text }, false)
+                            strongSelf.controllerInteraction.handleMessagesWithBots(strongSelf.lastMessages, false)
                         } else if let _ = accessoryPanelNode as? ForwardAccessoryPanelNode {
                             strongSelf.requestUpdateChatInterfaceState(true, { $0.withUpdatedForwardMessageIds(nil) })
                         } else if let _ = accessoryPanelNode as? EditAccessoryPanelNode {
