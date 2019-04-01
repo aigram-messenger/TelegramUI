@@ -938,9 +938,8 @@ public final class ChatHistoryListNode: ListView, ChatHistoryNode {
                             strongSelf.scrolledToIndex?(scrolledToIndex)
                         }
                     }
-                    let messages = self?.lastMessages.map { $0.text }
-                    self?.controllerInteraction.handleMessagesWithBots(messages, false)
-                    
+                    self?.controllerInteraction.handleMessagesWithBots(self?.lastMessages, false)
+
                     subscriber.putCompletion()
                 })
                 

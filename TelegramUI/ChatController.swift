@@ -193,7 +193,7 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
     
     var purposefulAction: (() -> Void)?
     
-    private var currentMessages: [String]?
+    private var currentMessages: [Message]?
     private var currentReply: Bool?
     var messageToReply: Message? {
         if let messageId = self.presentationInterfaceState.interfaceState.replyMessageId,
@@ -1619,7 +1619,7 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
         self.present(actionSheet, in: .window(.root))
     }
     
-    private func requestHandlingLastMessages(_ messages: [String]?, byUserInitiating: Bool = false) {
+    private func requestHandlingLastMessages(_ messages: [Message]?, byUserInitiating: Bool = false) {
         let hasReply = self.presentationInterfaceState.interfaceState.replyMessageId != nil
         let hasForwardedMessages = presentationInterfaceState.interfaceState.forwardMessageIds.map { !$0.isEmpty } ?? false
 
@@ -1640,8 +1640,16 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
         print("HANDLE MESSAGES (\(hasReply)) \(messages)")
         if !hasReply {
             switch self.presentationInterfaceState.inputMode {
-            case .suggestions, .none: break
-            default: if !byUserInitiating { return }
+            case .suggestions, .none:
+                break
+            case .text:
+                guard presentationInterfaceState.interfaceState.composeInputState.inputText.length == 0 else {
+                    return
+                }
+            default:
+                guard byUserInitiating else {
+                    return
+                }
             }
         }
         if !ChatBotsManager.shared.autoOpenBots {
@@ -1652,7 +1660,7 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
         }
         if !self.chatDisplayNode.text.isEmpty { return }
         
-        ChatBotsManager.shared.handleMessages(messages, of: peerView?.peerId.toInt64(), completion: { [weak self] responses in
+        ChatBotsManager.shared.handleMessages(messages.map { $0.text }, of: peerView?.peerId.toInt64(), completion: { [weak self] responses in
             guard let self = self, self.currentMessages == messages else { return }
             self.updateChatPresentationInterfaceState(animated: true, interactive: true, {
                 $0.updatedInputMode { current in
@@ -2160,7 +2168,7 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
                 if let message = strongSelf.chatDisplayNode.historyNode.messageInCurrentHistoryView(messageId) {
                     strongSelf.updateChatPresentationInterfaceState(animated: true, interactive: true, { $0.updatedInterfaceState({ $0.withUpdatedReplyMessageId(message.id) }).updatedSearch(nil) })
 //                    strongSelf.chatDisplayNode.ensureInputViewFocused()
-                    strongSelf.requestHandlingLastMessages(strongSelf.chatDisplayNode.lastMessages.map { $0.text })
+                    strongSelf.requestHandlingLastMessages(strongSelf.chatDisplayNode.lastMessages)
                 }
             }
         }, setupEditMessage: { [weak self] messageId in
@@ -5629,4 +5637,12 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
         
         return inputShortcuts + otherShortcuts
     }
+}
+
+extension Message: Equatable {
+
+    public static func == (lhs: Message, rhs: Message) -> Bool {
+        return lhs.id == rhs.id
+    }
+
 }
