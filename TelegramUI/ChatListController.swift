@@ -17,7 +17,8 @@ public class ChatListController: TelegramController, KeyShortcutResponder, UIVie
     private var chatListDisplayNode: ChatListControllerNode {
         return super.displayNode as! ChatListControllerNode
     }
-    
+
+    private let tabBarView: TabBarView
     private let titleView: NetworkStatusTitleView
     private var proxyUnavailableTooltipController: TooltipController?
     private var didShowProxyUnavailableTooltipController = false
@@ -46,7 +47,27 @@ public class ChatListController: TelegramController, KeyShortcutResponder, UIVie
         self.groupId = groupId
         
         self.presentationData = (account.telegramApplicationContext.currentPresentationData.with { $0 })
-        
+
+        self.tabBarView = TabBarView(theme: self.presentationData.theme)
+        self.tabBarView.tapHandler = {
+            switch $0 {
+            case .general:
+                account.postbox.changeFilter(to: .all)
+            case .unread:
+                account.postbox.changeFilter(to: .unread)
+            case .groups:
+                account.postbox.changeFilter(to: .groups)
+            case .peers:
+                account.postbox.changeFilter(to: .privateChats)
+            case .channels:
+                account.postbox.changeFilter(to: .channels)
+            case .bots:
+                account.postbox.changeFilter(to: .bots)
+            case .custom:
+                break
+            }
+        }
+
         self.titleView = NetworkStatusTitleView(theme: self.presentationData.theme)
         
         super.init(account: account, navigationBarPresentationData: NavigationBarPresentationData(presentationData: self.presentationData), mediaAccessoryPanelVisibility: .always, locationBroadcastPanelSource: .summary)
@@ -250,7 +271,8 @@ public class ChatListController: TelegramController, KeyShortcutResponder, UIVie
         } else {
             self.navigationItem.rightBarButtonItem = editItem
         }
-        
+
+        self.tabBarView.theme = self.presentationData.theme
         self.titleView.theme = self.presentationData.theme
         
         self.statusBar.statusBarStyle = self.presentationData.theme.rootController.statusBar.style.style
@@ -481,6 +503,25 @@ public class ChatListController: TelegramController, KeyShortcutResponder, UIVie
         })*/
         
         self.displayNodeDidLoad()
+    }
+
+    public override func viewDidLoad() {
+        super.viewDidLoad()
+
+        view.addSubview(tabBarView)
+//        tabBarView.backgroundColor = .red
+//        tabBarView.frame = CGRect(origin: .zero, size: .init(width: 300, height: 100))
+
+        tabBarView.translatesAutoresizingMaskIntoConstraints = false
+
+        // TODO: This constraints wouldn't work on X devices.
+        NSLayoutConstraint.activate([
+            tabBarView.topAnchor.constraint(equalTo: view.topAnchor, constant: 64),
+            tabBarView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            tabBarView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            tabBarView.widthAnchor.constraint(equalTo: view.widthAnchor),
+            tabBarView.heightAnchor.constraint(equalToConstant: 44),
+        ])
     }
     
     override public func viewDidAppear(_ animated: Bool) {
