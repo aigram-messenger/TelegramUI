@@ -4,6 +4,10 @@ import SwiftSignalKit
 import Display
 import TelegramCore
 
+private struct Constants {
+    static let tabBarHeight: CGFloat = 44.0
+}
+
 public class ChatListController: TelegramController, KeyShortcutResponder, UIViewControllerPreviewingDelegate {
     private var validLayout: ContainerViewLayout?
     
@@ -284,7 +288,7 @@ public class ChatListController: TelegramController, KeyShortcutResponder, UIVie
     }
     
     override public func loadDisplayNode() {
-        self.displayNode = ChatListControllerNode(account: self.account, groupId: self.groupId, controlsHistoryPreload: self.controlsHistoryPreload, presentationData: self.presentationData, controller: self)
+        self.displayNode = ChatListControllerNode(account: self.account, groupId: self.groupId, controlsHistoryPreload: self.controlsHistoryPreload, presentationData: self.presentationData, controller: self, additionalTopListInset: Constants.tabBarHeight)
         
         self.chatListDisplayNode.navigationBar = self.navigationBar
         

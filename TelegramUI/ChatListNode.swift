@@ -344,7 +344,7 @@ final class ChatListNode: ListView {
     var isEmptyUpdated: ((Bool) -> Void)?
     private var wasEmpty: Bool?
     
-    init(account: Account, groupId: PeerGroupId?, controlsHistoryPreload: Bool, mode: ChatListNodeMode, theme: PresentationTheme, strings: PresentationStrings, dateTimeFormat: PresentationDateTimeFormat, nameSortOrder: PresentationPersonNameOrder, nameDisplayOrder: PresentationPersonNameOrder, disableAnimations: Bool) {
+    init(account: Account, groupId: PeerGroupId?, controlsHistoryPreload: Bool, mode: ChatListNodeMode, theme: PresentationTheme, strings: PresentationStrings, dateTimeFormat: PresentationDateTimeFormat, nameSortOrder: PresentationPersonNameOrder, nameDisplayOrder: PresentationPersonNameOrder, disableAnimations: Bool, additionalTopInset: CGFloat = 0.0) {
         self.account = account
         self.controlsHistoryPreload = controlsHistoryPreload
         self.mode = mode
@@ -354,7 +354,7 @@ final class ChatListNode: ListView {
         
         self.theme = theme
         
-        super.init()
+        super.init(additionalTopInset: additionalTopInset)
         
         //self.verticalScrollIndicatorColor = UIColor(white: 0.3, alpha: 0.8)
         
