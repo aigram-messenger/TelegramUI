@@ -57,8 +57,8 @@ public class ChatListController: TelegramController, KeyShortcutResponder, UIVie
             switch $0 {
             case .general:
                 account.postbox.changeFilter(to: .all)
-            case .unread:
-                account.postbox.changeFilter(to: .unread)
+//            case .unread:
+//                account.postbox.changeFilter(to: .unread)
             case .groups:
                 account.postbox.changeFilter(to: .groups)
             case .peers:
@@ -67,8 +67,8 @@ public class ChatListController: TelegramController, KeyShortcutResponder, UIVie
                 account.postbox.changeFilter(to: .channels)
             case .bots:
                 account.postbox.changeFilter(to: .bots)
-            case .custom:
-                break
+//            case .custom:
+//                break
             }
         }
 

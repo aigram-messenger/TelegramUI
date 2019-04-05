@@ -31,9 +31,9 @@ final class TabItemView: UIControl {
 
     // MARK: - State
 
-    override var isHighlighted: Bool {
+    var isMarked: Bool = false {
         didSet {
-            isHighlighted
+            isMarked
                 ? addMarkLayer()
                 : removeMarkLayer()
         }
@@ -107,6 +107,7 @@ final class TabItemView: UIControl {
     // MARK: - Mark layer
 
     private func addMarkLayer() {
+        guard markLayer != nil else { return }
         markLayer = with(CAShapeLayer()) {
             let sideLength = Constants.markSideLength
             let markOffset = sideLength * 2
@@ -141,12 +142,12 @@ private extension TabItem {
         let name: String
         switch self {
             case .general: name = "ChatGroupingTabs/AllChats"
-            case .unread: name = "ChatGroupingTabs/UnreadChats"
+//            case .unread: name = "ChatGroupingTabs/UnreadChats"
             case .peers: name = "ChatGroupingTabs/PersonalChats"
             case .groups: name = "ChatGroupingTabs/GroupChats"
             case .channels: name = "ChatGroupingTabs/Channels"
             case .bots: name = "ChatGroupingTabs/Bots"
-            case .custom: name = "ChatGroupingTabs/CustomGrouping"
+//            case .custom: name = "ChatGroupingTabs/CustomGrouping"
         }
 
         return UIImage(bundleImageName: name) ?? UIImage()
