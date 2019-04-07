@@ -65,7 +65,7 @@ final class TabBarView: UIView {
                 leadingAnchor.constraint(equalTo: $0.leadingAnchor),
                 trailingAnchor.constraint(equalTo: $0.trailingAnchor),
                 bottomAnchor.constraint(equalTo: $0.bottomAnchor),
-                $0.heightAnchor.constraint(equalToConstant: 1),
+                $0.heightAnchor.constraint(equalToConstant: 0.5),
             ])
         }
 
