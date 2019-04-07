@@ -25,8 +25,7 @@ final class TabItemView: UIControl {
         $0.contentMode = .center
     }
 
-    private let item: TabItem
-
+    let item: TabItem
     var onTapAction: TapActionHandler?
 
     // MARK: - State
@@ -107,7 +106,7 @@ final class TabItemView: UIControl {
     // MARK: - Mark layer
 
     private func addMarkLayer() {
-        guard markLayer != nil else { return }
+        guard markLayer == nil else { return }
         markLayer = with(CAShapeLayer()) {
             let sideLength = Constants.markSideLength
             let markOffset = sideLength * 2

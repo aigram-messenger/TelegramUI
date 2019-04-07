@@ -239,6 +239,30 @@ public class ChatListController: TelegramController, KeyShortcutResponder, UIVie
                     }
                 }
             })
+
+
+        self.chatListDisplayNode.chatListNode.updateUnreadCategories = { [weak self] unreadCategories in
+            let markedTabs = unreadCategories.compactMap { (some) -> TabItem? in
+                switch some {
+                case .privateChats:
+                    return TabItem.peers
+                case .groups:
+                    return TabItem.groups
+                case .channels:
+                    return TabItem.channels
+                case .bots:
+                    return TabItem.bots
+                case .all:
+                    return TabItem.general
+                default:
+                    return nil
+                }
+            }
+
+            DispatchQueue.main.async {
+                self?.tabBarView.setMarks(for: .init(markedTabs))
+            }
+        }
     }
 
     required public init(coder aDecoder: NSCoder) {
@@ -513,18 +537,14 @@ public class ChatListController: TelegramController, KeyShortcutResponder, UIVie
         super.viewDidLoad()
 
         view.addSubview(tabBarView)
-//        tabBarView.backgroundColor = .red
-//        tabBarView.frame = CGRect(origin: .zero, size: .init(width: 300, height: 100))
-
         tabBarView.translatesAutoresizingMaskIntoConstraints = false
 
-        // TODO: This constraints wouldn't work on X devices.
         NSLayoutConstraint.activate([
             tabBarView.topAnchor.constraint(equalTo: view.topAnchor, constant: 64),
             tabBarView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             tabBarView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             tabBarView.widthAnchor.constraint(equalTo: view.widthAnchor),
-            tabBarView.heightAnchor.constraint(equalToConstant: 44),
+            tabBarView.heightAnchor.constraint(equalToConstant: Constants.tabBarHeight),
         ])
     }
     
@@ -673,6 +693,9 @@ public class ChatListController: TelegramController, KeyShortcutResponder, UIVie
     }
     
     func activateSearch() {
+        tabBarView.isHidden = true
+        tabBarView.alpha = 0.0
+
         if self.displayNavigationBar {
             let _ = (self.chatListDisplayNode.chatListNode.ready
             |> take(1)
@@ -690,9 +713,15 @@ public class ChatListController: TelegramController, KeyShortcutResponder, UIVie
     }
     
     func deactivateSearch(animated: Bool) {
+        tabBarView.isHidden = false
+        UIView.animate(withDuration: 0.5, delay: 0.0, options: UIViewAnimationOptions.curveEaseInOut, animations: { [weak self] in
+            self?.tabBarView.alpha = 1.0
+        })
+
         if !self.displayNavigationBar {
             self.setDisplayNavigationBar(true, transition: animated ? .animated(duration: 0.5, curve: .spring) : .immediate)
             self.chatListDisplayNode.deactivateSearch(animated: animated)
+            self.scrollToTop?()
         }
     }
     

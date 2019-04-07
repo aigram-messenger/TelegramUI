@@ -45,6 +45,15 @@ final class TabBarView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
+    // MARK: -
+
+    func setMarks(for items: Set<TabItem>) {
+        stackView.arrangedSubviews.forEach {
+            guard let itemView = $0 as? TabItemView else { return }
+            itemView.isMarked = items.contains(itemView.item)
+        }
+    }
+
     // MARK: - Appearance
 
     private func setup() {
