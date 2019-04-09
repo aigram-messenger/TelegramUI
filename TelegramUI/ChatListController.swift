@@ -6,6 +6,7 @@ import TelegramCore
 
 private struct Constants {
     static let tabBarHeight: CGFloat = 44.0
+    static let tabBarTopOffset: CGFloat = 64.0
 }
 
 public class ChatListController: TelegramController, KeyShortcutResponder, UIViewControllerPreviewingDelegate {
@@ -21,6 +22,10 @@ public class ChatListController: TelegramController, KeyShortcutResponder, UIVie
     private var chatListDisplayNode: ChatListControllerNode {
         return super.displayNode as! ChatListControllerNode
     }
+
+    private var tabBarViewTopConstraint: NSLayoutConstraint?
+    private var currentTabBarViewOffset: CGFloat = 0.0
+    private var previousContentOffset: CGFloat = 0.0
 
     private let tabBarView: TabBarView
     private let titleView: NetworkStatusTitleView
@@ -240,6 +245,7 @@ public class ChatListController: TelegramController, KeyShortcutResponder, UIVie
                 }
             })
 
+        // MARK: -
 
         self.chatListDisplayNode.chatListNode.updateUnreadCategories = { [weak self] unreadCategories in
             let markedTabs = unreadCategories.compactMap { (some) -> TabItem? in
@@ -263,6 +269,49 @@ public class ChatListController: TelegramController, KeyShortcutResponder, UIVie
                 self?.tabBarView.setMarks(for: .init(markedTabs))
             }
         }
+
+        let tabBarHeight = Constants.tabBarHeight
+        let tabBarTopOffset = Constants.tabBarTopOffset
+
+        chatListDisplayNode.chatListNode.didScroll = { [unowned self] in
+            let newOffset = $0 - tabBarHeight
+            guard
+                newOffset > 0
+            else { return }
+
+            let change = newOffset - self.previousContentOffset
+            self.previousContentOffset = newOffset
+
+            if self.currentTabBarViewOffset <= 0 && change < 0 {
+                self.currentTabBarViewOffset = min(0.0, self.currentTabBarViewOffset - change)
+            } else if self.currentTabBarViewOffset > -tabBarHeight && change > 0 {
+                self.currentTabBarViewOffset = max(-tabBarHeight, self.currentTabBarViewOffset - change)
+            }
+
+            self.tabBarViewTopConstraint?.constant = self.currentTabBarViewOffset + tabBarTopOffset
+        }
+
+        chatListDisplayNode.chatListNode.didEndScroll = { [unowned self] in
+            guard
+                self.currentTabBarViewOffset != 0.0,
+                self.currentTabBarViewOffset != tabBarHeight
+            else { return }
+
+            if self.previousContentOffset <= tabBarHeight * 2 {
+                self.currentTabBarViewOffset = 0.0
+            } else if self.currentTabBarViewOffset >= -tabBarHeight / 2 {
+                self.currentTabBarViewOffset = 0.0
+            } else {
+                self.currentTabBarViewOffset = -tabBarHeight
+            }
+
+            self.tabBarViewTopConstraint?.constant = self.currentTabBarViewOffset + tabBarTopOffset
+            UIView.animate(withDuration: 0.1, delay: 0.0, options: .curveEaseIn, animations: {
+                self.view.layoutIfNeeded()
+            })
+        }
+
+        // MARK: -
     }
 
     required public init(coder aDecoder: NSCoder) {
@@ -536,16 +585,21 @@ public class ChatListController: TelegramController, KeyShortcutResponder, UIVie
     public override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.addSubview(tabBarView)
-        tabBarView.translatesAutoresizingMaskIntoConstraints = false
+        with(tabBarView) {
+            view.addSubview($0)
+            $0.translatesAutoresizingMaskIntoConstraints = false
 
-        NSLayoutConstraint.activate([
-            tabBarView.topAnchor.constraint(equalTo: view.topAnchor, constant: 64),
-            tabBarView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tabBarView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            tabBarView.widthAnchor.constraint(equalTo: view.widthAnchor),
-            tabBarView.heightAnchor.constraint(equalToConstant: Constants.tabBarHeight),
-        ])
+            let topConstraint = tabBarView.topAnchor.constraint(equalTo: view.topAnchor, constant: Constants.tabBarTopOffset)
+            tabBarViewTopConstraint = topConstraint
+
+            NSLayoutConstraint.activate([
+                topConstraint,
+                $0.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+                $0.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+                $0.widthAnchor.constraint(equalTo: view.widthAnchor),
+                $0.heightAnchor.constraint(equalToConstant: Constants.tabBarHeight),
+            ])
+        }
     }
     
     override public func viewDidAppear(_ animated: Bool) {
