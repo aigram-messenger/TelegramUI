@@ -6,11 +6,16 @@ import TelegramCore
 
 private struct Constants {
     static let tabBarHeight: CGFloat = 44.0
-    static let tabBarTopOffset: CGFloat = 64.0
+    // FIXME: Probably that's not the best idea.
+    static let navbarHeight: CGFloat = 44.0
 }
 
 public class ChatListController: TelegramController, KeyShortcutResponder, UIViewControllerPreviewingDelegate {
-    private var validLayout: ContainerViewLayout?
+    private var validLayout: ContainerViewLayout? {
+        didSet {
+            tabBarViewTopConstraint?.constant = Constants.navbarHeight + (validLayout?.statusBarHeight ?? 0.0)
+        }
+    }
     
     private let account: Account
     private let controlsHistoryPreload: Bool
@@ -245,73 +250,7 @@ public class ChatListController: TelegramController, KeyShortcutResponder, UIVie
                 }
             })
 
-        // MARK: -
-
-        self.chatListDisplayNode.chatListNode.updateUnreadCategories = { [weak self] unreadCategories in
-            let markedTabs = unreadCategories.compactMap { (some) -> TabItem? in
-                switch some {
-                case .privateChats:
-                    return TabItem.peers
-                case .groups:
-                    return TabItem.groups
-                case .channels:
-                    return TabItem.channels
-                case .bots:
-                    return TabItem.bots
-                case .all:
-                    return TabItem.general
-                default:
-                    return nil
-                }
-            }
-
-            DispatchQueue.main.async {
-                self?.tabBarView.setMarks(for: .init(markedTabs))
-            }
-        }
-
-        let tabBarHeight = Constants.tabBarHeight
-        let tabBarTopOffset = Constants.tabBarTopOffset
-
-        chatListDisplayNode.chatListNode.didScroll = { [unowned self] in
-            let newOffset = $0 - tabBarHeight
-            guard
-                newOffset > 0
-            else { return }
-
-            let change = newOffset - self.previousContentOffset
-            self.previousContentOffset = newOffset
-
-            if self.currentTabBarViewOffset <= 0 && change < 0 {
-                self.currentTabBarViewOffset = min(0.0, self.currentTabBarViewOffset - change)
-            } else if self.currentTabBarViewOffset > -tabBarHeight && change > 0 {
-                self.currentTabBarViewOffset = max(-tabBarHeight, self.currentTabBarViewOffset - change)
-            }
-
-            self.tabBarViewTopConstraint?.constant = self.currentTabBarViewOffset + tabBarTopOffset
-        }
-
-        chatListDisplayNode.chatListNode.didEndScroll = { [unowned self] in
-            guard
-                self.currentTabBarViewOffset != 0.0,
-                self.currentTabBarViewOffset != tabBarHeight
-            else { return }
-
-            if self.previousContentOffset <= tabBarHeight * 2 {
-                self.currentTabBarViewOffset = 0.0
-            } else if self.currentTabBarViewOffset >= -tabBarHeight / 2 {
-                self.currentTabBarViewOffset = 0.0
-            } else {
-                self.currentTabBarViewOffset = -tabBarHeight
-            }
-
-            self.tabBarViewTopConstraint?.constant = self.currentTabBarViewOffset + tabBarTopOffset
-            UIView.animate(withDuration: 0.1, delay: 0.0, options: .curveEaseIn, animations: {
-                self.view.layoutIfNeeded()
-            })
-        }
-
-        // MARK: -
+        setupCallbacks()
     }
 
     required public init(coder aDecoder: NSCoder) {
@@ -589,7 +528,12 @@ public class ChatListController: TelegramController, KeyShortcutResponder, UIVie
             view.addSubview($0)
             $0.translatesAutoresizingMaskIntoConstraints = false
 
-            let topConstraint = tabBarView.topAnchor.constraint(equalTo: view.topAnchor, constant: Constants.tabBarTopOffset)
+            // FIXME: Probably that's not the best idea.
+            let filtersTabBarTopInset = Constants.navbarHeight
+            let topConstraint = tabBarView.topAnchor.constraint(
+                equalTo: view.topAnchor,
+                constant: filtersTabBarTopInset
+            )
             tabBarViewTopConstraint = topConstraint
 
             NSLayoutConstraint.activate([
@@ -940,4 +884,80 @@ public class ChatListController: TelegramController, KeyShortcutResponder, UIVie
             KeyShortcut(input: UIKeyInputEscape, modifiers: [], action: toggleSearch)
         ]
     }
+}
+
+// MARK: -
+
+extension ChatListController {
+
+    private func setupCallbacks() {
+        self.chatListDisplayNode.chatListNode.updateUnreadCategories = { [weak self] unreadCategories in
+            let markedTabs = unreadCategories.compactMap { (category) -> TabItem? in
+                switch category {
+                case .privateChats:
+                    return .peers
+                case .groups:
+                    return .groups
+                case .channels:
+                    return .channels
+                case .bots:
+                    return .bots
+                case .all:
+                    return .general
+                default:
+                    return nil
+                }
+            }
+
+            DispatchQueue.main.async {
+                self?.tabBarView.setMarks(for: .init(markedTabs))
+            }
+        }
+
+        let tabBarHeight = Constants.tabBarHeight
+        let navbarHeight = Constants.navbarHeight
+
+        chatListDisplayNode.chatListNode.didScroll = { [unowned self] in
+            let statusBarHeight = self.validLayout?.statusBarHeight ?? 0.0
+            let tabBarInset = navbarHeight + statusBarHeight
+            let newOffset = $0 - tabBarHeight
+            guard
+                newOffset > 0
+                else { return }
+
+            let change = newOffset - self.previousContentOffset
+            self.previousContentOffset = newOffset
+
+            if self.currentTabBarViewOffset <= 0 && change < 0 {
+                self.currentTabBarViewOffset = min(0.0, self.currentTabBarViewOffset - change)
+            } else if self.currentTabBarViewOffset > -tabBarHeight && change > 0 {
+                self.currentTabBarViewOffset = max(-tabBarHeight, self.currentTabBarViewOffset - change)
+            }
+
+            self.tabBarViewTopConstraint?.constant = self.currentTabBarViewOffset + tabBarInset
+        }
+
+        chatListDisplayNode.chatListNode.didEndScroll = { [unowned self] in
+            let statusBarHeight = self.validLayout?.statusBarHeight ?? 0.0
+            let tabBarInset = navbarHeight + statusBarHeight
+            guard
+                self.currentTabBarViewOffset != 0.0,
+                self.currentTabBarViewOffset != tabBarHeight
+                else { return }
+
+            if self.previousContentOffset <= tabBarHeight * 2 {
+                self.currentTabBarViewOffset = 0.0
+            } else if self.currentTabBarViewOffset >= -tabBarHeight / 2 {
+                self.currentTabBarViewOffset = 0.0
+            } else {
+                self.currentTabBarViewOffset = -tabBarInset
+            }
+
+            self.tabBarViewTopConstraint?.constant = self.currentTabBarViewOffset + tabBarInset
+            UIView.animate(withDuration: 0.1, delay: 0.0, options: .curveEaseIn, animations: {
+                self.view.layoutIfNeeded()
+            })
+        }
+    }
+
 }
