@@ -300,7 +300,6 @@ final class ChatListNode: ListView {
     var deletePeerChat: ((PeerId) -> Void)?
     var updatePeerGrouping: ((PeerId, Bool) -> Void)?
     var presentAlert: ((String) -> Void)?
-    var updateUnreadCategories: (([FilterType]) -> Void)?
     
     private var theme: PresentationTheme
     
@@ -439,13 +438,10 @@ final class ChatListNode: ListView {
             savedMessagesPeer = .single(nil)
         }
         
-        let chatListNodeViewTransition = combineLatest(savedMessagesPeer, chatListViewUpdate, self.statePromise.get()) |> mapToQueue { [weak self] (savedMessagesPeer, update, state) -> Signal<ChatListNodeListViewTransition, NoError> in
+        let chatListNodeViewTransition = combineLatest(savedMessagesPeer, chatListViewUpdate, self.statePromise.get()) |> mapToQueue { (savedMessagesPeer, update, state) -> Signal<ChatListNodeListViewTransition, NoError> in
             let processedView = ChatListNodeView(originalView: update.view, filteredEntries: chatListNodeEntriesForView(update.view, state: state, savedMessagesPeer: savedMessagesPeer, mode: mode))
             let previousView = previousView.swap(processedView)
             let previousState = previousState.swap(state)
-
-            let unreadCategories = getUnreadCategories(from: update.view.entries)
-            self?.updateUnreadCategories?(unreadCategories)
 
             let reason: ChatListNodeViewTransitionReason
             var prepareOnMainQueue = false
@@ -1141,42 +1137,3 @@ final class ChatListNode: ListView {
         return nil
     }
 }
-
-// MARK: - Getting unread categories
-
-private func getUnreadCategories(from entries: [ChatListEntry]) -> [FilterType] {
-    var unreadCategories: Set<FilterType> = []
-    for entry in entries {
-        switch entry {
-        case let .MessageEntry(_, _, readState, _, _, renderedPeer, _):
-            guard
-                let peer = renderedPeer.chatMainPeer,
-                (readState?.isUnread ?? false) || (readState?.markedUnread ?? false)
-                else {
-                    break
-            }
-
-            switch peer {
-            case let user as TelegramUser where user.botInfo == nil:
-                unreadCategories.insert(.privateChats)
-            case let bot as TelegramUser where bot.botInfo != nil:
-                unreadCategories.insert(.bots)
-            case is TelegramGroup:
-                unreadCategories.insert(.groups)
-            case is TelegramChannel:
-                unreadCategories.insert(.channels)
-            default:
-                break
-            }
-        default:
-            break
-        }
-    }
-
-    if !unreadCategories.isEmpty {
-        unreadCategories.insert(.all)
-    }
-
-    return unreadCategories.map { $0 }
-}
-

@@ -891,7 +891,7 @@ public class ChatListController: TelegramController, KeyShortcutResponder, UIVie
 extension ChatListController {
 
     private func setupCallbacks() {
-        self.chatListDisplayNode.chatListNode.updateUnreadCategories = { [weak self] unreadCategories in
+        account.postbox.setUnreadCatigoriesCallback { [weak self] unreadCategories in
             let markedTabs = unreadCategories.compactMap { (category) -> TabItem? in
                 switch category {
                 case .privateChats:
