@@ -110,6 +110,7 @@ public class ChatListController: TelegramController, KeyShortcutResponder, UIVie
         
         self.scrollToTop = { [weak self] in
             self?.chatListDisplayNode.chatListNode.scrollToPosition(.top)
+            self?.tabBarViewTopConstraint?.constant = Constants.navbarHeight + (self?.validLayout?.statusBarHeight ?? 0.0)
         }
         self.scrollToTopWithTabBar = { [weak self] in
             guard let strongSelf = self else {
@@ -120,6 +121,8 @@ public class ChatListController: TelegramController, KeyShortcutResponder, UIVie
             } else {
                 strongSelf.chatListDisplayNode.chatListNode.scrollToPosition(.top)
             }
+
+            self?.tabBarViewTopConstraint?.constant = Constants.navbarHeight + (self?.validLayout?.statusBarHeight ?? 0.0)
             //.auto for unread navigation
         }
         self.longTapWithTabBar = { [weak self] in
@@ -921,9 +924,8 @@ extension ChatListController {
             let statusBarHeight = self.validLayout?.statusBarHeight ?? 0.0
             let tabBarInset = navbarHeight + statusBarHeight
             let newOffset = $0 - tabBarHeight
-            guard
-                newOffset > 0
-                else { return }
+
+            guard newOffset > 0 else { return }
 
             let change = newOffset - self.previousContentOffset
             self.previousContentOffset = newOffset
@@ -942,8 +944,10 @@ extension ChatListController {
             let tabBarInset = navbarHeight + statusBarHeight
             guard
                 self.currentTabBarViewOffset != 0.0,
-                self.currentTabBarViewOffset != tabBarHeight
-                else { return }
+                self.currentTabBarViewOffset != tabBarHeight,
+                self.tabBarViewTopConstraint?.constant != 0,
+                self.tabBarViewTopConstraint?.constant != tabBarInset
+            else { return }
 
             if self.previousContentOffset <= tabBarHeight * 2 {
                 self.currentTabBarViewOffset = 0.0
