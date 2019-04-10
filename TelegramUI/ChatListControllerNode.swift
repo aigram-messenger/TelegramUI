@@ -36,8 +36,10 @@ class ChatListControllerNode: ASDisplayNode {
     var requestAddContact: ((String) -> Void)?
     
     var themeAndStrings: (PresentationTheme, PresentationStrings, dateTimeFormat: PresentationDateTimeFormat)
+
+    private var additionalTopListInset: CGFloat
     
-    init(account: Account, groupId: PeerGroupId?, controlsHistoryPreload: Bool, presentationData: PresentationData, controller: ChatListController) {
+    init(account: Account, groupId: PeerGroupId?, controlsHistoryPreload: Bool, presentationData: PresentationData, controller: ChatListController, additionalTopListInset: CGFloat = 0.0) {
         self.account = account
         self.groupId = groupId
         self.chatListNode = ChatListNode(account: account, groupId: groupId, controlsHistoryPreload: controlsHistoryPreload, mode: .chatList, theme: presentationData.theme, strings: presentationData.strings, dateTimeFormat: presentationData.dateTimeFormat, nameSortOrder: presentationData.nameSortOrder, nameDisplayOrder: presentationData.nameDisplayOrder, disableAnimations: presentationData.disableAnimations)
@@ -45,6 +47,8 @@ class ChatListControllerNode: ASDisplayNode {
         self.themeAndStrings = (presentationData.theme, presentationData.strings, presentationData.dateTimeFormat)
         
         self.controller = controller
+
+        self.additionalTopListInset = additionalTopListInset
         
         super.init()
         
@@ -98,6 +102,7 @@ class ChatListControllerNode: ASDisplayNode {
         
         var insets = layout.insets(options: [.input])
         insets.top += max(navigationBarHeight, layout.insets(options: [.statusBar]).top)
+        insets.top += additionalTopListInset
         
         insets.left += layout.safeInsets.left
         insets.right += layout.safeInsets.right

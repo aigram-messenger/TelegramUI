@@ -53,7 +53,20 @@ enum ChatListNodeEntryId: Hashable {
 
 enum ChatListNodeEntry: Comparable, Identifiable {
     case SearchEntry(theme: PresentationTheme, text: String)
-    case PeerEntry(index: ChatListIndex, presentationData: ChatListPresentationData, message: Message?, readState: CombinedPeerReadState?, notificationSettings: PeerNotificationSettings?, embeddedInterfaceState: PeerChatListEmbeddedInterfaceState?, peer: RenderedPeer, summaryInfo: ChatListMessageTagSummaryInfo, editing: Bool, hasActiveRevealControls: Bool, inputActivities: [(Peer, PeerInputActivity)]?, isAd: Bool)
+    case PeerEntry(
+        index: ChatListIndex,
+        presentationData: ChatListPresentationData,
+        message: Message?,
+        readState: CombinedPeerReadState?,
+        notificationSettings: PeerNotificationSettings?,
+        embeddedInterfaceState: PeerChatListEmbeddedInterfaceState?,
+        peer: RenderedPeer,
+        summaryInfo: ChatListMessageTagSummaryInfo,
+        editing: Bool,
+        hasActiveRevealControls: Bool,
+        inputActivities: [(Peer, PeerInputActivity)]?,
+        isAd: Bool
+    )
     case HoleEntry(ChatListHole, theme: PresentationTheme)
     case GroupReferenceEntry(index: ChatListIndex, presentationData: ChatListPresentationData, groupId: PeerGroupId, message: Message?, topPeers: [Peer], counters: GroupReferenceUnreadCounters, editing: Bool)
     

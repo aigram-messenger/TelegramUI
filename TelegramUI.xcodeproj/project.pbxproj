@@ -60,6 +60,10 @@
 		09D304152173C0E900C00567 /* WatchManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09D304142173C0E900C00567 /* WatchManager.swift */; };
 		09D304182173C15700C00567 /* WatchSettingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09D304172173C15700C00567 /* WatchSettingsController.swift */; };
 		09FE756D2153F5F900A3120F /* CallRouteActionSheetItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09FE756C2153F5F900A3120F /* CallRouteActionSheetItem.swift */; };
+		1863C2A72256306D003D5CB2 /* TabBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1863C2A62256306D003D5CB2 /* TabBarView.swift */; };
+		1863C2A922563079003D5CB2 /* TabItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1863C2A822563079003D5CB2 /* TabItemView.swift */; };
+		1863C2AB22563082003D5CB2 /* TabItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1863C2AA22563082003D5CB2 /* TabItem.swift */; };
+		1863C2B4225649FC003D5CB2 /* ConvenientFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1863C2B3225649FC003D5CB2 /* ConvenientFunctions.swift */; };
 		D0068FA821760FA300D1B315 /* StoreDownloadedMedia.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0068FA721760FA300D1B315 /* StoreDownloadedMedia.swift */; };
 		D007019C2029E8F2006B9E34 /* LegqacyICloudFileController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D007019B2029E8F2006B9E34 /* LegqacyICloudFileController.swift */; };
 		D007019E2029EFDD006B9E34 /* ICloudResources.swift in Sources */ = {isa = PBXBuildFile; fileRef = D007019D2029EFDD006B9E34 /* ICloudResources.swift */; };
@@ -1145,6 +1149,10 @@
 		09D304142173C0E900C00567 /* WatchManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchManager.swift; sourceTree = "<group>"; };
 		09D304172173C15700C00567 /* WatchSettingsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchSettingsController.swift; sourceTree = "<group>"; };
 		09FE756C2153F5F900A3120F /* CallRouteActionSheetItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CallRouteActionSheetItem.swift; sourceTree = "<group>"; };
+		1863C2A62256306D003D5CB2 /* TabBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarView.swift; sourceTree = "<group>"; };
+		1863C2A822563079003D5CB2 /* TabItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabItemView.swift; sourceTree = "<group>"; };
+		1863C2AA22563082003D5CB2 /* TabItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabItem.swift; sourceTree = "<group>"; };
+		1863C2B3225649FC003D5CB2 /* ConvenientFunctions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvenientFunctions.swift; sourceTree = "<group>"; };
 		D00219051DDD1C9E00BE708A /* ImageContainingNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageContainingNode.swift; sourceTree = "<group>"; };
 		D002A0D01E9B99F500A81812 /* SoftwareVideoSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SoftwareVideoSource.swift; sourceTree = "<group>"; };
 		D002A0D21E9BBE6700A81812 /* MultiplexedSoftwareVideoSourceManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultiplexedSoftwareVideoSourceManager.swift; sourceTree = "<group>"; };
@@ -2392,6 +2400,24 @@
 				09D304172173C15700C00567 /* WatchSettingsController.swift */,
 			);
 			name = Watch;
+			sourceTree = "<group>";
+		};
+		1863C2A522563047003D5CB2 /* Tab Bar View */ = {
+			isa = PBXGroup;
+			children = (
+				1863C2A62256306D003D5CB2 /* TabBarView.swift */,
+				1863C2A822563079003D5CB2 /* TabItemView.swift */,
+				1863C2AA22563082003D5CB2 /* TabItem.swift */,
+			);
+			name = "Tab Bar View";
+			sourceTree = "<group>";
+		};
+		1863C2B2225649D5003D5CB2 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				1863C2B3225649FC003D5CB2 /* ConvenientFunctions.swift */,
+			);
+			name = Helpers;
 			sourceTree = "<group>";
 		};
 		D00C7CDA1E3776CA0080C3D5 /* Secret Preview */ = {
@@ -4082,6 +4108,7 @@
 		D0F69DBD1D6B897A0046BCD6 /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				1863C2A522563047003D5CB2 /* Tab Bar View */,
 				D0F69DBE1D6B89880046BCD6 /* Gestures */,
 				D0F69DBF1D6B89AE0046BCD6 /* Nodes */,
 				D0F69DD31D6B8A160046BCD6 /* Controllers */,
@@ -4644,6 +4671,7 @@
 		D0FC40811D5B8E7400261D9D /* TelegramUI */ = {
 			isa = PBXGroup;
 			children = (
+				1863C2B2225649D5003D5CB2 /* Helpers */,
 				D0DE5800205AEB5E00C356A8 /* Dependencies */,
 				D07551891DDA4C7C0073E051 /* Legacy Components */,
 				D0F69E911D6B8C8E0046BCD6 /* Utils */,
@@ -5027,6 +5055,7 @@
 				D0EC6CBA1EB9F58800EBF1C3 /* RMRootViewController.m in Sources */,
 				D0E412CA206A5B0B00BEE4A2 /* FormControllerTextInputItem.swift in Sources */,
 				D0208ADC1FA346A4001F0D5F /* RaiseToListen.swift in Sources */,
+				1863C2A922563079003D5CB2 /* TabItemView.swift in Sources */,
 				D0EB41F91F30E5B700838FE6 /* LegacyPeerAvatarPlaceholderDataSource.swift in Sources */,
 				D0EC6CBB1EB9F58800EBF1C3 /* texture_helper.m in Sources */,
 				09D304182173C15700C00567 /* WatchSettingsController.swift in Sources */,
@@ -5518,6 +5547,7 @@
 				09AE3823214C110900850BFD /* LegacySecureIdScanController.swift in Sources */,
 				D0EC6DAB1EB9F58900EBF1C3 /* ChatInterfaceStateAccessoryPanels.swift in Sources */,
 				D0EC6DAC1EB9F58900EBF1C3 /* ChatInterfaceStateInputPanels.swift in Sources */,
+				1863C2A72256306D003D5CB2 /* TabBarView.swift in Sources */,
 				D056CD761FF2A30900880D28 /* ChatSwipeToReplyRecognizer.swift in Sources */,
 				D091C7A41F8EBB1E00D7DE13 /* ChatPresentationData.swift in Sources */,
 				D0383EE0207D1A1600C45548 /* TGEmojiSuggestions.mm in Sources */,
@@ -5589,6 +5619,7 @@
 				D0BE30412061B80100FBE6D8 /* SecureIdAuthController.swift in Sources */,
 				D0EC6DD31EB9F58900EBF1C3 /* MentionChatInputPanelItem.swift in Sources */,
 				D0EC6DD41EB9F58900EBF1C3 /* CommandChatInputContextPanelNode.swift in Sources */,
+				1863C2AB22563082003D5CB2 /* TabItem.swift in Sources */,
 				D0EC6DD51EB9F58900EBF1C3 /* CommandChatInputPanelItem.swift in Sources */,
 				D0EC6DD61EB9F58900EBF1C3 /* VerticalListContextResultsChatInputContextPanelNode.swift in Sources */,
 				D0EC6DD71EB9F58900EBF1C3 /* VerticalListContextResultsChatInputPanelItem.swift in Sources */,
@@ -5649,6 +5680,7 @@
 				D0EC6DF21EB9F58900EBF1C3 /* ShareControllerNode.swift in Sources */,
 				D0EC6DF31EB9F58900EBF1C3 /* ShareControllerPeerGridItem.swift in Sources */,
 				D0EC6DF41EB9F58900EBF1C3 /* ShareActionButtonNode.swift in Sources */,
+				1863C2B4225649FC003D5CB2 /* ConvenientFunctions.swift in Sources */,
 				D0EC6DF51EB9F58900EBF1C3 /* PeerMediaCollectionController.swift in Sources */,
 				D06E4C332134A59700088087 /* ThemeAccentColorActionSheet.swift in Sources */,
 				D0EC6DF61EB9F58900EBF1C3 /* PeerMediaCollectionControllerNode.swift in Sources */,

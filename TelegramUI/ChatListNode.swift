@@ -344,7 +344,7 @@ final class ChatListNode: ListView {
     var isEmptyUpdated: ((Bool) -> Void)?
     private var wasEmpty: Bool?
     
-    init(account: Account, groupId: PeerGroupId?, controlsHistoryPreload: Bool, mode: ChatListNodeMode, theme: PresentationTheme, strings: PresentationStrings, dateTimeFormat: PresentationDateTimeFormat, nameSortOrder: PresentationPersonNameOrder, nameDisplayOrder: PresentationPersonNameOrder, disableAnimations: Bool) {
+    init(account: Account, groupId: PeerGroupId?, controlsHistoryPreload: Bool, mode: ChatListNodeMode, theme: PresentationTheme, strings: PresentationStrings, dateTimeFormat: PresentationDateTimeFormat, nameSortOrder: PresentationPersonNameOrder, nameDisplayOrder: PresentationPersonNameOrder, disableAnimations: Bool, additionalTopInset: CGFloat = 0.0) {
         self.account = account
         self.controlsHistoryPreload = controlsHistoryPreload
         self.mode = mode
@@ -354,7 +354,7 @@ final class ChatListNode: ListView {
         
         self.theme = theme
         
-        super.init()
+        super.init(additionalTopInset: additionalTopInset)
         
         //self.verticalScrollIndicatorColor = UIColor(white: 0.3, alpha: 0.8)
         
@@ -442,7 +442,7 @@ final class ChatListNode: ListView {
             let processedView = ChatListNodeView(originalView: update.view, filteredEntries: chatListNodeEntriesForView(update.view, state: state, savedMessagesPeer: savedMessagesPeer, mode: mode))
             let previousView = previousView.swap(processedView)
             let previousState = previousState.swap(state)
-            
+
             let reason: ChatListNodeViewTransitionReason
             var prepareOnMainQueue = false
             

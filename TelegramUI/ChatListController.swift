@@ -4,8 +4,18 @@ import SwiftSignalKit
 import Display
 import TelegramCore
 
+private struct Constants {
+    static let tabBarHeight: CGFloat = 44.0
+    // FIXME: Probably that's not the best idea.
+    static let navbarHeight: CGFloat = 44.0
+}
+
 public class ChatListController: TelegramController, KeyShortcutResponder, UIViewControllerPreviewingDelegate {
-    private var validLayout: ContainerViewLayout?
+    private var validLayout: ContainerViewLayout? {
+        didSet {
+            tabBarViewTopConstraint?.constant = Constants.navbarHeight + (validLayout?.statusBarHeight ?? 0.0)
+        }
+    }
     
     private let account: Account
     private let controlsHistoryPreload: Bool
@@ -17,7 +27,12 @@ public class ChatListController: TelegramController, KeyShortcutResponder, UIVie
     private var chatListDisplayNode: ChatListControllerNode {
         return super.displayNode as! ChatListControllerNode
     }
-    
+
+    private var tabBarViewTopConstraint: NSLayoutConstraint?
+    private var currentTabBarViewOffset: CGFloat = 0.0
+    private var previousContentOffset: CGFloat = 0.0
+
+    private let tabBarView: TabBarView
     private let titleView: NetworkStatusTitleView
     private var proxyUnavailableTooltipController: TooltipController?
     private var didShowProxyUnavailableTooltipController = false
@@ -46,7 +61,27 @@ public class ChatListController: TelegramController, KeyShortcutResponder, UIVie
         self.groupId = groupId
         
         self.presentationData = (account.telegramApplicationContext.currentPresentationData.with { $0 })
-        
+
+        self.tabBarView = TabBarView(theme: self.presentationData.theme)
+        self.tabBarView.tapHandler = {
+            switch $0 {
+            case .general:
+                account.postbox.changeFilter(to: .all)
+//            case .unread:
+//                account.postbox.changeFilter(to: .unread)
+            case .groups:
+                account.postbox.changeFilter(to: .groups)
+            case .peers:
+                account.postbox.changeFilter(to: .privateChats)
+            case .channels:
+                account.postbox.changeFilter(to: .channels)
+            case .bots:
+                account.postbox.changeFilter(to: .bots)
+//            case .custom:
+//                break
+            }
+        }
+
         self.titleView = NetworkStatusTitleView(theme: self.presentationData.theme)
         
         super.init(account: account, navigationBarPresentationData: NavigationBarPresentationData(presentationData: self.presentationData), mediaAccessoryPanelVisibility: .always, locationBroadcastPanelSource: .summary)
@@ -75,6 +110,7 @@ public class ChatListController: TelegramController, KeyShortcutResponder, UIVie
         
         self.scrollToTop = { [weak self] in
             self?.chatListDisplayNode.chatListNode.scrollToPosition(.top)
+            self?.tabBarViewTopConstraint?.constant = Constants.navbarHeight + (self?.validLayout?.statusBarHeight ?? 0.0)
         }
         self.scrollToTopWithTabBar = { [weak self] in
             guard let strongSelf = self else {
@@ -85,6 +121,8 @@ public class ChatListController: TelegramController, KeyShortcutResponder, UIVie
             } else {
                 strongSelf.chatListDisplayNode.chatListNode.scrollToPosition(.top)
             }
+
+            self?.tabBarViewTopConstraint?.constant = Constants.navbarHeight + (self?.validLayout?.statusBarHeight ?? 0.0)
             //.auto for unread navigation
         }
         self.longTapWithTabBar = { [weak self] in
@@ -214,6 +252,8 @@ public class ChatListController: TelegramController, KeyShortcutResponder, UIVie
                     }
                 }
             })
+
+        setupCallbacks()
     }
 
     required public init(coder aDecoder: NSCoder) {
@@ -250,7 +290,8 @@ public class ChatListController: TelegramController, KeyShortcutResponder, UIVie
         } else {
             self.navigationItem.rightBarButtonItem = editItem
         }
-        
+
+        self.tabBarView.theme = self.presentationData.theme
         self.titleView.theme = self.presentationData.theme
         
         self.statusBar.statusBarStyle = self.presentationData.theme.rootController.statusBar.style.style
@@ -262,7 +303,7 @@ public class ChatListController: TelegramController, KeyShortcutResponder, UIVie
     }
     
     override public func loadDisplayNode() {
-        self.displayNode = ChatListControllerNode(account: self.account, groupId: self.groupId, controlsHistoryPreload: self.controlsHistoryPreload, presentationData: self.presentationData, controller: self)
+        self.displayNode = ChatListControllerNode(account: self.account, groupId: self.groupId, controlsHistoryPreload: self.controlsHistoryPreload, presentationData: self.presentationData, controller: self, additionalTopListInset: Constants.tabBarHeight)
         
         self.chatListDisplayNode.navigationBar = self.navigationBar
         
@@ -482,6 +523,31 @@ public class ChatListController: TelegramController, KeyShortcutResponder, UIVie
         
         self.displayNodeDidLoad()
     }
+
+    public override func viewDidLoad() {
+        super.viewDidLoad()
+
+        with(tabBarView) {
+            view.addSubview($0)
+            $0.translatesAutoresizingMaskIntoConstraints = false
+
+            // FIXME: Probably that's not the best idea.
+            let filtersTabBarTopInset = Constants.navbarHeight
+            let topConstraint = tabBarView.topAnchor.constraint(
+                equalTo: view.topAnchor,
+                constant: filtersTabBarTopInset
+            )
+            tabBarViewTopConstraint = topConstraint
+
+            NSLayoutConstraint.activate([
+                topConstraint,
+                $0.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+                $0.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+                $0.widthAnchor.constraint(equalTo: view.widthAnchor),
+                $0.heightAnchor.constraint(equalToConstant: Constants.tabBarHeight),
+            ])
+        }
+    }
     
     override public func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -628,6 +694,9 @@ public class ChatListController: TelegramController, KeyShortcutResponder, UIVie
     }
     
     func activateSearch() {
+        tabBarView.isHidden = true
+        tabBarView.alpha = 0.0
+
         if self.displayNavigationBar {
             let _ = (self.chatListDisplayNode.chatListNode.ready
             |> take(1)
@@ -645,9 +714,15 @@ public class ChatListController: TelegramController, KeyShortcutResponder, UIVie
     }
     
     func deactivateSearch(animated: Bool) {
+        tabBarView.isHidden = false
+        UIView.animate(withDuration: 0.5, delay: 0.0, options: UIViewAnimationOptions.curveEaseInOut, animations: { [weak self] in
+            self?.tabBarView.alpha = 1.0
+        })
+
         if !self.displayNavigationBar {
             self.setDisplayNavigationBar(true, transition: animated ? .animated(duration: 0.5, curve: .spring) : .immediate)
             self.chatListDisplayNode.deactivateSearch(animated: animated)
+            self.scrollToTop?()
         }
     }
     
@@ -812,4 +887,81 @@ public class ChatListController: TelegramController, KeyShortcutResponder, UIVie
             KeyShortcut(input: UIKeyInputEscape, modifiers: [], action: toggleSearch)
         ]
     }
+}
+
+// MARK: -
+
+extension ChatListController {
+
+    private func setupCallbacks() {
+        account.postbox.setUnreadCatigoriesCallback { [weak self] unreadCategories in
+            let markedTabs = unreadCategories.compactMap { (category) -> TabItem? in
+                switch category {
+                case .privateChats:
+                    return .peers
+                case .groups:
+                    return .groups
+                case .channels:
+                    return .channels
+                case .bots:
+                    return .bots
+                case .all:
+                    return .general
+                default:
+                    return nil
+                }
+            }
+
+            DispatchQueue.main.async {
+                self?.tabBarView.setMarks(for: .init(markedTabs))
+            }
+        }
+
+        let tabBarHeight = Constants.tabBarHeight
+        let navbarHeight = Constants.navbarHeight
+
+        chatListDisplayNode.chatListNode.didScroll = { [unowned self] in
+            let statusBarHeight = self.validLayout?.statusBarHeight ?? 0.0
+            let tabBarInset = navbarHeight + statusBarHeight
+            let newOffset = $0 - tabBarHeight
+
+            guard newOffset > 0 else { return }
+
+            let change = newOffset - self.previousContentOffset
+            self.previousContentOffset = newOffset
+
+            if self.currentTabBarViewOffset <= 0 && change < 0 {
+                self.currentTabBarViewOffset = min(0.0, self.currentTabBarViewOffset - change)
+            } else if self.currentTabBarViewOffset > -tabBarHeight && change > 0 {
+                self.currentTabBarViewOffset = max(-tabBarHeight, self.currentTabBarViewOffset - change)
+            }
+
+            self.tabBarViewTopConstraint?.constant = self.currentTabBarViewOffset + tabBarInset
+        }
+
+        chatListDisplayNode.chatListNode.didEndScroll = { [unowned self] in
+            let statusBarHeight = self.validLayout?.statusBarHeight ?? 0.0
+            let tabBarInset = navbarHeight + statusBarHeight
+            guard
+                self.currentTabBarViewOffset != 0.0,
+                self.currentTabBarViewOffset != tabBarHeight,
+                self.tabBarViewTopConstraint?.constant != 0,
+                self.tabBarViewTopConstraint?.constant != tabBarInset
+            else { return }
+
+            if self.previousContentOffset <= tabBarHeight * 2 {
+                self.currentTabBarViewOffset = 0.0
+            } else if self.currentTabBarViewOffset >= -tabBarHeight / 2 {
+                self.currentTabBarViewOffset = 0.0
+            } else {
+                self.currentTabBarViewOffset = -tabBarInset
+            }
+
+            self.tabBarViewTopConstraint?.constant = self.currentTabBarViewOffset + tabBarInset
+            UIView.animate(withDuration: 0.1, delay: 0.0, options: .curveEaseIn, animations: {
+                self.view.layoutIfNeeded()
+            })
+        }
+    }
+
 }

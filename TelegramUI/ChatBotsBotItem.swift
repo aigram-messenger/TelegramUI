@@ -68,7 +68,7 @@ private let verticalOffset: CGFloat = 3.0
 
 final class ChatBotsBotItemNode: ListViewItemNode {
     private let imageNode: ASImageNode
-    private let highlightNode: ASDisplayNode
+    private var highlightNode: ASDisplayNode
     private var gesture: UILongPressGestureRecognizer!
 
     var inputNodeInteraction: ChatBotsInputNodeInteraction?
@@ -116,6 +116,8 @@ final class ChatBotsBotItemNode: ListViewItemNode {
         if self.theme !== theme {
             self.theme = theme
         }
+
+        self.highlightNode.borderColor = theme.chat.inputPanel.panelControlAccentColor.cgColor
 
         if self.currentItem?.toComparable() != item?.toComparable() {
             self.currentItem = item
