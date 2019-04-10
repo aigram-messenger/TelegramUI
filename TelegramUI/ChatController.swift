@@ -1536,6 +1536,10 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
     }
 
     private func showBotActions(_ bot: AiGramBot, completion: @escaping () -> Void) {
+        guard ChatBotsManager.shared.doesShowActionMenu(for: bot.name) else {
+            return
+        }
+
         let actionSheet = ActionSheetController(presentationTheme: self.presentationData.theme)
         var items: [ActionSheetItem] = []
         let strings = presentationData.strings
