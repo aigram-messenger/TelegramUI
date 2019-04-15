@@ -100,11 +100,11 @@ final class NetworkStatusTitleView: UIView, NavigationBarTitleView, NavigationBa
         
         self.addSubnode(self.activityIndicator)
         self.addSubnode(self.titleNode)
-//        self.addSubnode(self.proxyNode)
+        self.addSubnode(self.proxyNode)
         self.addSubview(self.lockView)
         self.addSubview(self.buttonView)
-//        self.addSubview(self.proxyButton)
-        
+        self.addSubview(self.proxyButton)
+
         self.buttonView.highligthedChanged = { [weak self] highlighted in
             if let strongSelf = self {
                 if highlighted && !strongSelf.lockView.isHidden && strongSelf.activityIndicator.isHidden {

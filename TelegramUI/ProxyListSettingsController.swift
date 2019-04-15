@@ -329,7 +329,7 @@ public func proxySettingsController(postbox: Postbox, network: Network, mode: Pr
             return current
         }).start()
     }, addNewServer: {
-//        presentControllerImpl?(proxyServerSettingsController(theme: theme, strings: strings, updatedPresentationData: updatedPresentationData, postbox: postbox, network: network, currentSettings: nil), ViewControllerPresentationArguments(presentationAnimation: .modalSheet))
+        presentControllerImpl?(proxyServerSettingsController(theme: theme, strings: strings, updatedPresentationData: updatedPresentationData, postbox: postbox, network: network, currentSettings: nil), ViewControllerPresentationArguments(presentationAnimation: .modalSheet))
     }, activateServer: { server in
         let _ = updateProxySettingsInteractively(postbox: postbox, network: network, { current in
             var current = current
@@ -342,19 +342,19 @@ public func proxySettingsController(postbox: Postbox, network: Network, mode: Pr
             return current
         }).start()
     }, editServer: { server in
-//        presentControllerImpl?(proxyServerSettingsController(theme: theme, strings: strings, updatedPresentationData: updatedPresentationData, postbox: postbox, network: network, currentSettings: server), ViewControllerPresentationArguments(presentationAnimation: .modalSheet))
+        presentControllerImpl?(proxyServerSettingsController(theme: theme, strings: strings, updatedPresentationData: updatedPresentationData, postbox: postbox, network: network, currentSettings: server), ViewControllerPresentationArguments(presentationAnimation: .modalSheet))
     }, removeServer: { server in
-//        let _ = updateProxySettingsInteractively(postbox: postbox, network: network, { current in
-//            var current = current
-//            if let index = current.servers.index(of: server) {
-//                current.servers.remove(at: index)
-//                if current.activeServer == server {
-//                    current.activeServer = nil
-//                    current.enabled = false
-//                }
-//            }
-//            return current
-//        }).start()
+        let _ = updateProxySettingsInteractively(postbox: postbox, network: network, { current in
+            var current = current
+            if let index = current.servers.index(of: server) {
+                current.servers.remove(at: index)
+                if current.activeServer == server {
+                    current.activeServer = nil
+                    current.enabled = false
+                }
+            }
+            return current
+        }).start()
     }, setServerWithRevealedOptions: { server, fromServer in
         updateState { state in
             var state = state
