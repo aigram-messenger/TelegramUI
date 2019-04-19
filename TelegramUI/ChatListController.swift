@@ -53,6 +53,12 @@ public class ChatListController: TelegramController, KeyShortcutResponder, UIVie
     
     private var presentationData: PresentationData
     private var presentationDataDisposable: Disposable?
+
+    private var chatListMode: ChatListMode = .standard {
+        didSet {
+            account.postbox.change(chatListMode: chatListMode)
+        }
+    }
     
     public init(account: Account, groupId: PeerGroupId?, controlsHistoryPreload: Bool) {
         self.account = account
@@ -63,24 +69,6 @@ public class ChatListController: TelegramController, KeyShortcutResponder, UIVie
         self.presentationData = (account.telegramApplicationContext.currentPresentationData.with { $0 })
 
         self.tabBarView = TabBarView(theme: self.presentationData.theme)
-        self.tabBarView.tapHandler = {
-            switch $0 {
-            case .general:
-                account.postbox.changeFilter(to: .all)
-//            case .unread:
-//                account.postbox.changeFilter(to: .unread)
-            case .groups:
-                account.postbox.changeFilter(to: .groups)
-            case .peers:
-                account.postbox.changeFilter(to: .privateChats)
-            case .channels:
-                account.postbox.changeFilter(to: .channels)
-            case .bots:
-                account.postbox.changeFilter(to: .bots)
-//            case .custom:
-//                break
-            }
-        }
 
         self.titleView = NetworkStatusTitleView(theme: self.presentationData.theme)
         
@@ -891,9 +879,29 @@ public class ChatListController: TelegramController, KeyShortcutResponder, UIVie
 
 // MARK: -
 
-extension ChatListController {
+private extension ChatListController {
 
-    private func setupCallbacks() {
+    func setupCallbacks() {
+        self.tabBarView.tapHandler = { [weak self] in
+            let mode: ChatListMode
+            switch $0 {
+            case .general:
+                mode = .standard
+            case .groups:
+                mode = .filter(type: .groups)
+            case .peers:
+                mode = .filter(type: .privateChats)
+            case .channels:
+                mode = .filter(type: .channels)
+            case .bots:
+                mode = .filter(type: .bots)
+            case .folders:
+                mode = .folders
+            }
+
+            self?.chatListMode = mode
+        }
+
         account.postbox.setUnreadCatigoriesCallback { [weak self] unreadCategories in
             let markedTabs = unreadCategories.compactMap { (category) -> TabItem? in
                 switch category {
@@ -962,6 +970,10 @@ extension ChatListController {
                 self.view.layoutIfNeeded()
             })
         }
+    }
+
+    func switchToCustomGroups() {
+        // TODO: Switch top right icon
     }
 
 }

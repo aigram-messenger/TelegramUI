@@ -259,6 +259,8 @@ func chatListNodeEntriesForView(_ view: ChatListView, state: ChatListNodeState, 
                 if case .chatList = mode {
                     result.append(.GroupReferenceEntry(index: index, presentationData: state.presentationData, groupId: groupId, message: message, topPeers: topPeers, counters: counters, editing: state.editing))
                 }
+            default:
+                break
         }
     }
     if view.laterIndex == nil {
