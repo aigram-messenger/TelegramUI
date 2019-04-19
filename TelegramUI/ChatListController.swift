@@ -715,7 +715,14 @@ public class ChatListController: TelegramController, KeyShortcutResponder, UIVie
     }
     
     @objc func composePressed() {
-        (self.navigationController as? NavigationController)?.replaceAllButRootController(ComposeController(account: self.account), animated: true)
+        let controller: ViewController
+        switch chatListMode {
+            case .folders:
+                controller = ChatListSelectionController(account: account, options: [])
+            default:
+                controller = ComposeController(account: self.account)
+        }
+        (self.navigationController as? NavigationController)?.replaceAllButRootController(controller, animated: true)
     }
     
     public func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {

@@ -10,6 +10,7 @@ private let updatingAvatarOverlayImage = generateFilledCircleImage(diameter: 66.
 enum ItemListAvatarAndNameInfoItemTitleType {
     case group
     case channel
+    case folder
 }
 
 enum ItemListAvatarAndNameInfoItemName: Equatable {
@@ -727,6 +728,8 @@ class ItemListAvatarAndNameInfoItemNode: ListViewItemNode, ItemListItemNode, Ite
                                             placeholder = item.strings.GroupInfo_GroupNamePlaceholder
                                         case .channel:
                                             placeholder = item.strings.GroupInfo_ChannelListNamePlaceholder
+                                        case .folder:
+                                            placeholder = item.strings.ComposeFolder_FolderName
                                     }
                                     inputFirstField.attributedPlaceholder = NSAttributedString(string: placeholder, font: Font.regular(19.0), textColor: item.theme.list.itemPlaceholderTextColor)
                                     inputFirstField.attributedText = NSAttributedString(string: title, font: Font.regular(19.0), textColor: item.theme.list.itemPrimaryTextColor)

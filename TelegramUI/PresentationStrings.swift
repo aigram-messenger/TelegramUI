@@ -3581,6 +3581,27 @@ public final class PresentationStrings {
         }
         return "Ошибка покупки"
     }
+
+    public var ComposeFolder_NewFolder: String {
+        if self.baseLanguageCode == "en" {
+            return "New Folder"
+        }
+        return "Новая папка"
+    }
+
+    public var ComposeFolder_FolderName: String {
+        if self.baseLanguageCode == "en" {
+            return "Folder Name"
+        }
+        return "Название папки"
+    }
+
+    public var ComposeFolder_CreateFolder: String {
+        if self.baseLanguageCode == "en" {
+            return "Create Folder"
+        }
+        return "Создать папку"
+    }
     
     public func BotPurchaseErrorDetails(_ title: String) -> String {
         if self.baseLanguageCode == "en" {
