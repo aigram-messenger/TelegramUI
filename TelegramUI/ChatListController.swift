@@ -50,6 +50,8 @@ public class ChatListController: TelegramController, KeyShortcutResponder, UIVie
     
     private var suggestLocalizationDisposable = MetaDisposable()
     private var didSuggestLocalization = false
+
+    private var createFolderActionDisposable = MetaDisposable()
     
     private var presentationData: PresentationData
     private var presentationDataDisposable: Disposable?
@@ -718,7 +720,22 @@ public class ChatListController: TelegramController, KeyShortcutResponder, UIVie
         let controller: ViewController
         switch chatListMode {
             case .folders:
-                controller = ChatListSelectionController(account: account, options: [])
+                let selectionController = ChatListSelectionController(account: account, options: [])
+                createFolderActionDisposable.set(
+                    (selectionController.result |> deliverOnMainQueue)
+                        .start(next: { [account] selectedPeers in
+                            let peerIds = selectedPeers.compactMap { (peerSelection) -> PeerId? in
+                                if case let .peer(peerId) = peerSelection {
+                                    return peerId
+                                } else {
+                                    return nil
+                                }
+                            }
+                            let createFolder = createFolderController(account: account, peerIds: peerIds)
+                            (selectionController.navigationController as? NavigationController)?.pushViewController(createFolder)
+                        })
+                )
+                controller = selectionController
             default:
                 controller = ComposeController(account: self.account)
         }
