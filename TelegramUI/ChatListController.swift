@@ -56,11 +56,15 @@ public class ChatListController: TelegramController, KeyShortcutResponder, UIVie
     private var presentationData: PresentationData
     private var presentationDataDisposable: Disposable?
 
+    // MARK: -
+
     private var chatListMode: ChatListMode = .standard {
         didSet {
             account.postbox.change(chatListMode: chatListMode)
         }
     }
+
+    // MARK: -
     
     public init(account: Account, groupId: PeerGroupId?, controlsHistoryPreload: Bool) {
         self.account = account

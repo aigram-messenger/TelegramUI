@@ -517,7 +517,7 @@ final class ChatListSelectionNode: ASDisplayNode {
     }
     private var didSetReady = false
     
-    private let contactPeersViewPromise = Promise<ChatListView>()
+    private let chatListViewPromise = Promise<ChatListView>()
     
     private let selectionStatePromise = Promise<ChatListSelectionNodeGroupSelectionState?>(nil)
     private var selectionStateValue: ChatListSelectionNodeGroupSelectionState? {
@@ -533,7 +533,7 @@ final class ChatListSelectionNode: ASDisplayNode {
         } set(value) {
             if value != self.enableUpdatesValue {
                 self.enableUpdatesValue = value
-                self.contactPeersViewPromise.set(
+                self.chatListViewPromise.set(
                     self.account.postbox.tailChatListView(groupId: nil, count: 0, summaryComponents: .init())
                         |> map { $0.0 }
                         |> take(1)
@@ -678,7 +678,7 @@ final class ChatListSelectionNode: ASDisplayNode {
                     }
             }
         } else {
-            transition = (combineLatest(self.contactPeersViewPromise.get(), selectionStateSignal, themeAndStringsPromise.get())
+            transition = (combineLatest(self.chatListViewPromise.get(), selectionStateSignal, themeAndStringsPromise.get())
                 |> mapToQueue { view, selectionState, themeAndStrings -> Signal<ChatListSelectionNodeTransition, NoError> in
                     let signal = deferred { () -> Signal<ChatListSelectionNodeTransition, NoError> in
                         var peers = view.entries

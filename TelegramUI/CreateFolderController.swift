@@ -261,7 +261,7 @@ public func createFolderController(account: Account, peerIds: [PeerId] = []) -> 
             }
             endEditingImpl?()
             dismissControllerImpl?()
-//            actionsDisposable.add((createFolder(account: account, title: title, peerIds: peerIds) |> deliverOnMainQueue |> afterDisposed {
+            actionsDisposable.add((createFolder(account: account, title: title, peerIds: peerIds) |> deliverOnMainQueue |> afterDisposed {
 //                Queue.mainQueue().async {
 //                    updateState { current in
 //                        var current = current
@@ -269,7 +269,7 @@ public func createFolderController(account: Account, peerIds: [PeerId] = []) -> 
 //                        return current
 //                    }
 //                }
-//                }).start(next: { peerId in
+                }).start(next: { peerId in
 //                    if let peerId = peerId {
 //                        let updatingAvatar = stateValue.with {
 //                            return $0.avatar
@@ -280,7 +280,7 @@ public func createFolderController(account: Account, peerIds: [PeerId] = []) -> 
 //                        let controller = ChatController(account: account, chatLocation: .peer(peerId))
 //                        replaceControllerImpl?(controller)
 //                    }
-//                }))
+                }))
         }
     }, changeProfilePhoto: {
 //        let presentationData = account.telegramApplicationContext.currentPresentationData.with { $0 }
