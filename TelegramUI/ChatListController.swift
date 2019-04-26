@@ -375,6 +375,8 @@ public class ChatListController: TelegramController, KeyShortcutResponder, UIVie
                             ])
                         ])
                         strongSelf.present(actionSheet, in: .window(.root))
+                    } else if peerId.id < 0 {
+                        self?.account.postbox.delete(folderWithId: peerId)
                     }
                 })
             }
@@ -825,7 +827,7 @@ public class ChatListController: TelegramController, KeyShortcutResponder, UIVie
             sourceRect.size.height -= UIScreenPixel
             switch item.content {
                 case let .peer(_, peer, _, _, _, _, _, _, _):
-                    if peer.peerId.namespace != Namespaces.Peer.SecretChat {
+                    if peer.peerId.namespace != Namespaces.Peer.SecretChat && peer.peerId.namespace != FolderPeerIdNamespace {
                         let chatController = ChatController(account: self.account, chatLocation: .peer(peer.peerId), mode: .standard(previewing: true))
                         chatController.canReadHistory.set(false)
                         chatController.containerLayoutUpdated(ContainerViewLayout(size: contentSize, metrics: LayoutMetrics(), intrinsicInsets: UIEdgeInsets(), safeInsets: UIEdgeInsets(), statusBarHeight: nil, inputHeight: nil, standardInputHeight: 216.0, inputHeightIsInteractivellyChanging: false), transition: .immediate)

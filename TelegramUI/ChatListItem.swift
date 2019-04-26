@@ -713,13 +713,13 @@ class ChatListItemNode: ItemListRevealOptionsItemNode {
                     }
                     
                     var isPinned: Bool?
-                    if item.peerGroupId == nil {
+                    if item.peerGroupId == nil && !(itemPeer.chatMainPeer is Folder) {
                         isPinned = item.index.pinningIndex != nil
                     }
                     
                     if item.enableContextActions && !isAd {
-                        peerRevealOptions = revealOptions(strings: item.presentationData.strings, theme: item.presentationData.theme, isPinned: isPinned, isMuted: item.account.peerId != item.index.messageIndex.id.peerId ? (currentMutedIconImage != nil) : nil, hasPeerGroupId: hasPeerGroupId, canDelete: true, isEditing: item.editing)
-                        if itemPeer.peerId != item.account.peerId {
+                        peerRevealOptions = revealOptions(strings: item.presentationData.strings, theme: item.presentationData.theme, isPinned: isPinned, isMuted: item.account.peerId != item.index.messageIndex.id.peerId && !(itemPeer.chatMainPeer is Folder) ? (currentMutedIconImage != nil) : nil, hasPeerGroupId: hasPeerGroupId, canDelete: true, isEditing: item.editing)
+                        if itemPeer.peerId != item.account.peerId && !(itemPeer.chatMainPeer is Folder) {
                             peerLeftRevealOptions = leftRevealOptions(strings: item.presentationData.strings, theme: item.presentationData.theme, isUnread: unreadCount.unread)
                         } else {
                             peerLeftRevealOptions = []
