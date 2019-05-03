@@ -60,11 +60,13 @@
 		09D304152173C0E900C00567 /* WatchManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09D304142173C0E900C00567 /* WatchManager.swift */; };
 		09D304182173C15700C00567 /* WatchSettingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09D304172173C15700C00567 /* WatchSettingsController.swift */; };
 		09FE756D2153F5F900A3120F /* CallRouteActionSheetItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09FE756C2153F5F900A3120F /* CallRouteActionSheetItem.swift */; };
+		180A45CA22787E6200D92372 /* FolderControllerNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 180A45C922787E6200D92372 /* FolderControllerNode.swift */; };
 		1818E1B122674E23007C8F8F /* CreateFolderController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1818E1B022674E23007C8F8F /* CreateFolderController.swift */; };
 		1818E1B622676665007C8F8F /* ChatListSelectionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1818E1B522676665007C8F8F /* ChatListSelectionController.swift */; };
 		1818E1B82267667C007C8F8F /* ChatListSelectionControllerNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1818E1B72267667C007C8F8F /* ChatListSelectionControllerNode.swift */; };
 		1818E1BA2268604C007C8F8F /* ChatListSelectionListNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1818E1B92268604C007C8F8F /* ChatListSelectionListNode.swift */; };
 		1818E1BC2268A260007C8F8F /* ChatPeerSelectionItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1818E1BB2268A260007C8F8F /* ChatPeerSelectionItem.swift */; };
+		1863BEDC2278453C000AFD41 /* FolderController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1863BEDB2278453C000AFD41 /* FolderController.swift */; };
 		1863C2A72256306D003D5CB2 /* TabBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1863C2A62256306D003D5CB2 /* TabBarView.swift */; };
 		1863C2A922563079003D5CB2 /* TabItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1863C2A822563079003D5CB2 /* TabItemView.swift */; };
 		1863C2AB22563082003D5CB2 /* TabItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1863C2AA22563082003D5CB2 /* TabItem.swift */; };
@@ -1154,11 +1156,13 @@
 		09D304142173C0E900C00567 /* WatchManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchManager.swift; sourceTree = "<group>"; };
 		09D304172173C15700C00567 /* WatchSettingsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchSettingsController.swift; sourceTree = "<group>"; };
 		09FE756C2153F5F900A3120F /* CallRouteActionSheetItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CallRouteActionSheetItem.swift; sourceTree = "<group>"; };
+		180A45C922787E6200D92372 /* FolderControllerNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderControllerNode.swift; sourceTree = "<group>"; };
 		1818E1B022674E23007C8F8F /* CreateFolderController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateFolderController.swift; sourceTree = "<group>"; };
 		1818E1B522676665007C8F8F /* ChatListSelectionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatListSelectionController.swift; sourceTree = "<group>"; };
 		1818E1B72267667C007C8F8F /* ChatListSelectionControllerNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatListSelectionControllerNode.swift; sourceTree = "<group>"; };
 		1818E1B92268604C007C8F8F /* ChatListSelectionListNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatListSelectionListNode.swift; sourceTree = "<group>"; };
 		1818E1BB2268A260007C8F8F /* ChatPeerSelectionItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatPeerSelectionItem.swift; sourceTree = "<group>"; };
+		1863BEDB2278453C000AFD41 /* FolderController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderController.swift; sourceTree = "<group>"; };
 		1863C2A62256306D003D5CB2 /* TabBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarView.swift; sourceTree = "<group>"; };
 		1863C2A822563079003D5CB2 /* TabItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabItemView.swift; sourceTree = "<group>"; };
 		1863C2AA22563082003D5CB2 /* TabItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabItem.swift; sourceTree = "<group>"; };
@@ -2438,6 +2442,15 @@
 				1818E1BB2268A260007C8F8F /* ChatPeerSelectionItem.swift */,
 			);
 			name = "Chat Multiselection";
+			sourceTree = "<group>";
+		};
+		1863BEDA22784519000AFD41 /* Folder */ = {
+			isa = PBXGroup;
+			children = (
+				1863BEDB2278453C000AFD41 /* FolderController.swift */,
+				180A45C922787E6200D92372 /* FolderControllerNode.swift */,
+			);
+			name = Folder;
 			sourceTree = "<group>";
 		};
 		1863C2A522563047003D5CB2 /* Tab Bar View */ = {
@@ -4222,6 +4235,7 @@
 		D0F69DE61D6B8A4E0046BCD6 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				1863BEDA22784519000AFD41 /* Folder */,
 				1818E1AE22674D2A007C8F8F /* Compose Folder */,
 				D0F69DE71D6B8A590046BCD6 /* Authorization */,
 				D05174C11EAE582A00A1BF36 /* Root */,
@@ -5384,6 +5398,7 @@
 				096C98BA21787A5C00C211FF /* LegacyBridgeAudio.swift in Sources */,
 				D0EC6D401EB9F58800EBF1C3 /* MediaNavigationAccessoryContainerNode.swift in Sources */,
 				D0E266FD1F66706500BFC79F /* ChatBubbleVideoDecoration.swift in Sources */,
+				180A45CA22787E6200D92372 /* FolderControllerNode.swift in Sources */,
 				D0EC6D411EB9F58800EBF1C3 /* MediaNavigationAccessoryHeaderNode.swift in Sources */,
 				D097C26820DD0A1D007BB4B8 /* PeerReportController.swift in Sources */,
 				D0471B491EFD59170074D609 /* BotCheckoutControllerNode.swift in Sources */,
@@ -5670,6 +5685,7 @@
 				D04281F4200E5AB0009DDE36 /* ChatRecentActionsController.swift in Sources */,
 				D0B2F76220506E2A00D3BFB9 /* MediaInputSettings.swift in Sources */,
 				09FE756D2153F5F900A3120F /* CallRouteActionSheetItem.swift in Sources */,
+				1863BEDC2278453C000AFD41 /* FolderController.swift in Sources */,
 				D0BFAE4E20AB1D7B00793CF2 /* DisabledContextResultsChatInputContextPanelNode.swift in Sources */,
 				D064EF871F69A06F00AC0398 /* MessageContentKind.swift in Sources */,
 				D020A9DA1FEAE675008C66F7 /* OverlayPlayerController.swift in Sources */,

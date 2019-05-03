@@ -400,10 +400,16 @@ public class ChatListController: TelegramController, KeyShortcutResponder, UIVie
                             }
                         })
                     }
-                    
-                    navigateToChatController(navigationController: navigationController, account: strongSelf.account, chatLocation: .peer(peerId), animated: animated, completion: { [weak self] in
-                        self?.chatListDisplayNode.chatListNode.clearHighlightAnimated(true)
-                    })
+
+                    if peerId.id < 0 {
+                        guard let self = self else { return }
+                        (self.navigationController as? NavigationController)?
+                            .pushViewController(FolderController(account: self.account, groupId: self.groupId, controlsHistoryPreload: false, folderId: -peerId.id))
+                    } else {
+                        navigateToChatController(navigationController: navigationController, account: strongSelf.account, chatLocation: .peer(peerId), animated: animated, completion: { [weak self] in
+                            self?.chatListDisplayNode.chatListNode.clearHighlightAnimated(true)
+                        })
+                    }
                 }
             }
         }
