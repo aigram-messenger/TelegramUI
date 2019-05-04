@@ -344,7 +344,7 @@ final class ChatListNode: ListView {
     var isEmptyUpdated: ((Bool) -> Void)?
     private var wasEmpty: Bool?
     
-    init(account: Account, groupId: PeerGroupId?, controlsHistoryPreload: Bool, mode: ChatListNodeMode, theme: PresentationTheme, strings: PresentationStrings, dateTimeFormat: PresentationDateTimeFormat, nameSortOrder: PresentationPersonNameOrder, nameDisplayOrder: PresentationPersonNameOrder, disableAnimations: Bool, setupChatListModeHandler: SetupChatListModeCallback? = nil) {
+    init(account: Account, groupId: PeerGroupId?, controlsHistoryPreload: Bool, mode: ChatListNodeMode, theme: PresentationTheme, strings: PresentationStrings, dateTimeFormat: PresentationDateTimeFormat, nameSortOrder: PresentationPersonNameOrder, nameDisplayOrder: PresentationPersonNameOrder, disableAnimations: Bool, setupChatListModeHandler: SetupChatListModeCallback? = nil, enableSearch: Bool = true) {
         self.account = account
         self.controlsHistoryPreload = controlsHistoryPreload
         self.mode = mode
@@ -439,7 +439,7 @@ final class ChatListNode: ListView {
         }
         
         let chatListNodeViewTransition = combineLatest(savedMessagesPeer, chatListViewUpdate, self.statePromise.get()) |> mapToQueue { (savedMessagesPeer, update, state) -> Signal<ChatListNodeListViewTransition, NoError> in
-            let processedView = ChatListNodeView(originalView: update.view, filteredEntries: chatListNodeEntriesForView(update.view, state: state, savedMessagesPeer: savedMessagesPeer, mode: mode))
+            let processedView = ChatListNodeView(originalView: update.view, filteredEntries: chatListNodeEntriesForView(update.view, state: state, savedMessagesPeer: savedMessagesPeer, mode: mode, enableSearch: enableSearch))
             let previousView = previousView.swap(processedView)
             let previousState = previousState.swap(state)
 

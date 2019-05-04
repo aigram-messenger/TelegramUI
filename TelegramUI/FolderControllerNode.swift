@@ -48,7 +48,7 @@ class FolderControllerNode: ASDisplayNode {
     init(account: Account, groupId: PeerGroupId?, controlsHistoryPreload: Bool, presentationData: PresentationData, controller: FolderController, setupChatListModeHandler: SetupChatListModeCallback? = nil) {
         self.account = account
         self.groupId = groupId
-        self.chatListNode = ChatListNode(account: account, groupId: groupId, controlsHistoryPreload: controlsHistoryPreload, mode: .chatList, theme: presentationData.theme, strings: presentationData.strings, dateTimeFormat: presentationData.dateTimeFormat, nameSortOrder: presentationData.nameSortOrder, nameDisplayOrder: presentationData.nameDisplayOrder, disableAnimations: presentationData.disableAnimations, setupChatListModeHandler: setupChatListModeHandler)
+        self.chatListNode = ChatListNode(account: account, groupId: groupId, controlsHistoryPreload: controlsHistoryPreload, mode: .chatList, theme: presentationData.theme, strings: presentationData.strings, dateTimeFormat: presentationData.dateTimeFormat, nameSortOrder: presentationData.nameSortOrder, nameDisplayOrder: presentationData.nameDisplayOrder, disableAnimations: presentationData.disableAnimations, setupChatListModeHandler: setupChatListModeHandler, enableSearch: false)
 
         self.themeAndStrings = (presentationData.theme, presentationData.strings, presentationData.dateTimeFormat)
 
