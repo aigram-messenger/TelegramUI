@@ -58,9 +58,11 @@ public class ChatListController: TelegramController, KeyShortcutResponder, UIVie
 
     // MARK: -
 
+    private var chatListModeSwitcher: ((ChatListMode) -> Void)?
+
     private var chatListMode: ChatListMode = .standard {
         didSet {
-            account.postbox.change(chatListMode: chatListMode)
+            chatListModeSwitcher?(chatListMode)
         }
     }
 
@@ -297,7 +299,10 @@ public class ChatListController: TelegramController, KeyShortcutResponder, UIVie
     }
     
     override public func loadDisplayNode() {
-        self.displayNode = ChatListControllerNode(account: self.account, groupId: self.groupId, controlsHistoryPreload: self.controlsHistoryPreload, presentationData: self.presentationData, controller: self, additionalTopListInset: Constants.tabBarHeight)
+        self.displayNode = ChatListControllerNode(account: self.account, groupId: self.groupId, controlsHistoryPreload: self.controlsHistoryPreload, presentationData: self.presentationData, controller: self, additionalTopListInset: Constants.tabBarHeight,
+        setupChatListModeHandler: { [weak self] in
+            self?.chatListModeSwitcher = $0
+        })
         
         self.chatListDisplayNode.navigationBar = self.navigationBar
         

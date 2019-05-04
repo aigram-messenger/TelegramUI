@@ -344,7 +344,7 @@ final class ChatListNode: ListView {
     var isEmptyUpdated: ((Bool) -> Void)?
     private var wasEmpty: Bool?
     
-    init(account: Account, groupId: PeerGroupId?, controlsHistoryPreload: Bool, mode: ChatListNodeMode, theme: PresentationTheme, strings: PresentationStrings, dateTimeFormat: PresentationDateTimeFormat, nameSortOrder: PresentationPersonNameOrder, nameDisplayOrder: PresentationPersonNameOrder, disableAnimations: Bool) {
+    init(account: Account, groupId: PeerGroupId?, controlsHistoryPreload: Bool, mode: ChatListNodeMode, theme: PresentationTheme, strings: PresentationStrings, dateTimeFormat: PresentationDateTimeFormat, nameSortOrder: PresentationPersonNameOrder, nameDisplayOrder: PresentationPersonNameOrder, disableAnimations: Bool, setupChatListModeHandler: SetupChatListModeCallback? = nil) {
         self.account = account
         self.controlsHistoryPreload = controlsHistoryPreload
         self.mode = mode
@@ -425,7 +425,7 @@ final class ChatListNode: ListView {
         let chatListViewUpdate = self.chatListLocation.get()
             |> distinctUntilChanged
             |> mapToSignal { location in
-                return chatListViewForLocation(groupId: groupId, location: location, account: account)
+                return chatListViewForLocation(groupId: groupId, location: location, account: account, setupChatListModeHandler: setupChatListModeHandler)
             }
         
         let previousState = Atomic<ChatListNodeState>(value: self.currentState)
