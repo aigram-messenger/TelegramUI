@@ -26,13 +26,8 @@ final class FolderController: TelegramController, KeyShortcutResponder, UIViewCo
         return super.displayNode as! FolderControllerNode
     }
 
-    private let folder: Folder
-
     private var proxyUnavailableTooltipController: TooltipController?
     private var didShowProxyUnavailableTooltipController = false
-
-    private var badgeDisposable: Disposable?
-    private var badgeIconDisposable: Disposable?
 
     private var dismissSearchOnDisappear = false
 
@@ -51,10 +46,10 @@ final class FolderController: TelegramController, KeyShortcutResponder, UIViewCo
 
     // MARK: -
 
-    private var chatListMode: ChatListMode = .standard {
-        didSet {
-            account.postbox.change(chatListMode: chatListMode)
-        }
+    private var chatListModeSwitcher: ((ChatListMode) -> Void)?
+
+    private var folder: Folder {
+        didSet { chatListModeSwitcher?(.filter(type: .custom(folder.peerIds))) }
     }
 
     // MARK: -
@@ -89,34 +84,7 @@ final class FolderController: TelegramController, KeyShortcutResponder, UIViewCo
             } else {
                 strongSelf.chatListDisplayNode.chatListNode.scrollToPosition(.top)
             }
-
-//            self?.tabBarViewTopConstraint?.constant = Constants.navbarHeight + (self?.validLayout?.statusBarHeight ?? 0.0)
-            //.auto for unread navigation
         }
-        self.longTapWithTabBar = { [weak self] in
-            guard let strongSelf = self else {
-                return
-            }
-            if strongSelf.chatListDisplayNode.searchDisplayController != nil {
-                strongSelf.deactivateSearch(animated: true)
-            } else {
-                strongSelf.chatListDisplayNode.chatListNode.scrollToPosition(.auto)
-            }
-        }
-
-        self.badgeDisposable = (renderedTotalUnreadCount(postbox: account.postbox) |> deliverOnMainQueue).start(next: { [weak self] count in
-            if let strongSelf = self {
-                if count.0 == 0 {
-                    strongSelf.tabBarItem.badgeValue = ""
-                } else {
-                    if count.0 > 1000 {
-                        strongSelf.tabBarItem.badgeValue = "\(count.0 / 1000)K"
-                    } else {
-                        strongSelf.tabBarItem.badgeValue = "\(count.0)"
-                    }
-                }
-            }
-        })
 
         self.presentationDataDisposable = (account.telegramApplicationContext.presentationData
             |> deliverOnMainQueue).start(next: { [weak self] presentationData in
@@ -139,8 +107,6 @@ final class FolderController: TelegramController, KeyShortcutResponder, UIViewCo
 
     deinit {
         self.openMessageFromSearchDisposable.dispose()
-        self.badgeDisposable?.dispose()
-        self.badgeIconDisposable?.dispose()
         self.passcodeLockTooltipDisposable.dispose()
         self.suggestLocalizationDisposable.dispose()
         self.presentationDataDisposable?.dispose()
@@ -158,7 +124,11 @@ final class FolderController: TelegramController, KeyShortcutResponder, UIViewCo
     }
 
     override public func loadDisplayNode() {
-        self.displayNode = FolderControllerNode(account: self.account, groupId: self.groupId, controlsHistoryPreload: self.controlsHistoryPreload, presentationData: self.presentationData, controller: self)
+        self.displayNode = FolderControllerNode(account: self.account, groupId: self.groupId, controlsHistoryPreload: self.controlsHistoryPreload, presentationData: self.presentationData, controller: self,
+        setupChatListModeHandler: { [weak self, folder] in
+            self?.chatListModeSwitcher = $0
+            $0(.filter(type: .custom(folder.peerIds)))
+        })
 
         self.chatListDisplayNode.navigationBar = self.navigationBar
 
@@ -365,31 +335,6 @@ final class FolderController: TelegramController, KeyShortcutResponder, UIViewCo
         self.displayNodeDidLoad()
     }
 
-    public override func viewDidLoad() {
-        super.viewDidLoad()
-
-//        with(tabBarView) {
-//            view.addSubview($0)
-//            $0.translatesAutoresizingMaskIntoConstraints = false
-//
-//            // FIXME: Probably that's not the best idea.
-//            let filtersTabBarTopInset = Constants.navbarHeight
-//            let topConstraint = tabBarView.topAnchor.constraint(
-//                equalTo: view.topAnchor,
-//                constant: filtersTabBarTopInset
-//            )
-//            tabBarViewTopConstraint = topConstraint
-//
-//            NSLayoutConstraint.activate([
-//                topConstraint,
-//                $0.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-//                $0.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-//                $0.widthAnchor.constraint(equalTo: view.widthAnchor),
-//                $0.heightAnchor.constraint(equalToConstant: Constants.tabBarHeight),
-//                ])
-//        }
-    }
-
     override public func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
@@ -542,32 +487,6 @@ final class FolderController: TelegramController, KeyShortcutResponder, UIViewCo
         }
     }
 
-    @objc func composePressed() {
-        let controller: ViewController
-        switch chatListMode {
-        case .folders:
-            let selectionController = ChatListSelectionController(account: account, options: [])
-            createFolderActionDisposable.set(
-                (selectionController.result |> deliverOnMainQueue)
-                    .start(next: { [account] selectedPeers in
-                        let peerIds = selectedPeers.compactMap { (peerSelection) -> PeerId? in
-                            if case let .peer(peerId) = peerSelection {
-                                return peerId
-                            } else {
-                                return nil
-                            }
-                        }
-                        let createFolder = createFolderController(account: account, peerIds: peerIds)
-                        (selectionController.navigationController as? NavigationController)?.pushViewController(createFolder)
-                    })
-            )
-            controller = selectionController
-        default:
-            controller = ComposeController(account: self.account)
-        }
-        (self.navigationController as? NavigationController)?.replaceAllButRootController(controller, animated: true)
-    }
-
     public func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
         if #available(iOSApplicationExtension 9.0, *) {
             if let (controller, rect) = self.previewingController(from: previewingContext.sourceView, for: location) {
@@ -683,46 +602,46 @@ final class FolderController: TelegramController, KeyShortcutResponder, UIViewCo
     }
 
     public var keyShortcuts: [KeyShortcut] {
-        let strings = self.presentationData.strings
-
-        let toggleSearch: () -> Void = { [weak self] in
-            if let strongSelf = self {
-                if strongSelf.displayNavigationBar {
-                    strongSelf.activateSearch()
-                } else {
-                    strongSelf.deactivateSearch(animated: true)
-                }
-            }
-        }
+//        let strings = self.presentationData.strings
+//
+//        let toggleSearch: () -> Void = { [weak self] in
+//            if let strongSelf = self {
+//                if strongSelf.displayNavigationBar {
+//                    strongSelf.activateSearch()
+//                } else {
+//                    strongSelf.deactivateSearch(animated: true)
+//                }
+//            }
+//        }
 
         return [
-            KeyShortcut(title: strings.KeyCommand_JumpToPreviousChat, input: UIKeyInputUpArrow, modifiers: [.alternate], action: { [weak self] in
-                if let strongSelf = self {
-                    strongSelf.chatListDisplayNode.chatListNode.selectChat(.previous(unread: false))
-                }
-            }),
-            KeyShortcut(title: strings.KeyCommand_JumpToNextChat, input: UIKeyInputDownArrow, modifiers: [.alternate], action: { [weak self] in
-                if let strongSelf = self {
-                    strongSelf.chatListDisplayNode.chatListNode.selectChat(.next(unread: false))
-                }
-            }),
-            KeyShortcut(title: strings.KeyCommand_JumpToPreviousUnreadChat, input: UIKeyInputUpArrow, modifiers: [.alternate, .shift], action: { [weak self] in
-                if let strongSelf = self {
-                    strongSelf.chatListDisplayNode.chatListNode.selectChat(.previous(unread: true))
-                }
-            }),
-            KeyShortcut(title: strings.KeyCommand_JumpToNextUnreadChat, input: UIKeyInputDownArrow, modifiers: [.alternate, .shift], action: { [weak self] in
-                if let strongSelf = self {
-                    strongSelf.chatListDisplayNode.chatListNode.selectChat(.next(unread: true))
-                }
-            }),
-            KeyShortcut(title: strings.KeyCommand_NewMessage, input: "N", modifiers: [.command], action: { [weak self] in
-                if let strongSelf = self {
-                    strongSelf.composePressed()
-                }
-            }),
-            KeyShortcut(title: strings.KeyCommand_Find, input: "\t", modifiers: [], action: toggleSearch),
-            KeyShortcut(input: UIKeyInputEscape, modifiers: [], action: toggleSearch)
+//            KeyShortcut(title: strings.KeyCommand_JumpToPreviousChat, input: UIKeyInputUpArrow, modifiers: [.alternate], action: { [weak self] in
+//                if let strongSelf = self {
+//                    strongSelf.chatListDisplayNode.chatListNode.selectChat(.previous(unread: false))
+//                }
+//            }),
+//            KeyShortcut(title: strings.KeyCommand_JumpToNextChat, input: UIKeyInputDownArrow, modifiers: [.alternate], action: { [weak self] in
+//                if let strongSelf = self {
+//                    strongSelf.chatListDisplayNode.chatListNode.selectChat(.next(unread: false))
+//                }
+//            }),
+//            KeyShortcut(title: strings.KeyCommand_JumpToPreviousUnreadChat, input: UIKeyInputUpArrow, modifiers: [.alternate, .shift], action: { [weak self] in
+//                if let strongSelf = self {
+//                    strongSelf.chatListDisplayNode.chatListNode.selectChat(.previous(unread: true))
+//                }
+//            }),
+//            KeyShortcut(title: strings.KeyCommand_JumpToNextUnreadChat, input: UIKeyInputDownArrow, modifiers: [.alternate, .shift], action: { [weak self] in
+//                if let strongSelf = self {
+//                    strongSelf.chatListDisplayNode.chatListNode.selectChat(.next(unread: true))
+//                }
+//            }),
+//            KeyShortcut(title: strings.KeyCommand_NewMessage, input: "N", modifiers: [.command], action: { [weak self] in
+//                if let strongSelf = self {
+//                    strongSelf.composePressed()
+//                }
+//            }),
+//            KeyShortcut(title: strings.KeyCommand_Find, input: "\t", modifiers: [], action: toggleSearch),
+//            KeyShortcut(input: UIKeyInputEscape, modifiers: [], action: toggleSearch)
         ]
     }
 }

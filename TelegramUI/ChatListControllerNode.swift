@@ -39,7 +39,7 @@ class ChatListControllerNode: ASDisplayNode {
 
     private var additionalTopListInset: CGFloat
     
-    init(account: Account, groupId: PeerGroupId?, controlsHistoryPreload: Bool, presentationData: PresentationData, controller: ChatListController, additionalTopListInset: CGFloat = 0.0, setupChatListModeHandler: ((@escaping (ChatListMode) -> Void) -> Void)? = nil) {
+    init(account: Account, groupId: PeerGroupId?, controlsHistoryPreload: Bool, presentationData: PresentationData, controller: ChatListController, additionalTopListInset: CGFloat = 0.0, setupChatListModeHandler: SetupChatListModeCallback? = nil) {
         self.account = account
         self.groupId = groupId
         self.chatListNode = ChatListNode(account: account, groupId: groupId, controlsHistoryPreload: controlsHistoryPreload, mode: .chatList, theme: presentationData.theme, strings: presentationData.strings, dateTimeFormat: presentationData.dateTimeFormat, nameSortOrder: presentationData.nameSortOrder, nameDisplayOrder: presentationData.nameDisplayOrder, disableAnimations: presentationData.disableAnimations, setupChatListModeHandler: setupChatListModeHandler)
