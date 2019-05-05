@@ -48,9 +48,7 @@ final class FolderController: TelegramController, KeyShortcutResponder, UIViewCo
 
     private var chatListModeSwitcher: ((ChatListMode) -> Void)?
 
-    private var folder: Folder {
-        didSet { chatListModeSwitcher?(.filter(type: .folder(folder))) }
-    }
+    private let folder: Folder
 
     // MARK: -
 
@@ -156,6 +154,10 @@ final class FolderController: TelegramController, KeyShortcutResponder, UIViewCo
                     ActionSheetButtonItem(title: self.presentationData.strings.Folder_RemovePeer, color: .destructive) { [weak self, weak actionSheet, folder] in
                         actionSheet?.dismissAnimated()
                         self?.account.postbox.remove(peerWithId: peerId, from: folder)
+
+                        if self?.folder.peerIds.isEmpty ?? true {
+                            self?.navigationController?.popViewController(animated: true)
+                        }
                     }
                 ]),
                 ActionSheetItemGroup(items: [
