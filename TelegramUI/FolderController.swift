@@ -39,7 +39,7 @@ final class FolderController: TelegramController, KeyShortcutResponder, UIViewCo
     private var suggestLocalizationDisposable = MetaDisposable()
     private var didSuggestLocalization = false
 
-    private var createFolderActionDisposable = MetaDisposable()
+    private var updateFolderActionDisposable = MetaDisposable()
 
     private var presentationData: PresentationData
     private var presentationDataDisposable: Disposable?
@@ -67,7 +67,8 @@ final class FolderController: TelegramController, KeyShortcutResponder, UIViewCo
 
         self.navigationItem.title = folder.name
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title: self.presentationData.strings.Common_Back, style: .plain, target: nil, action: nil)
-
+        self.navigationItem.rightBarButtonItem = //UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(self.addPressed))
+            UIBarButtonItem(image: PresentationResourcesRootController.navigationComposeIcon(self.presentationData.theme), style: .plain, target: self, action: #selector(self.addPressed))
 
         self.scrollToTop = { [weak self] in
             self?.chatListDisplayNode.chatListNode.scrollToPosition(.top)
@@ -112,6 +113,9 @@ final class FolderController: TelegramController, KeyShortcutResponder, UIViewCo
 
     private func updateThemeAndStrings() {
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title: self.presentationData.strings.Common_Back, style: .plain, target: nil, action: nil)
+
+        self.navigationItem.rightBarButtonItem =// UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(self.addPressed))
+            UIBarButtonItem(image: PresentationResourcesRootController.navigationComposeIcon(self.presentationData.theme), style: .plain, target: self, action: #selector(self.addPressed))
 
         self.statusBar.statusBarStyle = self.presentationData.theme.rootController.statusBar.style.style
         self.navigationBar?.updatePresentationData(NavigationBarPresentationData(presentationData: self.presentationData))
@@ -409,6 +413,27 @@ final class FolderController: TelegramController, KeyShortcutResponder, UIViewCo
         self.chatListDisplayNode.chatListNode.updateState { state in
             return state.withUpdatedEditing(false).withUpdatedPeerIdWithRevealedOptions(nil)
         }
+    }
+
+    @objc func addPressed() {
+        let controller = ChatListSelectionController(account: account, options: [], filters: [.excludeSelf, .exclude(folder.peerIds.collect())], createsFolder: false)
+        updateFolderActionDisposable.set(
+            (controller.result |> deliverOnMainQueue)
+                .start(next: { [account, folder] selectedPeers in
+                    let peerIds = selectedPeers.compactMap { (peerSelection) -> PeerId? in
+                        if case let .peer(peerId) = peerSelection {
+                            return peerId
+                        } else {
+                            return nil
+                        }
+                    }
+
+                    account.postbox.add(peerIds: peerIds, to: folder)
+
+                    controller.navigationController?.popViewController(animated: true)
+                })
+        )
+        (self.navigationController as? NavigationController)?.pushViewController(controller, animated: true)
     }
 
     func activateSearch() {

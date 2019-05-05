@@ -62,10 +62,14 @@ final class ChatListSelectionController: ViewController {
     private var limitsConfigurationDisposable: Disposable?
     private let options: [ChatListSelectionAdditionalOption]
     private let filters: [ChatListSelectionFilter]
-    init(account: Account, options: [ChatListSelectionAdditionalOption], filters: [ChatListSelectionFilter] = [.excludeSelf]) {
+
+    private let createsFolder: Bool
+
+    init(account: Account, options: [ChatListSelectionAdditionalOption], filters: [ChatListSelectionFilter] = [.excludeSelf], createsFolder: Bool = true) {
         self.account = account
         self.options = options
         self.filters = filters
+        self.createsFolder = createsFolder
         self.presentationData = account.telegramApplicationContext.currentPresentationData.with { $0 }
 
         self.titleView = CounterContollerTitleView(theme: self.presentationData.theme)
@@ -128,7 +132,8 @@ final class ChatListSelectionController: ViewController {
 
     private func updateTitle() {
         self.titleView.title = CounterContollerTitle(title: self.presentationData.strings.ComposeFolder_CreateFolder, counter: "0")
-        let rightNavigationButton = UIBarButtonItem(title: self.presentationData.strings.Common_Next, style: .done, target: self, action: #selector(self.rightNavigationButtonPressed))
+        let title = createsFolder ? self.presentationData.strings.Common_Next : self.presentationData.strings.Common_Done
+        let rightNavigationButton = UIBarButtonItem(title: title, style: .done, target: self, action: #selector(self.rightNavigationButtonPressed))
         self.rightNavigationButton = rightNavigationButton
         self.navigationItem.rightBarButtonItem = self.rightNavigationButton
         rightNavigationButton.isEnabled = false
