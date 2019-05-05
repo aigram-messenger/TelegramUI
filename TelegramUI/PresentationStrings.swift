@@ -3633,6 +3633,13 @@ public final class PresentationStrings {
         
         return "\(addDateTitle): \(addDate)\n\(updateDateTitle): \(updateDate)\n\(developereTitle): \(developer)"
     }
+
+    public var Folder_RemovePeer: String {
+        if self.baseLanguageCode == "en" {
+            return "Remove from folder"
+        }
+        return "Убрать из папки"
+    }
         
     init(primaryComponent: PresentationStringsComponent, secondaryComponent: PresentationStringsComponent?) {
         self.primaryComponent = primaryComponent

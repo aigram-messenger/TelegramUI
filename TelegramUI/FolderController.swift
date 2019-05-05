@@ -49,7 +49,7 @@ final class FolderController: TelegramController, KeyShortcutResponder, UIViewCo
     private var chatListModeSwitcher: ((ChatListMode) -> Void)?
 
     private var folder: Folder {
-        didSet { chatListModeSwitcher?(.filter(type: .custom(folder.peerIds))) }
+        didSet { chatListModeSwitcher?(.filter(type: .folder(folder))) }
     }
 
     // MARK: -
@@ -127,17 +127,17 @@ final class FolderController: TelegramController, KeyShortcutResponder, UIViewCo
         self.displayNode = FolderControllerNode(account: self.account, groupId: self.groupId, controlsHistoryPreload: self.controlsHistoryPreload, presentationData: self.presentationData, controller: self,
         setupChatListModeHandler: { [weak self, folder] in
             self?.chatListModeSwitcher = $0
-            $0(.filter(type: .custom(folder.peerIds)))
+            $0(.filter(type: .folder(folder)))
         })
 
         self.chatListDisplayNode.navigationBar = self.navigationBar
 
         self.chatListDisplayNode.requestDeactivateSearch = { [weak self] in
-            self?.deactivateSearch(animated: true)
+//            self?.deactivateSearch(animated: true)
         }
 
         self.chatListDisplayNode.chatListNode.activateSearch = { [weak self] in
-            self?.activateSearch()
+//            self?.activateSearch()
         }
 
         self.chatListDisplayNode.chatListNode.presentAlert = { [weak self] text in
@@ -146,71 +146,26 @@ final class FolderController: TelegramController, KeyShortcutResponder, UIViewCo
             }
         }
 
-        self.chatListDisplayNode.chatListNode.deletePeerChat = { [weak self] peerId in
-            if let strongSelf = self {
-                let _ = (strongSelf.account.postbox.transaction { transaction -> Peer? in
-                    return transaction.getPeer(peerId)
-                    } |> deliverOnMainQueue).start(next: { peer in
-                        if let strongSelf = self, let peer = peer {
-                            let actionSheet = ActionSheetController(presentationTheme: strongSelf.presentationData.theme)
-                            var items: [ActionSheetItem] = []
-                            var canClear = true
-                            var canStop = false
+        self.chatListDisplayNode.chatListNode.deletePeerChat = { [weak self, folder] peerId in
+            guard let self = self else { return }
 
-                            var deleteTitle = strongSelf.presentationData.strings.Common_Delete
-                            if let channel = peer as? TelegramChannel {
-                                if case .broadcast = channel.info {
-                                    canClear = false
-                                    deleteTitle =  strongSelf.presentationData.strings.Channel_LeaveChannel
-                                }
-                                if let addressName = channel.addressName, !addressName.isEmpty {
-                                    canClear = false
-                                }
-                            } else if let user = peer as? TelegramUser, user.botInfo != nil {
-                                canStop = true
-                            }
-                            if canClear {
-                                items.append(ActionSheetButtonItem(title: strongSelf.presentationData.strings.DialogList_ClearHistoryConfirmation, color: .accent, action: { [weak actionSheet] in
-                                    actionSheet?.dismissAnimated()
+            let actionSheet = ActionSheetController(presentationTheme: self.presentationData.theme)
 
-                                    if let strongSelf = self {
-                                        let _ = clearHistoryInteractively(postbox: strongSelf.account.postbox, peerId: peerId).start()
-                                    }
-                                }))
-                            }
+            actionSheet.setItemGroups([
+                ActionSheetItemGroup(items: [
+                    ActionSheetButtonItem(title: self.presentationData.strings.Folder_RemovePeer, color: .destructive) { [weak self, weak actionSheet, folder] in
+                        actionSheet?.dismissAnimated()
+                        self?.account.postbox.remove(peerWithId: peerId, from: folder)
+                    }
+                ]),
+                ActionSheetItemGroup(items: [
+                    ActionSheetButtonItem(title: self.presentationData.strings.Common_Cancel, color: .accent) { [weak actionSheet] in
+                        actionSheet?.dismissAnimated()
+                    }
+                ])
+            ])
 
-                            items.append(ActionSheetButtonItem(title: deleteTitle, color: .destructive, action: { [weak actionSheet] in
-                                actionSheet?.dismissAnimated()
-
-                                if let strongSelf = self {
-                                    let _ = removePeerChat(postbox: strongSelf.account.postbox, peerId: peerId, reportChatSpam: false).start()
-                                }
-                            }))
-
-                            if canStop {
-                                items.append(ActionSheetButtonItem(title: strongSelf.presentationData.strings.DialogList_DeleteBotConversationConfirmation, color: .destructive, action: { [weak actionSheet] in
-                                    actionSheet?.dismissAnimated()
-
-                                    if let strongSelf = self {
-                                        let _ = removePeerChat(postbox: strongSelf.account.postbox, peerId: peerId, reportChatSpam: false).start()
-                                        let _ = requestUpdatePeerIsBlocked(account: strongSelf.account, peerId: peer.id, isBlocked: true).start()
-                                    }
-                                }))
-                            }
-
-                            actionSheet.setItemGroups([ActionSheetItemGroup(items: items),
-                                                       ActionSheetItemGroup(items: [
-                                                        ActionSheetButtonItem(title: strongSelf.presentationData.strings.Common_Cancel, color: .accent, action: { [weak actionSheet] in
-                                                            actionSheet?.dismissAnimated()
-                                                        })
-                                                        ])
-                                ])
-                            strongSelf.present(actionSheet, in: .window(.root))
-                        } else if peerId.id < 0 {
-                            self?.account.postbox.delete(folderWithId: peerId)
-                        }
-                    })
-            }
+            self.present(actionSheet, in: .window(.root))
         }
 
         self.chatListDisplayNode.chatListNode.peerSelected = { [weak self] peerId, animated, isAd in
@@ -648,7 +603,11 @@ final class FolderController: TelegramController, KeyShortcutResponder, UIViewCo
 
 // MARK: -
 
-private extension ChatListController {
+private extension FolderController {
+
+    private func updateFilter() {
+        
+    }
 
     func setupCallbacks() {
 //        self.tabBarView.tapHandler = { [weak self] in
