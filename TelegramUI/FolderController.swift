@@ -232,7 +232,7 @@ final class FolderController: TelegramController, KeyShortcutResponder, UIViewCo
                             })
                     }
 
-                    navigateToChatController(navigationController: navigationController, account: strongSelf.account, chatLocation: .peer(peerId), animated: animated, completion: { [weak self] in
+                    navigateToChatController(navigationController: navigationController, account: strongSelf.account, chatLocation: .peer(peerId), keepStack: .always, animated: animated, showsUnreadCountOnBackButton: false, completion: { [weak self] in
                         self?.chatListDisplayNode.chatListNode.clearHighlightAnimated(true)
                     })
                 }
