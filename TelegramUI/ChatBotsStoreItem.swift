@@ -71,6 +71,9 @@ final class ChatBotsStoreItemNode: ListViewItemNode {
     var inputNodeInteraction: ChatBotsInputNodeInteraction?
     
     var theme: PresentationTheme?
+
+    private let image: UIImage? = UIImage(bundleImageName: "Chat/Input/Media/BotsShopTabIcon")
+    private var highlightedImage: UIImage?
     
     init() {
         self.highlightNode = ASImageNode()
@@ -105,14 +108,23 @@ final class ChatBotsStoreItemNode: ListViewItemNode {
     func updateTheme(theme: PresentationTheme) {
         if self.theme !== theme {
             self.theme = theme
-            
-            self.imageNode.image = UIImage(bundleImageName: "Chat/Input/Media/BotsShopTabIcon")
+
+            highlightedImage = image?.render(withTintColour: theme.chat.inputPanel.panelControlAccentColor)
+
+            self.imageNode.image = image
             self.highlightNode.image = PresentationResourcesChat.chatMediaInputPanelHighlightedIconImage(theme)
+
+            updateIsHighlighted()
         }
     }
     
     func updateIsHighlighted() {
         if let currentCollectionId = self.currentCollectionId, let inputNodeInteraction = self.inputNodeInteraction {
+            if inputNodeInteraction.highlightedItemCollectionId != currentCollectionId {
+                imageNode.image = image
+            } else {
+                imageNode.image = highlightedImage
+            }
             self.highlightNode.isHidden = inputNodeInteraction.highlightedItemCollectionId != currentCollectionId
         }
     }
