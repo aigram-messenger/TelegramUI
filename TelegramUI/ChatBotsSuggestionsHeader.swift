@@ -14,7 +14,7 @@ import AiGramLib
 final class ChatSuggestionListItemHeader: ListViewItemHeader {
     let id: ListViewItemHeaderId
     var stickDirection: ListViewItemHeaderStickDirection { return .top }
-    let height: CGFloat = 26
+    let height: CGFloat = 32
     let theme: PresentationTheme
     let bot: AiGramBot
     
@@ -29,7 +29,7 @@ final class ChatSuggestionListItemHeader: ListViewItemHeader {
     }
 }
 
-private let sectionTitleFont = Font.medium(12.0)
+private let sectionTitleFont = Font.medium(18.0)
 
 final class ChatSuggestionListItemHeaderNode: ListViewItemHeaderNode {
     let theme: PresentationTheme
