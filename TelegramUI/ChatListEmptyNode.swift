@@ -6,15 +6,23 @@ final class ChatListEmptyNode: ASDisplayNode {
     private let textNode: ImmediateTextNode
     
     private var validLayout: CGSize?
+
+    // MARK: -
+
+    var isFoldersList: Bool
+
+    // MARK: -
     
-    init(theme: PresentationTheme, strings: PresentationStrings) {
+    init(theme: PresentationTheme, strings: PresentationStrings, isFoldersList: Bool = false) {
         self.textNode = ImmediateTextNode()
         self.textNode.displaysAsynchronously = false
         self.textNode.maximumNumberOfLines = 0
         self.textNode.isUserInteractionEnabled = false
         self.textNode.textAlignment = .center
         self.textNode.lineSpacing = 0.1
-        
+
+        self.isFoldersList = isFoldersList
+
         super.init()
         
         self.addSubnode(self.textNode)
@@ -24,8 +32,8 @@ final class ChatListEmptyNode: ASDisplayNode {
     
     func updateThemeAndStrings(theme: PresentationTheme, strings: PresentationStrings) {
         let string = NSMutableAttributedString()
-        string.append(NSAttributedString(string: strings.DialogList_NoMessagesTitle + "\n", font: Font.medium(17.0), textColor: theme.list.itemSecondaryTextColor, paragraphAlignment: .center))
-        string.append(NSAttributedString(string: strings.DialogList_NoMessagesText, font: Font.regular(16.0), textColor: theme.list.itemSecondaryTextColor, paragraphAlignment: .center))
+        string.append(NSAttributedString(string: (isFoldersList ? strings.DialogList_NoFoldersTitle : strings.DialogList_NoMessagesTitle) + "\n", font: Font.medium(17.0), textColor: theme.list.itemSecondaryTextColor, paragraphAlignment: .center))
+        string.append(NSAttributedString(string: isFoldersList ? strings.DialogList_NoFoldersText : strings.DialogList_NoMessagesText, font: Font.regular(16.0), textColor: theme.list.itemSecondaryTextColor, paragraphAlignment: .center))
         self.textNode.attributedText = string
         
         if let size = self.validLayout {

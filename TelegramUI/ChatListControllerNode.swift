@@ -37,6 +37,10 @@ class ChatListControllerNode: ASDisplayNode {
     
     var themeAndStrings: (PresentationTheme, PresentationStrings, dateTimeFormat: PresentationDateTimeFormat)
 
+    var isFoldersList: Bool = false {
+        didSet { chatListEmptyNode?.isFoldersList = isFoldersList }
+    }
+
     private var additionalTopListInset: CGFloat
     
     init(account: Account, groupId: PeerGroupId?, controlsHistoryPreload: Bool, presentationData: PresentationData, controller: ChatListController, additionalTopListInset: CGFloat = 0.0, setupChatListModeHandler: SetupChatListModeCallback? = nil) {
@@ -65,7 +69,7 @@ class ChatListControllerNode: ASDisplayNode {
             }
             if isEmpty {
                 if strongSelf.chatListEmptyNode == nil {
-                    let chatListEmptyNode = ChatListEmptyNode(theme: strongSelf.themeAndStrings.0, strings: strongSelf.themeAndStrings.1)
+                    let chatListEmptyNode = ChatListEmptyNode(theme: strongSelf.themeAndStrings.0, strings: strongSelf.themeAndStrings.1, isFoldersList: self?.isFoldersList ?? false)
                     strongSelf.chatListEmptyNode = chatListEmptyNode
                     strongSelf.insertSubnode(chatListEmptyNode, belowSubnode: strongSelf.chatListNode)
                     if let (layout, navigationHeight) = strongSelf.containerLayout {

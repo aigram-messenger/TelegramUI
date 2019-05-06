@@ -3634,6 +3634,20 @@ public final class PresentationStrings {
         return "\(addDateTitle): \(addDate)\n\(updateDateTitle): \(updateDate)\n\(developereTitle): \(developer)"
     }
 
+    public var DialogList_NoFoldersTitle: String {
+        if self.baseLanguageCode == "en" {
+            return "You have no folders yet"
+        }
+        return "У вас пока нет папок."
+    }
+
+    public var DialogList_NoFoldersText: String {
+        if self.baseLanguageCode == "en" {
+            return "Create folder by pressing the pencil button in the top right corner."
+        }
+        return "Чтобы создать папку, нажмите на иконку карандаша в правом верхнем углу."
+    }
+
     public var Folder_RemovePeer: String {
         if self.baseLanguageCode == "en" {
             return "Remove from folder"
