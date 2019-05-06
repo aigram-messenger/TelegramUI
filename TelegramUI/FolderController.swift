@@ -150,46 +150,28 @@ final class FolderController: TelegramController, KeyShortcutResponder, UIViewCo
 
         self.chatListDisplayNode.chatListNode.deletePeerChat = { [weak self, folder] peerId in
             guard let self = self else { return }
+            
+            let actionSheet = ActionSheetController(presentationTheme: self.presentationData.theme)
 
-            let alert = standardTextAlertController(
-                theme: .init(presentationTheme: self.presentationData.theme),
-                title: "Removing chat",
-                text: "Are you sure you want to remove this chat from folder?",
-                actions: [
-                    .init(type: .destructiveAction, title: "Remove") { [weak self, folder] in
+            actionSheet.setItemGroups([
+                ActionSheetItemGroup(items: [
+                    ActionSheetButtonItem(title: self.presentationData.strings.Folder_RemovePeer, color: .destructive) { [weak self, weak actionSheet, folder] in
+                        actionSheet?.dismissAnimated()
                         self?.account.postbox.remove(peerWithId: peerId, from: folder)
 
                         if self?.folder.peerIds.isEmpty ?? true {
                             self?.navigationController?.popViewController(animated: true)
                         }
-                    },
-                    .init(type: .genericAction, title: self.presentationData.strings.Common_Cancel) { }
-                ]
-            )
+                    }
+                ]),
+                ActionSheetItemGroup(items: [
+                    ActionSheetButtonItem(title: self.presentationData.strings.Common_Cancel, color: .accent) { [weak actionSheet] in
+                        actionSheet?.dismissAnimated()
+                    }
+                ])
+            ])
 
-            self.present(alert, in: .window(.root))
-
-//            let actionSheet = ActionSheetController(presentationTheme: self.presentationData.theme)
-//
-//            actionSheet.setItemGroups([
-//                ActionSheetItemGroup(items: [
-//                    ActionSheetButtonItem(title: self.presentationData.strings.Folder_RemovePeer, color: .destructive) { [weak self, weak actionSheet, folder] in
-//                        actionSheet?.dismissAnimated()
-//                        self?.account.postbox.remove(peerWithId: peerId, from: folder)
-//
-//                        if self?.folder.peerIds.isEmpty ?? true {
-//                            self?.navigationController?.popViewController(animated: true)
-//                        }
-//                    }
-//                ]),
-//                ActionSheetItemGroup(items: [
-//                    ActionSheetButtonItem(title: self.presentationData.strings.Common_Cancel, color: .accent) { [weak actionSheet] in
-//                        actionSheet?.dismissAnimated()
-//                    }
-//                ])
-//            ])
-//
-//            self.present(actionSheet, in: .window(.root))
+            self.present(actionSheet, in: .window(.root))
         }
 
         self.chatListDisplayNode.chatListNode.peerSelected = { [weak self] peerId, animated, isAd in
