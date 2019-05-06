@@ -713,8 +713,10 @@ class ChatListItemNode: ItemListRevealOptionsItemNode {
                     }
                     
                     var isPinned: Bool?
-                    if item.peerGroupId == nil && !(itemPeer.chatMainPeer is Folder) {
+                    if item.peerGroupId == nil {
                         isPinned = item.index.pinningIndex != nil
+                    } else if let folder = itemPeer.chatMainPeer as? Folder {
+                        isPinned = folder.pinningIndex != nil
                     }
                     
                     if item.enableContextActions && !isAd {
