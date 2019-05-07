@@ -28,6 +28,9 @@ class FolderControllerNode: ASDisplayNode {
     private let account: Account
     private let groupId: PeerGroupId?
 
+    private let titleAccessoryPanelContainer: ChatControllerTitlePanelNodeContainer
+    private let titlePanelNode: FolderTitlePanelNode
+
     private var chatListEmptyNode: ChatListEmptyNode?
     let chatListNode: ChatListNode
     var navigationBar: NavigationBar?
@@ -53,6 +56,11 @@ class FolderControllerNode: ASDisplayNode {
         self.themeAndStrings = (presentationData.theme, presentationData.strings, presentationData.dateTimeFormat)
 
         self.controller = controller
+
+        titleAccessoryPanelContainer = ChatControllerTitlePanelNodeContainer()
+        titleAccessoryPanelContainer.clipsToBounds = true
+
+        titlePanelNode = FolderTitlePanelNode()
 
         super.init()
 
@@ -83,6 +91,9 @@ class FolderControllerNode: ASDisplayNode {
                 })
             }
         }
+
+        addSubnode(titleAccessoryPanelContainer)
+        titleAccessoryPanelContainer.addSubnode(titlePanelNode)
     }
 
     override func didLoad() {
@@ -135,6 +146,14 @@ class FolderControllerNode: ASDisplayNode {
             listViewCurve = .Default(duration: duration)
         }
 
+        let panelHeight = titlePanelNode.updateLayout(width: layout.size.width, leftInset: layout.safeInsets.left, rightInset: layout.safeInsets.right, transition: transition, theme: themeAndStrings.0, strings: themeAndStrings.1)
+        
+        let titlePanelFrame = CGRect(origin: CGPoint(x: 0.0, y: 0.0), size: CGSize(width: layout.size.width, height: panelHeight))
+        
+        transition.updateFrame(node: self.titlePanelNode, frame: titlePanelFrame)
+        transition.updateFrame(node: self.titleAccessoryPanelContainer, frame: CGRect(origin: CGPoint(x: 0.0, y: insets.top), size: CGSize(width: layout.size.width, height: 56.0)))
+
+        insets.top += panelHeight
         let updateSizeAndInsets = ListViewUpdateSizeAndInsets(size: layout.size, insets: insets, duration: duration, curve: listViewCurve)
 
         self.chatListNode.updateLayout(transition: transition, updateSizeAndInsets: updateSizeAndInsets)

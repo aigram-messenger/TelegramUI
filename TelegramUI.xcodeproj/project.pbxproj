@@ -71,6 +71,7 @@
 		1863C2A922563079003D5CB2 /* TabItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1863C2A822563079003D5CB2 /* TabItemView.swift */; };
 		1863C2AB22563082003D5CB2 /* TabItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1863C2AA22563082003D5CB2 /* TabItem.swift */; };
 		1863C2B4225649FC003D5CB2 /* ConvenientFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1863C2B3225649FC003D5CB2 /* ConvenientFunctions.swift */; };
+		1876A94222808766002722BA /* FolderInfoTitlePanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1876A94122808766002722BA /* FolderInfoTitlePanel.swift */; };
 		D0068FA821760FA300D1B315 /* StoreDownloadedMedia.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0068FA721760FA300D1B315 /* StoreDownloadedMedia.swift */; };
 		D007019C2029E8F2006B9E34 /* LegqacyICloudFileController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D007019B2029E8F2006B9E34 /* LegqacyICloudFileController.swift */; };
 		D007019E2029EFDD006B9E34 /* ICloudResources.swift in Sources */ = {isa = PBXBuildFile; fileRef = D007019D2029EFDD006B9E34 /* ICloudResources.swift */; };
@@ -1167,6 +1168,7 @@
 		1863C2A822563079003D5CB2 /* TabItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabItemView.swift; sourceTree = "<group>"; };
 		1863C2AA22563082003D5CB2 /* TabItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabItem.swift; sourceTree = "<group>"; };
 		1863C2B3225649FC003D5CB2 /* ConvenientFunctions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvenientFunctions.swift; sourceTree = "<group>"; };
+		1876A94122808766002722BA /* FolderInfoTitlePanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderInfoTitlePanel.swift; sourceTree = "<group>"; };
 		D00219051DDD1C9E00BE708A /* ImageContainingNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageContainingNode.swift; sourceTree = "<group>"; };
 		D002A0D01E9B99F500A81812 /* SoftwareVideoSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SoftwareVideoSource.swift; sourceTree = "<group>"; };
 		D002A0D21E9BBE6700A81812 /* MultiplexedSoftwareVideoSourceManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultiplexedSoftwareVideoSourceManager.swift; sourceTree = "<group>"; };
@@ -2449,6 +2451,7 @@
 			children = (
 				1863BEDB2278453C000AFD41 /* FolderController.swift */,
 				180A45C922787E6200D92372 /* FolderControllerNode.swift */,
+				1876A94122808766002722BA /* FolderInfoTitlePanel.swift */,
 			);
 			name = Folder;
 			sourceTree = "<group>";
@@ -5750,6 +5753,7 @@
 				D080B27F1F4C7C6000AA3847 /* InstantPageManagedMediaId.swift in Sources */,
 				D08984F02114AE0C00918162 /* DataPrivacySettingsController.swift in Sources */,
 				D087BFAD1F741B9D003FD209 /* ShareContentContainerNode.swift in Sources */,
+				1876A94222808766002722BA /* FolderInfoTitlePanel.swift in Sources */,
 				D0EC6DFB1EB9F58900EBF1C3 /* AvatarGalleryController.swift in Sources */,
 				D0EC6DFC1EB9F58900EBF1C3 /* GalleryController.swift in Sources */,
 				D0EC6DFD1EB9F58900EBF1C3 /* GalleryControllerNode.swift in Sources */,

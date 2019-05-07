@@ -26,6 +26,8 @@ final class FolderController: TelegramController, KeyShortcutResponder, UIViewCo
         return super.displayNode as! FolderControllerNode
     }
 
+//    private let chatTitleView: ChatTitleView
+
     private var proxyUnavailableTooltipController: TooltipController?
     private var didShowProxyUnavailableTooltipController = false
 
@@ -61,16 +63,52 @@ final class FolderController: TelegramController, KeyShortcutResponder, UIViewCo
 
         self.presentationData = (account.telegramApplicationContext.currentPresentationData.with { $0 })
 
+//        self.titlePanelNode = FolderTitlePanelNode()
+//        self.titlePanelNode.interfaceInteraction
+
+//        self.chatTitleView = ChatTitleView(account: account, theme: presentationData.theme, strings: presentationData.strings, dateTimeFormat: presentationData.dateTimeFormat)
+
         super.init(account: account, navigationBarPresentationData: NavigationBarPresentationData(presentationData: self.presentationData), mediaAccessoryPanelVisibility: .always, locationBroadcastPanelSource: .summary)
 
         self.statusBar.statusBarStyle = self.presentationData.theme.rootController.statusBar.style.style
 
         self.navigationItem.title = folder.name
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title: self.presentationData.strings.Common_Back, style: .plain, target: nil, action: nil)
-        self.navigationItem.rightBarButtonItems = [
-            UIBarButtonItem(image: PresentationResourcesRootController.navigationComposeIcon(self.presentationData.theme), style: .plain, target: self, action: #selector(self.renamePressed)),
-            UIBarButtonItem(image: PresentationResourcesRootController.navigationComposeIcon(self.presentationData.theme), style: .plain, target: self, action: #selector(self.addPressed)),
-        ]
+//        self.navigationItem.titleView = chatTitleView
+//        self.chatTitleView.titleContent = .peer(peerView: peerView, onlineMemberCount: onlineMemberCount)
+//        chatTitleView.pressed = { [weak self] in
+//            if let strongSelf = self {
+//                if strongSelf.chatLocation == .peer(strongSelf.account.peerId) {
+//                    (strongSelf.navigationController as? NavigationController)?.pushViewController(PeerMediaCollectionController(account: strongSelf.account, peerId: strongSelf.account.peerId))
+//                } else {
+//                    strongSelf.updateChatPresentationInterfaceState(animated: true, interactive: true, {
+//                        return $0.updatedTitlePanelContext {
+//                            if let index = $0.index(where: {
+//                                switch $0 {
+//                                case .chatInfo:
+//                                    return true
+//                                default:
+//                                    return false
+//                                }
+//                            }) {
+//                                var updatedContexts = $0
+//                                updatedContexts.remove(at: index)
+//                                return updatedContexts
+//                            } else {
+//                                var updatedContexts = $0
+//                                updatedContexts.append(.chatInfo)
+//                                return updatedContexts.sorted()
+//                            }
+//                        }
+//                    })
+//                }
+//            }
+//        }
+
+//        self.navigationItem.rightBarButtonItems = [
+//            UIBarButtonItem(image: PresentationResourcesRootController.navigationComposeIcon(self.presentationData.theme), style: .plain, target: self, action: #selector(self.renamePressed)),
+//            UIBarButtonItem(image: PresentationResourcesRootController.navigationComposeIcon(self.presentationData.theme), style: .plain, target: self, action: #selector(self.addPressed)),
+//        ]
 
         self.scrollToTop = { [weak self] in
             self?.chatListDisplayNode.chatListNode.scrollToPosition(.top)
@@ -116,10 +154,11 @@ final class FolderController: TelegramController, KeyShortcutResponder, UIViewCo
     private func updateThemeAndStrings() {
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title: self.presentationData.strings.Common_Back, style: .plain, target: nil, action: nil)
 
-        self.navigationItem.rightBarButtonItems = [
-            UIBarButtonItem(image: PresentationResourcesRootController.navigationComposeIcon(self.presentationData.theme), style: .plain, target: self, action: #selector(self.renamePressed)),
-            UIBarButtonItem(image: PresentationResourcesRootController.navigationComposeIcon(self.presentationData.theme), style: .plain, target: self, action: #selector(self.addPressed)),
-        ]
+//        self.chatTitleView.updateThemeAndStrings(theme: presentationData.theme, strings: presentationData.strings)
+//        self.navigationItem.rightBarButtonItems = [
+//            UIBarButtonItem(image: PresentationResourcesRootController.navigationComposeIcon(self.presentationData.theme), style: .plain, target: self, action: #selector(self.renamePressed)),
+//            UIBarButtonItem(image: PresentationResourcesRootController.navigationComposeIcon(self.presentationData.theme), style: .plain, target: self, action: #selector(self.addPressed)),
+//        ]
 
         self.statusBar.statusBarStyle = self.presentationData.theme.rootController.statusBar.style.style
         self.navigationBar?.updatePresentationData(NavigationBarPresentationData(presentationData: self.presentationData))
@@ -463,7 +502,7 @@ final class FolderController: TelegramController, KeyShortcutResponder, UIViewCo
             actions:  [
                 TextAlertAction.init(type: .defaultAction, title: "Confirm", action: { [weak self] in
                     guard let self = self else { return }
-                    self.account.postbox.rename(folder: self.folder, to: "")
+//                    self.account.postbox.rename(folder: self.folder, to: "")
                 }),
                 TextAlertAction.init(type: .genericAction, title: "Cancel", action: { })
             ],
