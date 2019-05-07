@@ -28,6 +28,7 @@ class FolderControllerNode: ASDisplayNode {
     private let account: Account
     private let groupId: PeerGroupId?
 
+    var isTitlePanelShown: Bool = false
     private let titleAccessoryPanelContainer: ChatControllerTitlePanelNodeContainer
     private let titlePanelNode: FolderTitlePanelNode
 
@@ -148,12 +149,19 @@ class FolderControllerNode: ASDisplayNode {
 
         let panelHeight = titlePanelNode.updateLayout(width: layout.size.width, leftInset: layout.safeInsets.left, rightInset: layout.safeInsets.right, transition: transition, theme: themeAndStrings.0, strings: themeAndStrings.1)
         
-        let titlePanelFrame = CGRect(origin: CGPoint(x: 0.0, y: 0.0), size: CGSize(width: layout.size.width, height: panelHeight))
-        
+        var titlePanelFrame = CGRect(origin: CGPoint(x: 0.0, y: 0.0), size: CGSize(width: layout.size.width, height: panelHeight))
+
+        if !isTitlePanelShown {
+            titlePanelFrame.origin.y -= panelHeight
+        }
+
         transition.updateFrame(node: self.titlePanelNode, frame: titlePanelFrame)
         transition.updateFrame(node: self.titleAccessoryPanelContainer, frame: CGRect(origin: CGPoint(x: 0.0, y: insets.top), size: CGSize(width: layout.size.width, height: 56.0)))
 
-        insets.top += panelHeight
+        if isTitlePanelShown {
+            insets.top += panelHeight
+        }
+
         let updateSizeAndInsets = ListViewUpdateSizeAndInsets(size: layout.size, insets: insets, duration: duration, curve: listViewCurve)
 
         self.chatListNode.updateLayout(transition: transition, updateSizeAndInsets: updateSizeAndInsets)

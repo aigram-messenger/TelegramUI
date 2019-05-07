@@ -72,6 +72,7 @@
 		1863C2AB22563082003D5CB2 /* TabItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1863C2AA22563082003D5CB2 /* TabItem.swift */; };
 		1863C2B4225649FC003D5CB2 /* ConvenientFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1863C2B3225649FC003D5CB2 /* ConvenientFunctions.swift */; };
 		1876A94222808766002722BA /* FolderInfoTitlePanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1876A94122808766002722BA /* FolderInfoTitlePanel.swift */; };
+		1876A94422816ED9002722BA /* FolderTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1876A94322816ED9002722BA /* FolderTitleView.swift */; };
 		D0068FA821760FA300D1B315 /* StoreDownloadedMedia.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0068FA721760FA300D1B315 /* StoreDownloadedMedia.swift */; };
 		D007019C2029E8F2006B9E34 /* LegqacyICloudFileController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D007019B2029E8F2006B9E34 /* LegqacyICloudFileController.swift */; };
 		D007019E2029EFDD006B9E34 /* ICloudResources.swift in Sources */ = {isa = PBXBuildFile; fileRef = D007019D2029EFDD006B9E34 /* ICloudResources.swift */; };
@@ -1169,6 +1170,7 @@
 		1863C2AA22563082003D5CB2 /* TabItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabItem.swift; sourceTree = "<group>"; };
 		1863C2B3225649FC003D5CB2 /* ConvenientFunctions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvenientFunctions.swift; sourceTree = "<group>"; };
 		1876A94122808766002722BA /* FolderInfoTitlePanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderInfoTitlePanel.swift; sourceTree = "<group>"; };
+		1876A94322816ED9002722BA /* FolderTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderTitleView.swift; sourceTree = "<group>"; };
 		D00219051DDD1C9E00BE708A /* ImageContainingNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageContainingNode.swift; sourceTree = "<group>"; };
 		D002A0D01E9B99F500A81812 /* SoftwareVideoSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SoftwareVideoSource.swift; sourceTree = "<group>"; };
 		D002A0D21E9BBE6700A81812 /* MultiplexedSoftwareVideoSourceManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultiplexedSoftwareVideoSourceManager.swift; sourceTree = "<group>"; };
@@ -2452,6 +2454,7 @@
 				1863BEDB2278453C000AFD41 /* FolderController.swift */,
 				180A45C922787E6200D92372 /* FolderControllerNode.swift */,
 				1876A94122808766002722BA /* FolderInfoTitlePanel.swift */,
+				1876A94322816ED9002722BA /* FolderTitleView.swift */,
 			);
 			name = Folder;
 			sourceTree = "<group>";
@@ -5972,6 +5975,7 @@
 				D0EC6E711EB9F58900EBF1C3 /* ThemeGalleryController.swift in Sources */,
 				FB73A51121FA5B0200032CFF /* ChatBotDescriptionMetaInfoView.swift in Sources */,
 				D0C0B5B11EE1C421000F4D2C /* ChatDateSelectionSheet.swift in Sources */,
+				1876A94422816ED9002722BA /* FolderTitleView.swift in Sources */,
 				D0EC6E721EB9F58900EBF1C3 /* ThemeGalleryItem.swift in Sources */,
 				D00781052084DFB100369A39 /* UrlEscaping.swift in Sources */,
 				FB32415B21D169C00023532E /* ChatBotsBotItem.swift in Sources */,

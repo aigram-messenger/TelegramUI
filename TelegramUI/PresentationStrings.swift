@@ -3654,6 +3654,27 @@ public final class PresentationStrings {
         }
         return "Убрать из папки"
     }
+
+    public var FolderTitlePanel_AddChat: String {
+        if self.baseLanguageCode == "en" {
+            return "Add Chat"
+        }
+        return "Добавить чат"
+    }
+
+    public var FolderTitlePanel_Edit: String {
+        if self.baseLanguageCode == "en" {
+            return "Edit"
+        }
+        return "Редактировать"
+    }
+
+    public var FolderTitlePanel_DeleteFolder: String {
+        if self.baseLanguageCode == "en" {
+            return "Delete"
+        }
+        return "Удалить"
+    }
         
     init(primaryComponent: PresentationStringsComponent, secondaryComponent: PresentationStringsComponent?) {
         self.primaryComponent = primaryComponent

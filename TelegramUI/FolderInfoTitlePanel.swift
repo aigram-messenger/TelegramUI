@@ -13,28 +13,28 @@ import Postbox
 import TelegramCore
 
 private enum ChatInfoTitleButton {
-    case addMemeber
+    case addChat
     case edit
     case delete
 
     func title(_ strings: PresentationStrings) -> String {
         switch self {
-            case .addMemeber: return strings.GroupInfo_AddParticipant
-            case .edit: return strings.Common_Edit
-            case .delete: return strings.Common_Delete
+            case .addChat: return strings.FolderTitlePanel_AddChat
+            case .edit: return strings.FolderTitlePanel_Edit
+            case .delete: return strings.FolderTitlePanel_DeleteFolder
         }
     }
 
     func icon(_ theme: PresentationTheme) -> UIImage? {
         switch self {
-            case .addMemeber: return PresentationResourcesItemList.addPersonIcon(theme)
+            case .addChat: return PresentationResourcesItemList.addPersonIcon(theme)
             case .edit: return PresentationResourcesRootController.navigationComposeIcon(theme)
-            case .delete: return PresentationResourcesItemList.addPersonIcon(theme)
+            case .delete: return deleteIcon(theme)
         }
     }
 }
 
-private let folderButtons: [ChatInfoTitleButton] = [.addMemeber, .edit, .delete]
+private let folderButtons: [ChatInfoTitleButton] = [.addChat, .edit, .delete]
 
 private let buttonFont = Font.regular(10.0)
 
@@ -141,7 +141,7 @@ final class FolderTitlePanelNode: ASDisplayNode {
         for (button, buttonNode) in self.buttons {
             if buttonNode === node {
                 switch button {
-                    case .addMemeber:
+                    case .addChat:
                         self.interfaceInteraction?.addMember()
                     case .edit:
                         self.interfaceInteraction?.edit()
@@ -152,4 +152,10 @@ final class FolderTitlePanelNode: ASDisplayNode {
             }
         }
     }
+}
+
+func deleteIcon(_ theme: PresentationTheme) -> UIImage? {
+    return theme.image(-1, { theme in
+        return generateTintedImage(image: UIImage(bundleImageName: "Folder Title Panel/TrashIcon"), color: theme.list.itemAccentColor)
+    })
 }
