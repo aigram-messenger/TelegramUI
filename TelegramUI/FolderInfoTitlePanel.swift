@@ -67,7 +67,8 @@ private final class ChatInfoTitlePanelButtonNode: HighlightableButtonNode {
 }
 
 final class FolderTitlePanelNode: ASDisplayNode {
-    private var interfaceInteraction: FolderInfoTitlePanelInteration?
+    var interfaceInteraction: FolderInfoTitlePanelInteration?
+
     private var theme: PresentationTheme?
 
     private let separatorNode: ASDisplayNode

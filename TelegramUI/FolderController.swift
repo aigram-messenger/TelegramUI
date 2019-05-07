@@ -123,10 +123,6 @@ final class FolderController: TelegramController, KeyShortcutResponder, UIViewCo
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title: self.presentationData.strings.Common_Back, style: .plain, target: nil, action: nil)
 
         self.chatTitleView.updateThemeAndStrings(theme: presentationData.theme, strings: presentationData.strings)
-//        self.navigationItem.rightBarButtonItems = [
-//            UIBarButtonItem(image: PresentationResourcesRootController.navigationComposeIcon(self.presentationData.theme), style: .plain, target: self, action: #selector(self.renamePressed)),
-//            UIBarButtonItem(image: PresentationResourcesRootController.navigationComposeIcon(self.presentationData.theme), style: .plain, target: self, action: #selector(self.addPressed)),
-//        ]
 
         self.statusBar.statusBarStyle = self.presentationData.theme.rootController.statusBar.style.style
         self.navigationBar?.updatePresentationData(NavigationBarPresentationData(presentationData: self.presentationData))
@@ -137,11 +133,21 @@ final class FolderController: TelegramController, KeyShortcutResponder, UIViewCo
     }
 
     override public func loadDisplayNode() {
+        let interaction = FolderInfoTitlePanelInteration(
+            addMember: { [weak self] in
+                self?.addPressed()
+            }, edit: { [weak self] in
+                self?.renamePressed()
+            }, delete: { [weak self] in
+                self?.deletePressed()
+            }
+        )
+
         self.displayNode = FolderControllerNode(account: self.account, groupId: self.groupId, controlsHistoryPreload: self.controlsHistoryPreload, presentationData: self.presentationData, controller: self,
         setupChatListModeHandler: { [weak self, folder] in
             self?.chatListModeSwitcher = $0
             $0(.filter(type: .folder(folder)))
-        })
+        }, titlePanelInteraction: interaction)
 
         self.chatListDisplayNode.navigationBar = self.navigationBar
 
@@ -426,7 +432,7 @@ final class FolderController: TelegramController, KeyShortcutResponder, UIViewCo
         }
     }
 
-    @objc func addPressed() {
+    private func addPressed() {
         let controller = ChatListSelectionController(account: account, options: [], filters: [.excludeSelf, .exclude(folder.peerIds.collect())], createsFolder: false)
         updateFolderActionDisposable.set(
             (controller.result |> deliverOnMainQueue)
@@ -447,7 +453,7 @@ final class FolderController: TelegramController, KeyShortcutResponder, UIViewCo
         (self.navigationController as? NavigationController)?.pushViewController(controller, animated: true)
     }
 
-    @objc func renamePressed() {
+    private func renamePressed() {
 //        AlertContentNode(viewBlock: <#T##ASDisplayNodeViewBlock##ASDisplayNodeViewBlock##() -> UIView#>, didLoad: <#T##ASDisplayNodeDidLoadBlock?##ASDisplayNodeDidLoadBlock?##(ASDisplayNode) -> Void#>)
 //        let some = AlertController(
 //            theme: .init(presentationTheme: presentationData.theme),
@@ -493,6 +499,11 @@ final class FolderController: TelegramController, KeyShortcutResponder, UIViewCo
 //            theme: .init(presentationTheme: presentationData.theme),
 //            contentNode: AlertContentNode.init(viewBlock: <#T##ASDisplayNodeViewBlock##ASDisplayNodeViewBlock##() -> UIView#>, didLoad: <#T##ASDisplayNodeDidLoadBlock?##ASDisplayNodeDidLoadBlock?##(ASDisplayNode) -> Void#>)
 //        )
+    }
+
+    private func deletePressed() {
+        account.postbox.delete(folderWithId: folder.id)
+        navigationController?.popViewController(animated: true)
     }
 
     func activateSearch() {
