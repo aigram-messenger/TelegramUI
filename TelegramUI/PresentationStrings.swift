@@ -3602,6 +3602,13 @@ public final class PresentationStrings {
         }
         return "Создать папку"
     }
+
+    public var ComposeFolder_AddChats: String {
+        if self.baseLanguageCode == "en" {
+            return "Add Chats"
+        }
+        return "Добавить чаты"
+    }
     
     public func BotPurchaseErrorDetails(_ title: String) -> String {
         if self.baseLanguageCode == "en" {

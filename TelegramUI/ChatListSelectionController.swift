@@ -131,9 +131,13 @@ final class ChatListSelectionController: ViewController {
     }
 
     private func updateTitle() {
-        self.titleView.title = CounterContollerTitle(title: self.presentationData.strings.ComposeFolder_CreateFolder, counter: "0")
-        let title = createsFolder ? self.presentationData.strings.Common_Next : self.presentationData.strings.Common_Done
-        let rightNavigationButton = UIBarButtonItem(title: title, style: .done, target: self, action: #selector(self.rightNavigationButtonPressed))
+        let title = createsFolder
+            ? self.presentationData.strings.ComposeFolder_CreateFolder
+            : self.presentationData.strings.ComposeFolder_AddChats
+        self.titleView.title = CounterContollerTitle(title: title, counter: "0")
+
+        let buttonText = createsFolder ? self.presentationData.strings.Common_Next : self.presentationData.strings.Common_Done
+        let rightNavigationButton = UIBarButtonItem(title: buttonText, style: .done, target: self, action: #selector(self.rightNavigationButtonPressed))
         self.rightNavigationButton = rightNavigationButton
         self.navigationItem.rightBarButtonItem = self.rightNavigationButton
         rightNavigationButton.isEnabled = false
