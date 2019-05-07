@@ -464,8 +464,8 @@ final class FolderController: TelegramController, KeyShortcutResponder, UIViewCo
         let alert = _standardTextAlertController(
             theme: .init(presentationTheme: presentationData.theme),
             title: nil,
-            text: "Rename folder",
-            inputPlaceholder: "New name",
+            text: presentationData.strings.Folder_RenameFolder,
+            inputPlaceholder: presentationData.strings.Folder_NewName,
             renameAction: { [weak self] in
                 guard let self = self else { return }
                 guard !$0.isEmpty else { return self.showEmptyNameError() }
@@ -485,9 +485,9 @@ final class FolderController: TelegramController, KeyShortcutResponder, UIViewCo
         let alert = standardTextAlertController(
             theme: .init(presentationTheme: presentationData.theme),
             title: nil,
-            text: "Folder name cannot be empty.",
+            text: presentationData.strings.Folder_EmptyError,
             actions: [
-                TextAlertAction.init(type: .defaultAction, title: "Ok", action: {})
+                TextAlertAction.init(type: .defaultAction, title: presentationData.strings.Common_OK, action: {})
             ]
         )
 
@@ -704,10 +704,10 @@ final class FolderController: TelegramController, KeyShortcutResponder, UIViewCo
         var renameImpl: (() -> Void)?
 
         let actions = [
-            TextAlertAction.init(type: .defaultAction, title: "Confirm", action: {
+            TextAlertAction.init(type: .defaultAction, title: presentationData.strings.Folder_Confirm, action: {
                 renameImpl?()
             }),
-            TextAlertAction.init(type: .genericAction, title: "Cancel", action: { })
+            TextAlertAction.init(type: .genericAction, title: presentationData.strings.Common_Cancel, action: { })
         ]
 
         let contentNode = _TextAlertContentNode(

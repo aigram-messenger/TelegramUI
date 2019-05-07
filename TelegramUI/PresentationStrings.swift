@@ -3682,7 +3682,35 @@ public final class PresentationStrings {
         }
         return "Удалить"
     }
-        
+
+    public var Folder_Confirm: String {
+        if self.baseLanguageCode == "en" {
+            return "Confirm"
+        }
+        return "Сохранить"
+    }
+
+    public var Folder_EmptyError: String {
+        if self.baseLanguageCode == "en" {
+            return "Folder name cannot be empty."
+        }
+        return "Имя папки не может быть пустым."
+    }
+
+    public var Folder_NewName: String {
+        if self.baseLanguageCode == "en" {
+            return "New name"
+        }
+        return "Новое имя папки"
+    }
+
+    public var Folder_RenameFolder: String {
+        if self.baseLanguageCode == "en" {
+            return "Rename folder"
+        }
+        return "Переименовать папку"
+    }
+
     init(primaryComponent: PresentationStringsComponent, secondaryComponent: PresentationStringsComponent?) {
         self.primaryComponent = primaryComponent
         self.secondaryComponent = secondaryComponent
