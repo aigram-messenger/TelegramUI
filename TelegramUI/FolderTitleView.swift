@@ -268,14 +268,10 @@ final class _ChatTitleView: UIView, NavigationBarTitleView {
 //    }
 
     var folder: Folder? {
-        didSet {
-            guard let folder = folder else { return }
-            let string = NSAttributedString(string: folder.name, font: Font.medium(17.0), textColor: self.theme.rootController.navigationBar.primaryTextColor)
-            titleNode.attributedText = string
-        }
+        didSet { updateTitle() }
     }
 
-    private func updateStatus() {
+    func updateStatus() {
         var shouldUpdateLayout = false
         defer {
             if shouldUpdateLayout {
@@ -413,12 +409,12 @@ final class _ChatTitleView: UIView, NavigationBarTitleView {
 
         guard let folder = folder else { return }
 
-        let countStr = strings.Conversation_StatusMembers(Int32(folder.peerIds.count))
-        let string = NSAttributedString(string: countStr, font: Font.regular(13.0), textColor: self.theme.rootController.navigationBar.secondaryTextColor)
-        if infoNode.attributedText.map({ !$0.isEqual(to: string) }) ?? true {
-            infoNode.attributedText = string
-            shouldUpdateLayout = true
-        }
+//        let countStr = strings.Conversation_StatusMembers(Int32(folder.peerIds.count))
+//        let string = NSAttributedString(string: countStr, font: Font.regular(13.0), textColor: self.theme.rootController.navigationBar.secondaryTextColor)
+//        if infoNode.attributedText.map({ !$0.isEqual(to: string) }) ?? true {
+//            infoNode.attributedText = string
+//            shouldUpdateLayout = true
+//        }
     }
 
     init(account: Account, theme: PresentationTheme, strings: PresentationStrings, dateTimeFormat: PresentationDateTimeFormat) {
@@ -595,6 +591,12 @@ final class _ChatTitleView: UIView, NavigationBarTitleView {
         if let pressed = self.pressed {
             pressed()
         }
+    }
+
+    func updateTitle() {
+        guard let folder = folder else { return }
+        let string = NSAttributedString(string: folder.name, font: Font.medium(17.0), textColor: self.theme.rootController.navigationBar.primaryTextColor)
+        titleNode.attributedText = string
     }
 
     func animateLayoutTransition() {

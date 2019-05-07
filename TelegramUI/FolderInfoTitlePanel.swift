@@ -27,7 +27,7 @@ private enum ChatInfoTitleButton {
 
     func icon(_ theme: PresentationTheme) -> UIImage? {
         switch self {
-            case .addChat: return PresentationResourcesItemList.addPersonIcon(theme)
+            case .addChat: return addChatIcon(theme)
             case .edit: return PresentationResourcesRootController.navigationComposeIcon(theme)
             case .delete: return deleteIcon(theme)
         }
@@ -158,5 +158,11 @@ final class FolderTitlePanelNode: ASDisplayNode {
 func deleteIcon(_ theme: PresentationTheme) -> UIImage? {
     return theme.image(-1, { theme in
         return generateTintedImage(image: UIImage(bundleImageName: "Folder Title Panel/TrashIcon"), color: theme.list.itemAccentColor)
+    })
+}
+
+func addChatIcon(_ theme: PresentationTheme) -> UIImage? {
+    return theme.image(-2, { theme in
+        return generateTintedImage(image: UIImage(bundleImageName: "Folder Title Panel/AddMemberIcon"), color: theme.list.itemAccentColor)
     })
 }

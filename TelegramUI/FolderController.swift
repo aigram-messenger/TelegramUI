@@ -132,12 +132,18 @@ final class FolderController: TelegramController, KeyShortcutResponder, UIViewCo
         }
     }
 
+    private func hideTitlePanel(animated: Bool = false) {
+        chatListDisplayNode.isTitlePanelShown = false
+        requestLayout(transition: animated ? .immediate : .animated(duration: 0.2, curve: .spring))
+    }
+
     override public func loadDisplayNode() {
         let interaction = FolderInfoTitlePanelInteration(
             addMember: { [weak self] in
                 self?.addPressed()
             }, edit: { [weak self] in
                 self?.renamePressed()
+                self?.hideTitlePanel(animated: true)
             }, delete: { [weak self] in
                 self?.deletePressed()
             }
@@ -389,6 +395,7 @@ final class FolderController: TelegramController, KeyShortcutResponder, UIViewCo
             self.deactivateSearch(animated: false)
         }
 
+        self.chatListDisplayNode.isTitlePanelShown = false
         self.chatListDisplayNode.chatListNode.clearHighlightAnimated(true)
     }
 
@@ -454,51 +461,37 @@ final class FolderController: TelegramController, KeyShortcutResponder, UIViewCo
     }
 
     private func renamePressed() {
-//        AlertContentNode(viewBlock: <#T##ASDisplayNodeViewBlock##ASDisplayNodeViewBlock##() -> UIView#>, didLoad: <#T##ASDisplayNodeDidLoadBlock?##ASDisplayNodeDidLoadBlock?##(ASDisplayNode) -> Void#>)
-//        let some = AlertController(
-//            theme: .init(presentationTheme: presentationData.theme),
-//            contentNode: TextAlertContentNode(
-//                theme: .init(presentationTheme: presentationData.theme),
-//                title: NSAttributedString(string: "Wat??"),
-//                text: NSAttributedString(string: "Text"),
-//                actions: [
-//                    TextAlertAction.init(type: .destructiveAction, title: "Confirm", action: { }),
-//                    TextAlertAction.init(type: .defaultAction, title: "Cancel", action: { })
-//                ],
-//                actionLayout: .horizontal)
-//        )
-
-        let some = _standardTextAlertController(
+        let alert = _standardTextAlertController(
             theme: .init(presentationTheme: presentationData.theme),
             title: nil,
             text: "Rename folder",
             inputPlaceholder: "New name",
-            actions:  [
-                TextAlertAction.init(type: .defaultAction, title: "Confirm", action: { [weak self] in
-                    guard let self = self else { return }
-//                    self.account.postbox.rename(folder: self.folder, to: "")
-                }),
-                TextAlertAction.init(type: .genericAction, title: "Cancel", action: { })
-            ],
+            renameAction: { [weak self] in
+                guard let self = self else { return }
+                guard !$0.isEmpty else { return self.showEmptyNameError() }
+
+                self.account.postbox.rename(folder: self.folder, to: $0)
+                self.chatTitleView.updateStatus()
+            },
             keyboardColor: presentationData.theme.chatList.searchBarKeyboardColor,
-            placeholderColor: presentationData.theme.actionSheet.inputPlaceholderColor
+            placeholderColor: presentationData.theme.chat.inputPanel.inputPlaceholderColor,
+            primaryTextColor: presentationData.theme.chat.inputPanel.primaryTextColor
         )
 
-//        let some = standardTextAlertController(
-//            theme: .init(presentationTheme: presentationData.theme),
-//            title: "Wat??",
-//            text: "Text",
-//            actions: [TextAlertAction.init(type: .defaultAction, title: "action", action: { })]
-//        )
+        present(alert, in: .window(.root))
+    }
 
-        present(some, in: .window(.root))
+    private func showEmptyNameError() {
+        let alert = standardTextAlertController(
+            theme: .init(presentationTheme: presentationData.theme),
+            title: nil,
+            text: "Folder name cannot be empty.",
+            actions: [
+                TextAlertAction.init(type: .defaultAction, title: "Ok", action: {})
+            ]
+        )
 
-
-
-//        AlertController(
-//            theme: .init(presentationTheme: presentationData.theme),
-//            contentNode: AlertContentNode.init(viewBlock: <#T##ASDisplayNodeViewBlock##ASDisplayNodeViewBlock##() -> UIView#>, didLoad: <#T##ASDisplayNodeDidLoadBlock?##ASDisplayNodeDidLoadBlock?##(ASDisplayNode) -> Void#>)
-//        )
+        present(alert, in: .window(.root))
     }
 
     private func deletePressed() {
@@ -696,6 +689,60 @@ final class FolderController: TelegramController, KeyShortcutResponder, UIViewCo
 //            KeyShortcut(input: UIKeyInputEscape, modifiers: [], action: toggleSearch)
         ]
     }
+
+    private func _standardTextAlertController(
+        theme: AlertControllerTheme,
+        title: String?,
+        text: String,
+        inputPlaceholder: String,
+        renameAction: @escaping (String) -> Void,
+        keyboardColor: PresentationThemeKeyboardColor,
+        placeholderColor: UIColor,
+        primaryTextColor: UIColor
+    ) -> AlertController {
+        var dismissImpl: (() -> Void)?
+        var renameImpl: (() -> Void)?
+
+        let actions = [
+            TextAlertAction.init(type: .defaultAction, title: "Confirm", action: {
+                renameImpl?()
+            }),
+            TextAlertAction.init(type: .genericAction, title: "Cancel", action: { })
+        ]
+
+        let contentNode = _TextAlertContentNode(
+            theme: theme,
+            title: title != nil ? NSAttributedString(string: title!, font: Font.medium(17.0), textColor: theme.primaryColor, paragraphAlignment: .center) : nil,
+            text: NSAttributedString(string: text, font: title == nil ? Font.semibold(17.0) : Font.regular(13.0),
+                                     textColor: theme.primaryColor, paragraphAlignment: .center),
+            inputPlaceholder: inputPlaceholder,
+            actions: actions.map { action in
+                return TextAlertAction(type: action.type, title: action.title, action: {
+                    action.action()
+                    dismissImpl?()
+                })
+            },
+            actionLayout: .horizontal,
+            keyboardColor: keyboardColor,
+            placeholderColor: placeholderColor,
+            primaryTextColor: primaryTextColor
+        )
+
+        let controller = AlertController(
+            theme: theme,
+            contentNode: contentNode
+        )
+
+        renameImpl = { [weak contentNode] in
+            renameAction(contentNode?.name ?? "")
+        }
+
+        dismissImpl = { [weak controller] in
+            controller?.dismissAnimated()
+        }
+
+        return controller
+    }
 }
 
 // MARK: -
@@ -881,6 +928,8 @@ public final class _TextAlertContentNode: AlertContentNode {
     private let actionNodes: [TextAlertContentActionNode]
     private let actionVerticalSeparators: [ASDisplayNode]
 
+    var name: String?
+
     public var textAttributeAction: (NSAttributedStringKey, (Any) -> Void)? {
         didSet {
             if let (attribute, textAttributeAction) = self.textAttributeAction {
@@ -904,7 +953,7 @@ public final class _TextAlertContentNode: AlertContentNode {
         }
     }
 
-    public init(theme: AlertControllerTheme, title: NSAttributedString?, text: NSAttributedString, inputPlaceholder: String, actions: [TextAlertAction], actionLayout: TextAlertContentActionLayout, keyboardColor: PresentationThemeKeyboardColor, placeholderColor: UIColor) {
+    public init(theme: AlertControllerTheme, title: NSAttributedString?, text: NSAttributedString, inputPlaceholder: String, actions: [TextAlertAction], actionLayout: TextAlertContentActionLayout, keyboardColor: PresentationThemeKeyboardColor, placeholderColor: UIColor, primaryTextColor: UIColor) {
         self.theme = theme
         self.actionLayout = actionLayout
         if let title = title {
@@ -933,11 +982,14 @@ public final class _TextAlertContentNode: AlertContentNode {
         self.inputNode = TextFieldNode()
         self.inputNode.textField.placeholder = inputPlaceholder
         self.inputNode.textField.font = Font.regular(15.0)
-        self.inputNode.textField.textColor = theme.accentColor
+        self.inputNode.textField.textColor = primaryTextColor
+        self.inputNode.textField.tintColor = theme.accentColor
         self.inputNode.textField.autocorrectionType = .no
         self.inputNode.textField.returnKeyType = .done
+        self.inputNode.textField.textAlignment = .natural
+//        self.inputNode.textField.contentInsets = .szero
         self.inputNode.textField.attributedPlaceholder = NSAttributedString(string: inputPlaceholder, font: Font.regular(15.0), textColor: placeholderColor)
-        self.inputNode.textField.borderStyle = .roundedRect
+//        self.inputNode.textField.borderStyle = .roundedRect
         switch keyboardColor {
             case .light:
                 self.inputNode.textField.keyboardAppearance = .default
@@ -945,11 +997,30 @@ public final class _TextAlertContentNode: AlertContentNode {
                 self.inputNode.textField.keyboardAppearance = .dark
         }
 
-//        inputNode.font = Font.regular(17.0)
-//        inputNode.attributedText = NSAttributedString(string: firstName, font: Font.regular(17.0), textColor: item.theme.list.itemPrimaryTextColor)
-//        strongSelf.inputFirstField = inputFirstField
-//        strongSelf.view.addSubview(inputFirstField)
-//        inputFirstField.addTarget(self, action: #selector(strongSelf.textFieldDidChange(_:)), for: .editingChanged)
+//        self.firstNameField = TextFieldNode()
+//        self.firstNameField.textField.font = Font.regular(20.0)
+//        self.firstNameField.textField.textColor = self.theme.primaryColor
+//        self.firstNameField.textField.textAlignment = .natural
+//        self.firstNameField.textField.returnKeyType = .next
+//        self.firstNameField.textField.attributedPlaceholder = NSAttributedString(string: self.strings.UserInfo_FirstNamePlaceholder, font: self.firstNameField.textField.font, textColor: self.theme.textPlaceholderColor)
+//        self.firstNameField.textField.autocapitalizationType = .words
+//        self.firstNameField.textField.autocorrectionType = .no
+//        if #available(iOSApplicationExtension 10.0, *) {
+//            self.firstNameField.textField.textContentType = .givenName
+//        }
+//
+//        self.lastNameField = TextFieldNode()
+//        self.lastNameField.textField.font = Font.regular(20.0)
+//        self.lastNameField.textField.textColor = self.theme.primaryColor
+//        self.lastNameField.textField.textAlignment = .natural
+//        self.lastNameField.textField.returnKeyType = .done
+//        self.lastNameField.textField.attributedPlaceholder = NSAttributedString(string: strings.UserInfo_LastNamePlaceholder, font: self.lastNameField.textField.font, textColor: self.theme.textPlaceholderColor)
+//        self.lastNameField.textField.autocapitalizationType = .words
+//        self.lastNameField.textField.autocorrectionType = .no
+//        if #available(iOSApplicationExtension 10.0, *) {
+//            self.lastNameField.textField.textContentType = .familyName
+//        }
+
 
         self.actionNodesSeparator = ASDisplayNode()
         self.actionNodesSeparator.isLayerBacked = true
@@ -971,6 +1042,9 @@ public final class _TextAlertContentNode: AlertContentNode {
         self.actionVerticalSeparators = actionVerticalSeparators
 
         super.init()
+
+        self.inputNode.textField.delegate = self
+        self.inputNode.textField.addTarget(self, action: #selector(textDidChange), for: .editingChanged)
 
         if let titleNode = self.titleNode {
             self.addSubnode(titleNode)
@@ -997,7 +1071,7 @@ public final class _TextAlertContentNode: AlertContentNode {
             titleSize = titleNode.measure(CGSize(width: size.width - insets.left - insets.right, height: CGFloat.greatestFiniteMagnitude))
         }
         let textSize = self.textNode.updateLayout(CGSize(width: size.width - insets.left - insets.right, height: CGFloat.greatestFiniteMagnitude))
-        let inputSize = CGSize(width: textSize.width + 10, height: 44.0)
+        let inputSize = CGSize(width: textSize.width, height: 44.0)
 
         let actionButtonHeight: CGFloat = 44.0
 
@@ -1105,18 +1179,27 @@ public final class _TextAlertContentNode: AlertContentNode {
 
         return resultSize
     }
+
+    @objc
+    private func textDidChange() {
+        name = inputNode.textField.text
+    }
+
 }
 
-public func _standardTextAlertController(theme: AlertControllerTheme, title: String?, text: String, inputPlaceholder: String, actions: [TextAlertAction], actionLayout: TextAlertContentActionLayout = .horizontal, keyboardColor: PresentationThemeKeyboardColor, placeholderColor: UIColor) -> AlertController {
-    var dismissImpl: (() -> Void)?
-    let controller = AlertController(theme: theme, contentNode: _TextAlertContentNode(theme: theme, title: title != nil ? NSAttributedString(string: title!, font: Font.medium(17.0), textColor: theme.primaryColor, paragraphAlignment: .center) : nil, text: NSAttributedString(string: text, font: title == nil ? Font.semibold(17.0) : Font.regular(13.0), textColor: theme.primaryColor, paragraphAlignment: .center), inputPlaceholder: inputPlaceholder, actions: actions.map { action in
-        return TextAlertAction(type: action.type, title: action.title, action: {
-            dismissImpl?()
-            action.action()
-        })
-    }, actionLayout: actionLayout, keyboardColor: keyboardColor, placeholderColor: placeholderColor))
-    dismissImpl = { [weak controller] in
-        controller?.dismissAnimated()
+extension _TextAlertContentNode: UITextFieldDelegate {
+
+    public func textField(
+        _ textField: UITextField,
+        shouldChangeCharactersIn range: NSRange,
+        replacementString string: String
+    ) -> Bool {
+        return range.location + range.length <= 24
     }
-    return controller
+
+    public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        self.actionNodes.first?.action.action()
+        return true
+    }
+
 }
