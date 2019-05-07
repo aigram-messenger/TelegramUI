@@ -157,12 +157,12 @@ final class FolderTitlePanelNode: ASDisplayNode {
 
 func deleteIcon(_ theme: PresentationTheme) -> UIImage? {
     return theme.image(-1, { theme in
-        return generateTintedImage(image: UIImage(bundleImageName: "Folder Title Panel/TrashIcon"), color: theme.list.itemAccentColor)
+        return generateTintedImage(image: UIImage(bundleImageName: "Folder Title Panel/TrashIcon"), color: theme.rootController.navigationBar.accentTextColor)
     })
 }
 
 func addChatIcon(_ theme: PresentationTheme) -> UIImage? {
     return theme.image(-2, { theme in
-        return generateTintedImage(image: UIImage(bundleImageName: "Folder Title Panel/AddMemberIcon"), color: theme.list.itemAccentColor)
+        return generateTintedImage(image: UIImage(bundleImageName: "Folder Title Panel/AddMemberIcon"), color: theme.rootController.navigationBar.accentTextColor)
     })
 }

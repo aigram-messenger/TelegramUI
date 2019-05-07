@@ -471,7 +471,7 @@ final class FolderController: TelegramController, KeyShortcutResponder, UIViewCo
                 guard !$0.isEmpty else { return self.showEmptyNameError() }
 
                 self.account.postbox.rename(folder: self.folder, to: $0)
-                self.chatTitleView.updateStatus()
+                self.chatTitleView.updateTitle()
             },
             keyboardColor: presentationData.theme.chatList.searchBarKeyboardColor,
             placeholderColor: presentationData.theme.chat.inputPanel.inputPlaceholderColor,
