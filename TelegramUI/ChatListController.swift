@@ -63,11 +63,16 @@ public class ChatListController: TelegramController, KeyShortcutResponder, UIVie
     private var chatListMode: ChatListMode = .standard {
         didSet {
             chatListModeSwitcher?(chatListMode)
-            if case .folders = chatListMode {
-                chatListDisplayNode.isFoldersList = true
-            } else {
-                chatListDisplayNode.isFoldersList = false
+
+            switch chatListMode {
+                case .folders:
+                    chatListDisplayNode.placeholderType = .folders
+                case .unread:
+                    chatListDisplayNode.placeholderType = .unread
+                default:
+                    chatListDisplayNode.placeholderType = .standard
             }
+
             chatListDisplayNode.updateThemeAndStrings(
                 theme: presentationData.theme,
                 strings: presentationData.strings,

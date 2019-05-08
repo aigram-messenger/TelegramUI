@@ -3655,6 +3655,21 @@ public final class PresentationStrings {
         return "Чтобы создать папку, нажмите на иконку карандаша в правом верхнем углу."
     }
 
+    public var DialogList_NoUnreadTitle: String {
+        if self.baseLanguageCode == "en" {
+            return "You have no unread chats yet"
+        }
+        return "У вас пока нет непрочитанных чатов."
+    }
+
+    public var DialogList_NoUnreadText: String {
+        if self.baseLanguageCode == "en" {
+            return "This tab will display all chats with unread messages."
+        }
+        return "На данной вкладке будут отображаться чаты с непрочитанными сообщениями."
+    }
+
+
     public var Folder_RemovePeer: String {
         if self.baseLanguageCode == "en" {
             return "Remove from folder"

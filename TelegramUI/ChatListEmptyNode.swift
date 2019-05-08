@@ -2,6 +2,26 @@ import Foundation
 import AsyncDisplayKit
 import Display
 
+enum PlaceholderType {
+    case standard, folders, unread
+
+    func title(_ strings: PresentationStrings) -> String {
+        switch self {
+            case .standard: return strings.DialogList_NoMessagesTitle
+            case .folders: return strings.DialogList_NoFoldersTitle
+            case .unread: return strings.DialogList_NoUnreadTitle
+        }
+    }
+
+    func text(_ strings: PresentationStrings) -> String {
+        switch self {
+            case .standard: return strings.DialogList_NoMessagesText
+            case .folders: return strings.DialogList_NoFoldersText
+            case .unread: return strings.DialogList_NoUnreadText
+        }
+    }
+}
+
 final class ChatListEmptyNode: ASDisplayNode {
     private let textNode: ImmediateTextNode
     
@@ -9,11 +29,11 @@ final class ChatListEmptyNode: ASDisplayNode {
 
     // MARK: -
 
-    var isFoldersList: Bool
+    var placeholderType: PlaceholderType
 
     // MARK: -
     
-    init(theme: PresentationTheme, strings: PresentationStrings, isFoldersList: Bool = false) {
+    init(theme: PresentationTheme, strings: PresentationStrings, placeholderType: PlaceholderType = .standard) {
         self.textNode = ImmediateTextNode()
         self.textNode.displaysAsynchronously = false
         self.textNode.maximumNumberOfLines = 0
@@ -21,7 +41,7 @@ final class ChatListEmptyNode: ASDisplayNode {
         self.textNode.textAlignment = .center
         self.textNode.lineSpacing = 0.1
 
-        self.isFoldersList = isFoldersList
+        self.placeholderType = placeholderType
 
         super.init()
         
@@ -32,8 +52,8 @@ final class ChatListEmptyNode: ASDisplayNode {
     
     func updateThemeAndStrings(theme: PresentationTheme, strings: PresentationStrings) {
         let string = NSMutableAttributedString()
-        string.append(NSAttributedString(string: (isFoldersList ? strings.DialogList_NoFoldersTitle : strings.DialogList_NoMessagesTitle) + "\n", font: Font.medium(17.0), textColor: theme.list.itemSecondaryTextColor, paragraphAlignment: .center))
-        string.append(NSAttributedString(string: isFoldersList ? strings.DialogList_NoFoldersText : strings.DialogList_NoMessagesText, font: Font.regular(16.0), textColor: theme.list.itemSecondaryTextColor, paragraphAlignment: .center))
+        string.append(NSAttributedString(string: placeholderType.title(strings) + "\n", font: Font.medium(17.0), textColor: theme.list.itemSecondaryTextColor, paragraphAlignment: .center))
+        string.append(NSAttributedString(string: placeholderType.text(strings), font: Font.regular(16.0), textColor: theme.list.itemSecondaryTextColor, paragraphAlignment: .center))
         self.textNode.attributedText = string
         
         if let size = self.validLayout {
