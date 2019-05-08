@@ -8,7 +8,7 @@
 
 enum TabItem: UInt, CaseIterable {
     case general
-//    case unread
+    case unread
     case groups
     case peers
     case channels
