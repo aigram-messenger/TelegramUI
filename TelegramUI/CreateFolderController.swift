@@ -48,13 +48,12 @@ private enum CreateFolderEntryTag: ItemListItemTag {
 
 private enum CreateFolderEntry: ItemListNodeEntry {
     case groupInfo(PresentationTheme, PresentationStrings, PresentationDateTimeFormat, Peer?, ItemListAvatarAndNameInfoItemState, ItemListAvatarAndNameInfoItemUpdatingAvatar?)
-//    case setProfilePhoto(PresentationTheme, String)
 
     case member(Int32, PresentationTheme, PresentationStrings, PresentationDateTimeFormat, Peer, PeerPresence?)
 
     var section: ItemListSectionId {
         switch self {
-        case .groupInfo/*, .setProfilePhoto*/:
+        case .groupInfo:
             return CreateFolderSection.info.rawValue
         case .member:
             return CreateFolderSection.members.rawValue
@@ -65,8 +64,6 @@ private enum CreateFolderEntry: ItemListNodeEntry {
         switch self {
         case .groupInfo:
             return 0
-//        case .setProfilePhoto:
-//            return 1
         case let .member(index, _, _, _, _, _):
             return 1 + index
         }
@@ -102,12 +99,6 @@ private enum CreateFolderEntry: ItemListNodeEntry {
             } else {
                 return false
             }
-//        case let .setProfilePhoto(lhsTheme, lhsText):
-//            if case let .setProfilePhoto(rhsTheme, rhsText) = rhs, lhsTheme === rhsTheme, lhsText == rhsText {
-//                return true
-//            } else {
-//                return false
-//            }
         case let .member(lhsIndex, lhsTheme, lhsStrings, lhsDateTimeFormat, lhsPeer, lhsPresence):
             if case let .member(rhsIndex, rhsTheme, rhsStrings, rhsDateTimeFormat, rhsPeer, rhsPresence) = rhs {
                 if lhsIndex != rhsIndex {
@@ -150,10 +141,6 @@ private enum CreateFolderEntry: ItemListNodeEntry {
                 arguments.updateEditingName(editingName)
             }, avatarTapped: {
             }, updatingImage: avatar, tag: CreateFolderEntryTag.info)
-//        case let .setProfilePhoto(theme, text):
-//            return ItemListActionItem(theme: theme, title: text, kind: .generic, alignment: .natural, sectionId: ItemListSectionId(self.section), style: .blocks, action: {
-//                arguments.changeProfilePhoto()
-//            })
         case let .member(_, theme, strings, dateTimeFormat, peer, _):
             return ItemListPeerItem(theme: theme, strings: strings, dateTimeFormat: dateTimeFormat, account: arguments.account, peer: peer, presence: .none, text: .none, label: .none, editing: ItemListPeerItemEditing(editable: false, editing: false, revealed: false), switchValue: nil, enabled: true, sectionId: self.section, action: nil, setPeerIdWithRevealedOptions: { _, _ in }, removePeer: { _ in })
         }
@@ -231,26 +218,24 @@ public func createFolderController(account: Account, peerIds: [PeerId] = []) -> 
         statePromise.set(stateValue.modify { f($0) })
     }
 
-    var replaceControllerImpl: ((ViewController) -> Void)?
-    var presentControllerImpl: ((ViewController, Any?) -> Void)?
     var dismissControllerImpl: (() -> Void)?
     var endEditingImpl: (() -> Void)?
 
     let actionsDisposable = DisposableSet()
 
-//    let currentAvatarMixin = Atomic<TGMediaAvatarMenuMixin?>(value: nil)
-//
-//    let uploadedAvatar = Promise<UploadedPeerPhotoData>()
-
     let arguments = CreateFolderArguments(account: account, updateEditingName: { editingName in
+        guard case let .title(title, type) = editingName, type == .folder else { return }
         updateState { current in
             var current = current
-            current.editingName = editingName
+            current.editingName = .title(
+                title: title.trimmingCharacters(in: .whitespacesAndNewlines),
+                type: .folder
+            )
             return current
         }
     }, done: {
         let (creating, title) = stateValue.with { state -> (Bool, String) in
-            return (state.creating, state.editingName.composedTitle)
+            return (state.creating, state.editingName.composedTitle.trimmingCharacters(in: .whitespacesAndNewlines))
         }
 
         if !creating && !title.isEmpty {
@@ -261,78 +246,11 @@ public func createFolderController(account: Account, peerIds: [PeerId] = []) -> 
             }
             endEditingImpl?()
             dismissControllerImpl?()
-            actionsDisposable.add((createFolder(account: account, title: title, peerIds: peerIds) |> deliverOnMainQueue |> afterDisposed {
-//                Queue.mainQueue().async {
-//                    updateState { current in
-//                        var current = current
-//                        current.creating = false
-//                        return current
-//                    }
-//                }
-                }).start(next: { peerId in
-//                    if let peerId = peerId {
-//                        let updatingAvatar = stateValue.with {
-//                            return $0.avatar
-//                        }
-//                        if let _ = updatingAvatar {
-//                            let _ = updatePeerPhoto(postbox: account.postbox, network: account.network, stateManager: account.stateManager, accountPeerId: account.peerId, peerId: peerId, photo: uploadedAvatar.get()).start()
-//                        }
-//                        let controller = ChatController(account: account, chatLocation: .peer(peerId))
-//                        replaceControllerImpl?(controller)
-//                    }
-                }))
+            actionsDisposable.add(
+                (createFolder(account: account, title: title, peerIds: peerIds) |> deliverOnMainQueue).start()
+            )
         }
     }, changeProfilePhoto: {
-//        let presentationData = account.telegramApplicationContext.currentPresentationData.with { $0 }
-//
-//        let legacyController = LegacyController(presentation: .custom, theme: presentationData.theme)
-//        legacyController.statusBar.statusBarStyle = .Ignore
-//
-//        let emptyController = LegacyEmptyController(context: legacyController.context)!
-//        let navigationController = makeLegacyNavigationController(rootController: emptyController)
-//        navigationController.setNavigationBarHidden(true, animated: false)
-//        navigationController.navigationBar.transform = CGAffineTransform(translationX: -1000.0, y: 0.0)
-//
-//        legacyController.bind(controller: navigationController)
-//
-//        endEditingImpl?()
-//        presentControllerImpl?(legacyController, nil)
-//
-//        let mixin = TGMediaAvatarMenuMixin(context: legacyController.context, parentController: emptyController, hasDeleteButton: stateValue.with({ $0.avatar }) != nil, personalPhoto: false, saveEditedPhotos: false, saveCapturedMedia: false)!
-//        let _ = currentAvatarMixin.swap(mixin)
-//        mixin.didFinishWithImage = { image in
-//            if let image = image, let data = UIImageJPEGRepresentation(image, 0.6) {
-//                let resource = LocalFileMediaResource(fileId: arc4random64())
-//                account.postbox.mediaBox.storeResourceData(resource.id, data: data)
-//                let representation = TelegramMediaImageRepresentation(dimensions: CGSize(width: 640.0, height: 640.0), resource: resource)
-//                uploadedAvatar.set(uploadedPeerPhoto(postbox: account.postbox, network: account.network, resource: resource))
-//                updateState { current in
-//                    var current = current
-//                    current.avatar = .image(representation)
-//                    return current
-//                }
-//            }
-//        }
-//        if stateValue.with({ $0.avatar }) != nil {
-//            mixin.didFinishWithDelete = {
-//                updateState { current in
-//                    var current = current
-//                    current.avatar = nil
-//                    return current
-//                }
-//                uploadedAvatar.set(.never())
-//            }
-//        }
-//        mixin.didDismiss = { [weak legacyController] in
-//            let _ = currentAvatarMixin.swap(nil)
-//            legacyController?.dismiss()
-//        }
-//        let menuController = mixin.present()
-//        if let menuController = menuController {
-//            menuController.customRemoveFromParentViewController = { [weak legacyController] in
-//                legacyController?.dismiss()
-//            }
-//        }
     })
 
     let signal = combineLatest((account.applicationContext as! TelegramApplicationContext).presentationData, statePromise.get(), account.postbox.multiplePeersView(peerIds))
@@ -357,12 +275,7 @@ public func createFolderController(account: Account, peerIds: [PeerId] = []) -> 
     }
 
     let controller = ItemListController(account: account, state: signal)
-    replaceControllerImpl = { [weak controller] value in
-        (controller?.navigationController as? NavigationController)?.replaceAllButRootController(value, animated: true)
-    }
-    presentControllerImpl = { [weak controller] c, a in
-        controller?.present(c, in: .window(.root), with: a)
-    }
+
     dismissControllerImpl = { [weak controller] in
         (controller?.navigationController as? NavigationController)?.popToRoot(animated: true)
     }
