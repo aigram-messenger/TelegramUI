@@ -752,6 +752,10 @@ public class ChatListController: TelegramController, KeyShortcutResponder, UIVie
     }
     
     @objc func composePressed() {
+        if case .unread = chatListMode {
+            return account.postbox.readAllIncomingMessages()
+        }
+
         let controller: ViewController
         switch chatListMode {
             case .folders:
