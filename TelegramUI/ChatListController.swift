@@ -982,6 +982,8 @@ private extension ChatListController {
                     return .general
                 case .unread:
                     return .unread
+                case .folders:
+                    return .folders
                 }
             }
 
