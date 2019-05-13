@@ -25,6 +25,8 @@ extension Peer {
                 return group.title
             case let channel as TelegramChannel:
                 return channel.title
+            case let folder as Folder:
+                return folder.name
             default:
                 return ""
         }

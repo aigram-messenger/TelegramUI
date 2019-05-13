@@ -3581,6 +3581,34 @@ public final class PresentationStrings {
         }
         return "Ошибка покупки"
     }
+
+    public var ComposeFolder_NewFolder: String {
+        if self.baseLanguageCode == "en" {
+            return "New Folder"
+        }
+        return "Новая папка"
+    }
+
+    public var ComposeFolder_FolderName: String {
+        if self.baseLanguageCode == "en" {
+            return "Folder Name"
+        }
+        return "Название папки"
+    }
+
+    public var ComposeFolder_CreateFolder: String {
+        if self.baseLanguageCode == "en" {
+            return "Create Folder"
+        }
+        return "Создать папку"
+    }
+
+    public var ComposeFolder_AddChats: String {
+        if self.baseLanguageCode == "en" {
+            return "Add Chats"
+        }
+        return "Добавить чаты"
+    }
     
     public func BotPurchaseErrorDetails(_ title: String) -> String {
         if self.baseLanguageCode == "en" {
@@ -3612,7 +3640,77 @@ public final class PresentationStrings {
         
         return "\(addDateTitle): \(addDate)\n\(updateDateTitle): \(updateDate)\n\(developereTitle): \(developer)"
     }
-        
+
+    public var DialogList_NoFoldersTitle: String {
+        if self.baseLanguageCode == "en" {
+            return "You have no folders yet"
+        }
+        return "У вас пока нет папок."
+    }
+
+    public var DialogList_NoFoldersText: String {
+        if self.baseLanguageCode == "en" {
+            return "Create folder by pressing the pencil button in the top right corner."
+        }
+        return "Чтобы создать папку, нажмите на иконку карандаша в правом верхнем углу."
+    }
+
+    public var Folder_RemovePeer: String {
+        if self.baseLanguageCode == "en" {
+            return "Remove from folder"
+        }
+        return "Убрать из папки"
+    }
+
+    public var FolderTitlePanel_AddChat: String {
+        if self.baseLanguageCode == "en" {
+            return "Add Chat"
+        }
+        return "Добавить чат"
+    }
+
+    public var FolderTitlePanel_Edit: String {
+        if self.baseLanguageCode == "en" {
+            return "Edit"
+        }
+        return "Редактировать"
+    }
+
+    public var FolderTitlePanel_DeleteFolder: String {
+        if self.baseLanguageCode == "en" {
+            return "Delete"
+        }
+        return "Удалить"
+    }
+
+    public var Folder_Confirm: String {
+        if self.baseLanguageCode == "en" {
+            return "Confirm"
+        }
+        return "Сохранить"
+    }
+
+    public var Folder_EmptyError: String {
+        if self.baseLanguageCode == "en" {
+            return "Folder name cannot be empty."
+        }
+        return "Имя папки не может быть пустым."
+    }
+
+    public var Folder_NewName: String {
+        if self.baseLanguageCode == "en" {
+            return "New name"
+        }
+        return "Новое имя папки"
+    }
+
+    public var Folder_RenameFolder: String {
+        if self.baseLanguageCode == "en" {
+            return "Rename folder"
+        }
+        return "Переименовать папку"
+    }
+
     init(primaryComponent: PresentationStringsComponent, secondaryComponent: PresentationStringsComponent?) {
         self.primaryComponent = primaryComponent
         self.secondaryComponent = secondaryComponent

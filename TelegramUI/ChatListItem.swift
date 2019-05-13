@@ -715,11 +715,13 @@ class ChatListItemNode: ItemListRevealOptionsItemNode {
                     var isPinned: Bool?
                     if item.peerGroupId == nil {
                         isPinned = item.index.pinningIndex != nil
+                    } else if let folder = itemPeer.chatMainPeer as? Folder {
+                        isPinned = folder.pinningIndex != nil
                     }
                     
                     if item.enableContextActions && !isAd {
-                        peerRevealOptions = revealOptions(strings: item.presentationData.strings, theme: item.presentationData.theme, isPinned: isPinned, isMuted: item.account.peerId != item.index.messageIndex.id.peerId ? (currentMutedIconImage != nil) : nil, hasPeerGroupId: hasPeerGroupId, canDelete: true, isEditing: item.editing)
-                        if itemPeer.peerId != item.account.peerId {
+                        peerRevealOptions = revealOptions(strings: item.presentationData.strings, theme: item.presentationData.theme, isPinned: isPinned, isMuted: item.account.peerId != item.index.messageIndex.id.peerId && !(itemPeer.chatMainPeer is Folder) ? (currentMutedIconImage != nil) : nil, hasPeerGroupId: hasPeerGroupId, canDelete: true, isEditing: item.editing)
+                        if itemPeer.peerId != item.account.peerId && !(itemPeer.chatMainPeer is Folder) {
                             peerLeftRevealOptions = leftRevealOptions(strings: item.presentationData.strings, theme: item.presentationData.theme, isUnread: unreadCount.unread)
                         } else {
                             peerLeftRevealOptions = []

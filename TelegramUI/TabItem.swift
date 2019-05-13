@@ -13,6 +13,6 @@ enum TabItem: UInt, CaseIterable {
     case peers
     case channels
     case bots
-//    case custom
+    case folders
 }
 

@@ -50,9 +50,36 @@ public class ChatListController: TelegramController, KeyShortcutResponder, UIVie
     
     private var suggestLocalizationDisposable = MetaDisposable()
     private var didSuggestLocalization = false
+
+    private var createFolderActionDisposable = MetaDisposable()
     
     private var presentationData: PresentationData
     private var presentationDataDisposable: Disposable?
+
+    // MARK: -
+
+    private var chatListModeSwitcher: ((ChatListMode) -> Void)?
+
+    private var chatListMode: ChatListMode = .standard {
+        didSet {
+            chatListModeSwitcher?(chatListMode)
+            if case .folders = chatListMode {
+                chatListDisplayNode.isFoldersList = true
+            } else {
+                chatListDisplayNode.isFoldersList = false
+            }
+            chatListDisplayNode.updateThemeAndStrings(
+                theme: presentationData.theme,
+                strings: presentationData.strings,
+                dateTimeFormat: presentationData.dateTimeFormat,
+                nameSortOrder: presentationData.nameSortOrder,
+                nameDisplayOrder: presentationData.nameDisplayOrder,
+                disableAnimations: presentationData.disableAnimations
+            )
+        }
+    }
+
+    // MARK: -
     
     public init(account: Account, groupId: PeerGroupId?, controlsHistoryPreload: Bool) {
         self.account = account
@@ -63,24 +90,6 @@ public class ChatListController: TelegramController, KeyShortcutResponder, UIVie
         self.presentationData = (account.telegramApplicationContext.currentPresentationData.with { $0 })
 
         self.tabBarView = TabBarView(theme: self.presentationData.theme)
-        self.tabBarView.tapHandler = {
-            switch $0 {
-            case .general:
-                account.postbox.changeFilter(to: .all)
-//            case .unread:
-//                account.postbox.changeFilter(to: .unread)
-            case .groups:
-                account.postbox.changeFilter(to: .groups)
-            case .peers:
-                account.postbox.changeFilter(to: .privateChats)
-            case .channels:
-                account.postbox.changeFilter(to: .channels)
-            case .bots:
-                account.postbox.changeFilter(to: .bots)
-//            case .custom:
-//                break
-            }
-        }
 
         self.titleView = NetworkStatusTitleView(theme: self.presentationData.theme)
         
@@ -303,7 +312,10 @@ public class ChatListController: TelegramController, KeyShortcutResponder, UIVie
     }
     
     override public func loadDisplayNode() {
-        self.displayNode = ChatListControllerNode(account: self.account, groupId: self.groupId, controlsHistoryPreload: self.controlsHistoryPreload, presentationData: self.presentationData, controller: self, additionalTopListInset: Constants.tabBarHeight)
+        self.displayNode = ChatListControllerNode(account: self.account, groupId: self.groupId, controlsHistoryPreload: self.controlsHistoryPreload, presentationData: self.presentationData, controller: self, additionalTopListInset: Constants.tabBarHeight,
+        setupChatListModeHandler: { [weak self] in
+            self?.chatListModeSwitcher = $0
+        })
         
         self.chatListDisplayNode.navigationBar = self.navigationBar
         
@@ -381,6 +393,8 @@ public class ChatListController: TelegramController, KeyShortcutResponder, UIVie
                             ])
                         ])
                         strongSelf.present(actionSheet, in: .window(.root))
+                    } else if peerId.id < 0 {
+                        self?.account.postbox.delete(folderWithId: peerId)
                     }
                 })
             }
@@ -404,10 +418,16 @@ public class ChatListController: TelegramController, KeyShortcutResponder, UIVie
                             }
                         })
                     }
-                    
-                    navigateToChatController(navigationController: navigationController, account: strongSelf.account, chatLocation: .peer(peerId), animated: animated, completion: { [weak self] in
-                        self?.chatListDisplayNode.chatListNode.clearHighlightAnimated(true)
-                    })
+
+                    if peerId.id < 0 {
+                        guard let self = self else { return }
+                        (self.navigationController as? NavigationController)?
+                            .pushViewController(FolderController(account: self.account, groupId: self.groupId, controlsHistoryPreload: false, folderId: -peerId.id))
+                    } else {
+                        navigateToChatController(navigationController: navigationController, account: strongSelf.account, chatLocation: .peer(peerId), animated: animated, completion: { [weak self] in
+                            self?.chatListDisplayNode.chatListNode.clearHighlightAnimated(true)
+                        })
+                    }
                 }
             }
         }
@@ -727,7 +747,29 @@ public class ChatListController: TelegramController, KeyShortcutResponder, UIVie
     }
     
     @objc func composePressed() {
-        (self.navigationController as? NavigationController)?.replaceAllButRootController(ComposeController(account: self.account), animated: true)
+        let controller: ViewController
+        switch chatListMode {
+            case .folders:
+                let selectionController = ChatListSelectionController(account: account, options: [])
+                createFolderActionDisposable.set(
+                    (selectionController.result |> deliverOnMainQueue)
+                        .start(next: { [account] selectedPeers in
+                            let peerIds = selectedPeers.compactMap { (peerSelection) -> PeerId? in
+                                if case let .peer(peerId) = peerSelection {
+                                    return peerId
+                                } else {
+                                    return nil
+                                }
+                            }
+                            let createFolder = createFolderController(account: account, peerIds: peerIds)
+                            (selectionController.navigationController as? NavigationController)?.pushViewController(createFolder)
+                        })
+                )
+                controller = selectionController
+            default:
+                controller = ComposeController(account: self.account)
+        }
+        (self.navigationController as? NavigationController)?.replaceAllButRootController(controller, animated: true)
     }
     
     public func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
@@ -809,7 +851,7 @@ public class ChatListController: TelegramController, KeyShortcutResponder, UIVie
             sourceRect.size.height -= UIScreenPixel
             switch item.content {
                 case let .peer(_, peer, _, _, _, _, _, _, _):
-                    if peer.peerId.namespace != Namespaces.Peer.SecretChat {
+                    if peer.peerId.namespace != Namespaces.Peer.SecretChat && peer.peerId.namespace != FolderPeerIdNamespace {
                         let chatController = ChatController(account: self.account, chatLocation: .peer(peer.peerId), mode: .standard(previewing: true))
                         chatController.canReadHistory.set(false)
                         chatController.containerLayoutUpdated(ContainerViewLayout(size: contentSize, metrics: LayoutMetrics(), intrinsicInsets: UIEdgeInsets(), safeInsets: UIEdgeInsets(), statusBarHeight: nil, inputHeight: nil, standardInputHeight: 216.0, inputHeightIsInteractivellyChanging: false), transition: .immediate)
@@ -891,9 +933,29 @@ public class ChatListController: TelegramController, KeyShortcutResponder, UIVie
 
 // MARK: -
 
-extension ChatListController {
+private extension ChatListController {
 
-    private func setupCallbacks() {
+    func setupCallbacks() {
+        self.tabBarView.tapHandler = { [weak self] in
+            let mode: ChatListMode
+            switch $0 {
+            case .general:
+                mode = .standard
+            case .groups:
+                mode = .filter(type: .groups)
+            case .peers:
+                mode = .filter(type: .privateChats)
+            case .channels:
+                mode = .filter(type: .channels)
+            case .bots:
+                mode = .filter(type: .bots)
+            case .folders:
+                mode = .folders
+            }
+
+            self?.chatListMode = mode
+        }
+
         account.postbox.setUnreadCatigoriesCallback { [weak self] unreadCategories in
             let markedTabs = unreadCategories.compactMap { (category) -> TabItem? in
                 switch category {
@@ -962,6 +1024,10 @@ extension ChatListController {
                 self.view.layoutIfNeeded()
             })
         }
+    }
+
+    func switchToCustomGroups() {
+        // TODO: Switch top right icon
     }
 
 }

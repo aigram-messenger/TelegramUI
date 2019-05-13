@@ -192,6 +192,8 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
     private var beginMediaRecordingRequestId: Int = 0
     
     var purposefulAction: (() -> Void)?
+
+    // MARK: -
     
     private var currentMessages: [Message]?
     private var currentReply: Bool?
@@ -202,6 +204,10 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
         }
         return nil
     }
+
+    var showsUnreadCountOnBackButton: Bool = true
+
+    // MARK: -
     
     public init(account: Account, chatLocation: ChatLocation, messageId: MessageId? = nil, botStart: ChatControllerInitialBotStart? = nil, mode: ChatControllerPresentationMode = .standard(previewing: false)) {
         let _ = ChatControllerCount.modify { value in
@@ -1824,7 +1830,7 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
                             globalRemainingUnreadChatCount -= 1
                         }
                     }
-                    if globalRemainingUnreadChatCount > 0 {
+                    if globalRemainingUnreadChatCount > 0 && strongSelf.showsUnreadCountOnBackButton {
                         strongSelf.navigationItem.badge = "\(globalRemainingUnreadChatCount)"
                     } else {
                         strongSelf.navigationItem.badge = ""
@@ -2956,7 +2962,7 @@ public final class ChatController: TelegramController, KeyShortcutResponder, UID
                                 }
                             }
                             
-                            if globalRemainingUnreadChatCount > 0 {
+                            if globalRemainingUnreadChatCount > 0 && strongSelf.showsUnreadCountOnBackButton {
                                 strongSelf.navigationItem.badge = "\(globalRemainingUnreadChatCount)"
                             } else {
                                 strongSelf.navigationItem.badge = ""

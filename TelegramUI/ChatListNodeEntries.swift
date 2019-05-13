@@ -227,7 +227,7 @@ private func offsetPinnedIndex(_ index: ChatListIndex, offset: UInt16) -> ChatLi
     }
 }
 
-func chatListNodeEntriesForView(_ view: ChatListView, state: ChatListNodeState, savedMessagesPeer: Peer?, mode: ChatListNodeMode) -> [ChatListNodeEntry] {
+func chatListNodeEntriesForView(_ view: ChatListView, state: ChatListNodeState, savedMessagesPeer: Peer?, mode: ChatListNodeMode, enableSearch: Bool = true) -> [ChatListNodeEntry] {
     var result: [ChatListNodeEntry] = []
     var pinnedIndexOffset: UInt16 = 0
     if view.laterIndex == nil && savedMessagesPeer == nil {
@@ -259,6 +259,8 @@ func chatListNodeEntriesForView(_ view: ChatListView, state: ChatListNodeState, 
                 if case .chatList = mode {
                     result.append(.GroupReferenceEntry(index: index, presentationData: state.presentationData, groupId: groupId, message: message, topPeers: topPeers, counters: counters, editing: state.editing))
                 }
+            default:
+                break
         }
     }
     if view.laterIndex == nil {
@@ -280,7 +282,9 @@ func chatListNodeEntriesForView(_ view: ChatListView, state: ChatListNodeState, 
                 }
             }
         }
-        result.append(.SearchEntry(theme: state.presentationData.theme, text: view.groupId == nil ? state.presentationData.strings.DialogList_SearchLabel : "Search this feed"))
+        if enableSearch {
+            result.append(.SearchEntry(theme: state.presentationData.theme, text: view.groupId == nil ? state.presentationData.strings.DialogList_SearchLabel : "Search this feed"))
+        }
     }
     if result.count >= 2, case .SearchEntry = result[result.count - 1], case .HoleEntry = result[result.count - 2] {
         return []

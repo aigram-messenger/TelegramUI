@@ -9,7 +9,7 @@ public enum NavigateToChatKeepStack {
     case never
 }
 
-public func navigateToChatController(navigationController: NavigationController, chatController: ChatController? = nil, account: Account, chatLocation: ChatLocation, messageId: MessageId? = nil, botStart: ChatControllerInitialBotStart? = nil, keepStack: NavigateToChatKeepStack = .default, purposefulAction: (() -> Void)? = nil, animated: Bool = true, completion: @escaping () -> Void = {}) {
+public func navigateToChatController(navigationController: NavigationController, chatController: ChatController? = nil, account: Account, chatLocation: ChatLocation, messageId: MessageId? = nil, botStart: ChatControllerInitialBotStart? = nil, keepStack: NavigateToChatKeepStack = .default, purposefulAction: (() -> Void)? = nil, animated: Bool = true, showsUnreadCountOnBackButton: Bool = true, completion: @escaping () -> Void = {}) {
     var found = false
     var isFirst = true
     for controller in navigationController.viewControllers.reversed() {
@@ -39,6 +39,7 @@ public func navigateToChatController(navigationController: NavigationController,
             controller = ChatController(account: account, chatLocation: chatLocation, messageId: messageId, botStart: botStart)
         }
         controller.purposefulAction = purposefulAction
+        controller.showsUnreadCountOnBackButton = showsUnreadCountOnBackButton
         let resolvedKeepStack: Bool
         switch keepStack {
             case .default:

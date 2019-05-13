@@ -146,7 +146,7 @@ private extension TabItem {
             case .groups: name = "ChatGroupingTabs/GroupChats"
             case .channels: name = "ChatGroupingTabs/Channels"
             case .bots: name = "ChatGroupingTabs/Bots"
-//            case .custom: name = "ChatGroupingTabs/CustomGrouping"
+            case .folders: name = "ChatGroupingTabs/CustomGrouping"
         }
 
         return UIImage(bundleImageName: name) ?? UIImage()
