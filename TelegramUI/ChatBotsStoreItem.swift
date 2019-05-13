@@ -65,36 +65,30 @@ private let verticalOffset: CGFloat = 3.0 + UIScreenPixel
 
 final class ChatBotsStoreItemNode: ListViewItemNode {
     private let imageNode: ASImageNode
-    private let highlightNode: ASImageNode
     
     var currentCollectionId: ItemCollectionId?
     var inputNodeInteraction: ChatBotsInputNodeInteraction?
     
     var theme: PresentationTheme?
+
+    private let image: UIImage? = UIImage(bundleImageName: "Chat/Input/Media/BotsShopTabIcon")
+    private var highlightedImage: UIImage?
     
     init() {
-        self.highlightNode = ASImageNode()
-        self.highlightNode.isLayerBacked = true
-        self.highlightNode.isHidden = true
-        
         self.imageNode = ASImageNode()
         self.imageNode.isLayerBacked = true
         self.imageNode.contentMode = .center
         self.imageNode.contentsScale = UIScreenScale
         
-        self.highlightNode.frame = CGRect(origin: CGPoint(x: floor((boundingSize.width - highlightSize.width) / 2.0) + verticalOffset, y: floor((boundingSize.height - highlightSize.height) / 2.0)), size: highlightSize)
-        
         self.imageNode.transform = CATransform3DMakeRotation(CGFloat.pi / 2.0, 0.0, 0.0, 1.0)
         
         super.init(layerBacked: false, dynamicBounce: false)
-        
-        self.addSubnode(self.highlightNode)
+
         self.addSubnode(self.imageNode)
         
         self.currentCollectionId = ItemCollectionId(namespace: ChatBotsInputPanelAuxiliaryNamespace.store.rawValue, id: 0)
         
         let imageSize = CGSize(width: 26.0, height: 26.0)
-        self.highlightNode.frame = CGRect(origin: CGPoint(x: floor((boundingSize.width - highlightSize.width) / 2.0) + verticalOffset, y: floor((boundingSize.height - highlightSize.height) / 2.0) + UIScreenPixel), size: highlightSize)
         
         self.imageNode.frame = CGRect(origin: CGPoint(x: floor((boundingSize.width - imageSize.width) / 2.0) + verticalOffset, y: floor((boundingSize.height - imageSize.height) / 2.0) + UIScreenPixel), size: imageSize)
     }
@@ -105,15 +99,22 @@ final class ChatBotsStoreItemNode: ListViewItemNode {
     func updateTheme(theme: PresentationTheme) {
         if self.theme !== theme {
             self.theme = theme
-            
-            self.imageNode.image = UIImage(bundleImageName: "Chat/Input/Media/BotsShopTabIcon")
-            self.highlightNode.image = PresentationResourcesChat.chatMediaInputPanelHighlightedIconImage(theme)
+
+            highlightedImage = image?.render(withTintColour: theme.chat.inputPanel.panelControlAccentColor)
+
+            self.imageNode.image = image
+
+            updateIsHighlighted()
         }
     }
     
     func updateIsHighlighted() {
         if let currentCollectionId = self.currentCollectionId, let inputNodeInteraction = self.inputNodeInteraction {
-            self.highlightNode.isHidden = inputNodeInteraction.highlightedItemCollectionId != currentCollectionId
+            if inputNodeInteraction.highlightedItemCollectionId != currentCollectionId {
+                imageNode.image = image
+            } else {
+                imageNode.image = highlightedImage
+            }
         }
     }
     

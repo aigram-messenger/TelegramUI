@@ -152,7 +152,7 @@ private class ChatSuggestionItemNode: ListViewItemNode {
     
     func asyncLayout() -> (_ item: ChatSuggestionListItem, _ params: ListViewItemLayoutParams, _ neighbors: ItemListNeighbors) -> (ListViewItemNodeLayout, () -> Void) {
         let makeTextLayout = TextNode.asyncLayout(self.textNode)
-        return { item, params, neighbors in
+        return { [weak self] item, params, neighbors in
             let text = item.response.response.first ?? ""
             let textColor: UIColor = item.theme.chat.bubble.outgoingPrimaryTextColor
             
@@ -201,7 +201,7 @@ private class ChatSuggestionItemNode: ListViewItemNode {
             var insets = itemListNeighborsPlainInsets(neighbors)
             insets.top = 3
             if case ItemListNeighbor.none = neighbors.top {
-                insets.top += 26
+                insets.top += self?.header()?.height ?? 0.0
             }
             insets.bottom = 3
             let layout = ListViewItemNodeLayout(contentSize: contentSize, insets: insets)

@@ -77,6 +77,9 @@ final class ChatBotsBotItemNode: ListViewItemNode {
     private var currentItem: AiGramBot?
     private var theme: PresentationTheme?
 
+    static let recentIcon: UIImage? = UIImage(bundleImageName: "Chat/Input/Media/RecentBotsIcon")
+    private var highlightedRecentImage: UIImage?
+
     init() {
         self.highlightNode = ASDisplayNode()
         self.highlightNode.isLayerBacked = true
@@ -124,7 +127,8 @@ final class ChatBotsBotItemNode: ListViewItemNode {
             
             if let item = item {
                 if item.type == .recent {
-                    self.imageNode.image = UIImage(bundleImageName: "Chat/Input/Media/RecentBotsIcon")
+                    self.imageNode.image = ChatBotsBotItemNode.recentIcon
+                    self.highlightedRecentImage = ChatBotsBotItemNode.recentIcon?.render(withTintColour: theme.chat.inputPanel.panelControlAccentColor)
                 } else {
                     self.imageNode.image = item.icon
                 }
@@ -138,7 +142,15 @@ final class ChatBotsBotItemNode: ListViewItemNode {
     func updateIsHighlighted() {
         assert(Queue.mainQueue().isCurrent())
         if let currentCollectionId = self.currentCollectionId, let inputNodeInteraction = self.inputNodeInteraction {
-            self.highlightNode.isHidden = inputNodeInteraction.highlightedItemCollectionId != currentCollectionId
+            if let item = currentItem, ChatBotsManager.shared.isRecent(item.name) {
+                if inputNodeInteraction.highlightedItemCollectionId != currentCollectionId {
+                    imageNode.image = ChatBotsBotItemNode.recentIcon
+                } else {
+                    imageNode.image = highlightedRecentImage
+                }
+            } else {
+                self.highlightNode.isHidden = inputNodeInteraction.highlightedItemCollectionId != currentCollectionId
+            }
         }
     }
 
@@ -168,3 +180,25 @@ final class ChatBotsBotItemNode: ListViewItemNode {
     }
 }
 
+extension UIImage {
+
+    func render(withTintColour tintColour: UIColor) -> UIImage? {
+        UIGraphicsBeginImageContextWithOptions(size, false, scale)
+        tintColour.setFill()
+
+        let context = UIGraphicsGetCurrentContext()
+        context?.translateBy(x: 0, y: size.height)
+        context?.scaleBy(x: 1.0, y: -1.0)
+        context?.setBlendMode(CGBlendMode.normal)
+
+        let rect = CGRect(origin: .zero, size: size)
+        context?.clip(to: rect, mask: self.cgImage!)
+        context?.fill(rect)
+
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+
+        return newImage
+    }
+
+}
