@@ -227,4 +227,9 @@ enum PresentationResourceKey: Int32 {
     
     case inAppNotificationBackground
     case inAppNotificationSecretChatIcon
+
+    // MARK: -
+
+    case readAllMessagesIcon
+
 }

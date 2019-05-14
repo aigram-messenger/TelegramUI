@@ -189,3 +189,15 @@ struct PresentationResourcesRootController {
         })
     }
 }
+
+// MARK: -
+
+extension PresentationResourcesRootController {
+
+    static func readAllMessagesIcon(_ theme: PresentationTheme) -> UIImage? {
+        return theme.image(PresentationResourceKey.readAllMessagesIcon.rawValue, { theme in
+            return generateTintedImage(image: UIImage(bundleImageName: "Chat List/ReadAllMessagesIcon"), color: theme.rootController.navigationBar.accentTextColor)
+        })
+    }
+
+}

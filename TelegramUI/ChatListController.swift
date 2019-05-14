@@ -63,6 +63,7 @@ public class ChatListController: TelegramController, KeyShortcutResponder, UIVie
     private var chatListMode: ChatListMode = .standard {
         didSet {
             chatListModeSwitcher?(chatListMode)
+            updateRightBarButton()
 
             switch chatListMode {
                 case .folders:
@@ -114,7 +115,7 @@ public class ChatListController: TelegramController, KeyShortcutResponder, UIVie
             self.tabBarItem.selectedImage = icon
             
             self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: self.presentationData.strings.Common_Edit, style: .plain, target: self, action: #selector(self.editPressed))
-            self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: PresentationResourcesRootController.navigationComposeIcon(self.presentationData.theme), style: .plain, target: self, action: #selector(self.composePressed))
+            self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: getRightBarButtonIcon(), style: .plain, target: self, action: #selector(self.composePressed))
         } else {
             self.navigationItem.title = "Channels"
             self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: self.presentationData.strings.Common_Edit, style: .plain, target: self, action: #selector(self.editPressed))
@@ -300,7 +301,7 @@ public class ChatListController: TelegramController, KeyShortcutResponder, UIVie
         }
         if self.groupId == nil {
             self.navigationItem.leftBarButtonItem = editItem
-            self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: PresentationResourcesRootController.navigationComposeIcon(self.presentationData.theme), style: .plain, target: self, action: #selector(self.composePressed))
+            self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: getRightBarButtonIcon(), style: .plain, target: self, action: #selector(self.composePressed))
         } else {
             self.navigationItem.rightBarButtonItem = editItem
         }
@@ -1039,8 +1040,20 @@ private extension ChatListController {
         }
     }
 
-    func switchToCustomGroups() {
-        // TODO: Switch top right icon
+    func updateRightBarButton() {
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            image: getRightBarButtonIcon(),
+            style: .plain,
+            target: self,
+            action: #selector(self.composePressed)
+        )
+    }
+
+    func getRightBarButtonIcon() -> UIImage? {
+        if case .unread = chatListMode {
+            return PresentationResourcesRootController.readAllMessagesIcon(self.presentationData.theme)
+        }
+        return PresentationResourcesRootController.navigationComposeIcon(self.presentationData.theme)
     }
 
 }
