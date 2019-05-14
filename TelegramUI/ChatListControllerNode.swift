@@ -37,8 +37,8 @@ class ChatListControllerNode: ASDisplayNode {
     
     var themeAndStrings: (PresentationTheme, PresentationStrings, dateTimeFormat: PresentationDateTimeFormat)
 
-    var isFoldersList: Bool = false {
-        didSet { chatListEmptyNode?.isFoldersList = isFoldersList }
+    var placeholderType: PlaceholderType = .standard {
+        didSet { chatListEmptyNode?.placeholderType = placeholderType }
     }
 
     private var additionalTopListInset: CGFloat
@@ -69,7 +69,7 @@ class ChatListControllerNode: ASDisplayNode {
             }
             if isEmpty {
                 if strongSelf.chatListEmptyNode == nil {
-                    let chatListEmptyNode = ChatListEmptyNode(theme: strongSelf.themeAndStrings.0, strings: strongSelf.themeAndStrings.1, isFoldersList: self?.isFoldersList ?? false)
+                    let chatListEmptyNode = ChatListEmptyNode(theme: strongSelf.themeAndStrings.0, strings: strongSelf.themeAndStrings.1, placeholderType: strongSelf.placeholderType)
                     strongSelf.chatListEmptyNode = chatListEmptyNode
                     strongSelf.insertSubnode(chatListEmptyNode, belowSubnode: strongSelf.chatListNode)
                     if let (layout, navigationHeight) = strongSelf.containerLayout {

@@ -63,11 +63,16 @@ public class ChatListController: TelegramController, KeyShortcutResponder, UIVie
     private var chatListMode: ChatListMode = .standard {
         didSet {
             chatListModeSwitcher?(chatListMode)
-            if case .folders = chatListMode {
-                chatListDisplayNode.isFoldersList = true
-            } else {
-                chatListDisplayNode.isFoldersList = false
+
+            switch chatListMode {
+                case .folders:
+                    chatListDisplayNode.placeholderType = .folders
+                case .unread:
+                    chatListDisplayNode.placeholderType = .unread
+                default:
+                    chatListDisplayNode.placeholderType = .standard
             }
+
             chatListDisplayNode.updateThemeAndStrings(
                 theme: presentationData.theme,
                 strings: presentationData.strings,
@@ -747,6 +752,10 @@ public class ChatListController: TelegramController, KeyShortcutResponder, UIVie
     }
     
     @objc func composePressed() {
+        if case .unread = chatListMode {
+            return account.postbox.readAllIncomingMessages()
+        }
+
         let controller: ViewController
         switch chatListMode {
             case .folders:
@@ -941,6 +950,8 @@ private extension ChatListController {
             switch $0 {
             case .general:
                 mode = .standard
+            case .unread:
+                mode = .unread
             case .groups:
                 mode = .filter(type: .groups)
             case .peers:
@@ -956,7 +967,7 @@ private extension ChatListController {
             self?.chatListMode = mode
         }
 
-        account.postbox.setUnreadCatigoriesCallback { [weak self] unreadCategories in
+        account.postbox.setUnreadCategoriesCallback { [weak self] unreadCategories in
             let markedTabs = unreadCategories.compactMap { (category) -> TabItem? in
                 switch category {
                 case .privateChats:
@@ -969,8 +980,8 @@ private extension ChatListController {
                     return .bots
                 case .all:
                     return .general
-                default:
-                    return nil
+                case .unread:
+                    return .unread
                 }
             }
 

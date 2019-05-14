@@ -141,7 +141,7 @@ private extension TabItem {
         let name: String
         switch self {
             case .general: name = "ChatGroupingTabs/AllChats"
-//            case .unread: name = "ChatGroupingTabs/UnreadChats"
+            case .unread: name = "ChatGroupingTabs/UnreadChats"
             case .peers: name = "ChatGroupingTabs/PersonalChats"
             case .groups: name = "ChatGroupingTabs/GroupChats"
             case .channels: name = "ChatGroupingTabs/Channels"
